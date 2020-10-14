@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Dokusyokannri java to Kotlin</string>
+    <string name="registerButton">読む本を登録する</string>
+    <string name="Book_name_input">1.読んだ本の名前を入力してください</string>
+    <string name="Book_deadline_input">2.いつ読んだかを入力してください</string>
+    <string name="Book_notice_input">3.本を読んで気づいたこと・学んだこと</string>
+    <string name="Book_actionPlan_input">4.アクションプラン</string>
+    <string name="Book_image">5.本の表紙を撮ってください</string>
+    <string name="Book_save_button">保存</string>
+    <string name="Book_name_view">本の名前</string>
+    <string name="Book_deadline_view">読み終わった日付</string>
+    <string name="Book_Notice_view">気づいたこと・学んだこと</string>
+    <string name="Book_ActionPlan_view">アクションプラン</string>
+    <string name="Back_Button">戻る</string>
+    <string name="Change_Button">変更</string>
+    <string name="Delete_Button">削除</string>
+    <string name="dialog_title">アクションプランの確認</string>
+    <string name="dialog_msg">前回決めたアクションプランは実行できていますか？</string>
+    <string name="dialog_ok">はい</string>
+    <string name="dialog_ng">いいえ</string>
 </resources>
