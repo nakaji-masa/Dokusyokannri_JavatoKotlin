@@ -17,6 +17,7 @@ class Detail : AppCompatActivity() {
 
 
         val  id = intent?.getIntExtra("_id", 0)
+        System.out.println(id)
 
 
         val helper = DataBaseHelper(this)
@@ -43,14 +44,36 @@ class Detail : AppCompatActivity() {
             db.close()
         }
 
-        backButton.setOnClickListener {
-            finish()
-        }
+
 
         ChangeButton.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
 
             intent.putExtra("_id", id)
+
+            startActivity(intent)
+        }
+
+
+        delete_button.setOnClickListener {
+            val helper = DataBaseHelper(this)
+
+            val db = helper.writableDatabase
+
+            try {
+                val sql = "DELETE FROM BookList WHERE _id = ?"
+
+                val stmt = db.compileStatement(sql)
+
+                stmt.bindString(1, id.toString())
+
+                stmt.executeUpdateDelete()
+
+            }finally {
+                db.close()
+            }
+
+            val intent = Intent(this, MainActivity::class.java)
 
             startActivity(intent)
         }
