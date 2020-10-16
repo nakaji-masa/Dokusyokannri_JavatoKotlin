@@ -1,11 +1,14 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_register.*
@@ -14,12 +17,15 @@ import java.io.ByteArrayOutputStream
 class RegisterActivity : AppCompatActivity() {
 
 
+    val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
         val id = intent.getIntExtra("_id", -1)
+
+
 
         if(id != -1) {
             val helper = DataBaseHelper(this)
@@ -52,6 +58,7 @@ class RegisterActivity : AppCompatActivity() {
             } finally {
                 db.close()
             }
+
         }
 
         save_button.setOnClickListener{
@@ -124,7 +131,7 @@ class RegisterActivity : AppCompatActivity() {
                     stmt.bindLong(6, id.toLong())
 
                     stmt.executeUpdateDelete()
-                    
+
 
                 }finally {
                     db.close()
@@ -138,8 +145,30 @@ class RegisterActivity : AppCompatActivity() {
 
         }
 
+
+
+
+
+        book_image.setOnClickListener {
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePictureIntent ->
+                takePictureIntent.resolveActivity(packageManager)?.also {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }
+
         back_button.setOnClickListener {
             finish()
+        }
+
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            book_image.setImageBitmap(imageBitmap)
         }
     }
 }
