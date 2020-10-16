@@ -1,10 +1,13 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
+import android.database.sqlite.SQLiteDatabase
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_detail.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,14 +21,12 @@ private const val ARG_PARAM2 = "param2"
  */
 class DetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var id: Int?  = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            id = it.getInt("_id")
         }
     }
 
@@ -33,8 +34,35 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+
+        //返すビュー変数を作成
+        val view = inflater.inflate(R.layout.fragment_detail, container, false)
+
+        val helper = DataBaseHelper(activity)
+
+        val db: SQLiteDatabase = helper.getWritableDatabase()
+
+        try {
+            val sql =
+                "SELECT bookName, deadline, bookNotice, bookActionPlan, bookImage FROM BookList WHERE _id =$id"
+            val cursor = db.rawQuery(sql, null)
+
+            var arrayByte = ByteArray(0)
+
+            while (cursor.moveToNext()) {
+                view.book_name_view.text = cursor.getString(cursor.getColumnIndex("bookName"))
+                view.book_deadline_view.text = cursor.getString(cursor.getColumnIndex("deadline"))
+                view.book_notice_view.text = cursor.getString(cursor.getColumnIndex("bookNotice"))
+                view.book_actionplan_view.text = cursor.getString(cursor.getColumnIndex("bookActionPlan"))
+                arrayByte = cursor.getBlob(cursor.getColumnIndex("bookImage"))
+                view.book_image_view.setImageBitmap(BitmapFactory.decodeByteArray(arrayByte, 0, arrayByte.size))
+            }
+
+        } finally {
+            db.close()
+        }
+
+        return view
     }
 
     companion object {
