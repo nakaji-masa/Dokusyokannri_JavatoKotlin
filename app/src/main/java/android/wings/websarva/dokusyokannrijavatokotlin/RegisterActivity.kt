@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
 
             try {
                 val sql =
-                    "SELECT bookname, deadline, bookNotice, bookActionplan, bookImage FROM BookList WHERE _id ="  + id
+                    "SELECT bookName, deadline, bookNotice, bookActionPlan, bookImage FROM BookList WHERE _id =$id"
 
                 val cursor = db.rawQuery(sql, null)
 
@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
                     book_name_input.setText(cursor.getString(cursor.getColumnIndex("bookName")))
                     book_deadline_input.setText(cursor.getString(cursor.getColumnIndex("deadline")))
                     book_notice_input.setText(cursor.getString(cursor.getColumnIndex("bookNotice")))
-                    book_actionPlan_input.setText(cursor.getString(cursor.getColumnIndex("bookActionplan")))
+                    book_actionPlan_input.setText(cursor.getString(cursor.getColumnIndex("bookActionPlan")))
                     arrayByte = cursor.getBlob(cursor.getColumnIndex("bookImage"))
                     book_image.setImageBitmap(
                         BitmapFactory.decodeByteArray(
@@ -63,8 +63,8 @@ class RegisterActivity : AppCompatActivity() {
 
         save_button.setOnClickListener{
             if (id == -1) {
-                if (book_name_input.text.toString() == null || book_deadline_input.text.toString() == null ||
-                    book_notice_input.text.toString() == null || book_actionPlan_input.text.toString() == null
+                if (book_name_input.text.toString() == "" || book_deadline_input.text.toString() == "" ||
+                    book_notice_input.text.toString() == "" || book_actionPlan_input.text.toString() == ""
                 ) {
                     Toast.makeText(this, "未入力の項目があります。", Toast.LENGTH_LONG).show()
                 } else {
@@ -76,7 +76,7 @@ class RegisterActivity : AppCompatActivity() {
 
                     try {
                         val sqlInsert =
-                            "INSERT INTO BookList (bookname, deadline, bookNotice, bookActionplan, bookImage, bookidCount) VALUES(?, ?, ?, ?, ?, ?)"
+                            "INSERT INTO BookList (bookName, deadline, bookNotice, bookActionPlan, bookImage) VALUES(?, ?, ?, ?, ?)"
 
                         //レコードの追加
                         val stmt = db.compileStatement(sqlInsert)
@@ -114,7 +114,7 @@ class RegisterActivity : AppCompatActivity() {
 
                 try {
                     val sql =
-                        "UPDATE BookList SET bookname = ?, deadline = ?, bookNotice = ?, bookActionplan = ?, bookImage = ?  WHERE _id = ?"
+                        "UPDATE BookList SET bookName = ?, deadline = ?, bookNotice = ?, bookActionPlan = ?, bookImage = ?  WHERE _id = ?"
 
                     val stmt = db.compileStatement(sql)
 
