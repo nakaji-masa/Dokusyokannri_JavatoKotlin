@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -49,7 +50,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         bookList.setOnItemClickListener { adapterView, view, i, l ->
-            val id = findViewById<TextView>(R.id.book_list_id).text.toString().toInt()
+
+            val const = view as ConstraintLayout
+
+            val id = const.findViewById<TextView>(R.id.book_list_id).text.toString().toInt()
+
 
             val intent = Intent(this, Detail::class.java)
 
