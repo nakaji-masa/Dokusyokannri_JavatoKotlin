@@ -6,7 +6,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
 @Suppress("DEPRECATION")
-class DetailTabAdapter(fm : FragmentManager, val context : Context) : FragmentPagerAdapter(fm) {
+class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Int) : FragmentPagerAdapter(fm) {
+
     override fun getCount(): Int {
         //タブの数を返す
         return 2
@@ -16,7 +17,7 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context) : FragmentPa
        //押しているタブによって返すフラグメントを変える
         when(position) {
             0 -> {
-                return DetailFragment()
+                return DetailFragment.newInstance(id)
             }
 
             else -> {
