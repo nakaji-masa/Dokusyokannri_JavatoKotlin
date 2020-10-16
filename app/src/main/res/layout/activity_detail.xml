@@ -113,7 +113,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/backButton"
+        android:id="@+id/delete_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -122,7 +122,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:background="#669900"
-        android:text="@string/Back_Button"
+        android:text="@string/Delete_Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ChangeButton"
         app:layout_constraintHorizontal_bias="0.5"
@@ -142,7 +142,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/backButton" />
+        app:layout_constraintStart_toEndOf="@+id/delete_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
