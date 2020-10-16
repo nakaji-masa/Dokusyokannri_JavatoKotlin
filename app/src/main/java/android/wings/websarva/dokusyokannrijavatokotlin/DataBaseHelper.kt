@@ -15,7 +15,7 @@ class DataBaseHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAM
         sb.append("deadline TEXT,")
         sb.append("bookNotice TEXT,")
         sb.append("bookActionPlan TEXT,")
-        sb.append("bookImage BLOB,")
+        sb.append("bookImage BLOB")
         sb.append(");")
         val sql = sb.toString()
         db.execSQL(sql)
