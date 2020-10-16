@@ -48,12 +48,22 @@ class DetailFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance(param1 : Int) : DetailFragment{
+            //インスタンスの生成
+            val fragment = DetailFragment()
+
+            //値を取得するためのインスタンスを生成
+            val bundle = Bundle()
+
+            //値を格納
+            bundle.putInt("_id", param1)
+
+            //フラグメントにセット
+            fragment.arguments = bundle
+
+            //自分だけのフラグメントを返す
+            return fragment
+
+        }
     }
 }
