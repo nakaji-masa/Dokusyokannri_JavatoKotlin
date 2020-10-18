@@ -7,14 +7,25 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_register.*
+import okhttp3.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.lang.reflect.ReflectPermission
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -22,20 +33,24 @@ class RegisterActivity : AppCompatActivity() {
         const val CAMERA_REQUEST_CODE = 1
         const val CAMERA_PERMISSION_REQUEST_CODE = 2
         const val BARCODE_PERMISSION_REQUEST_CODE = 3
+        var isbn : String? = null
+        var titleBarCode : String = ""
+        var ImageUrl : String = ""
     }
 
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override  fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+
+        val handler = Handler()
         val id = intent.getIntExtra("_id", -1)
 
 
 
-        if(id != -1) {
+        if (id != -1) {
             val helper = DataBaseHelper(this)
 
             val db = helper.writableDatabase
@@ -69,7 +84,7 @@ class RegisterActivity : AppCompatActivity() {
 
         }
 
-        save_button.setOnClickListener{
+        save_button.setOnClickListener {
             if (id == -1) {
                 if (book_name_input.text.toString() == "" || book_deadline_input.text.toString() == "" ||
                     book_notice_input.text.toString() == "" || book_actionPlan_input.text.toString() == ""
@@ -141,7 +156,7 @@ class RegisterActivity : AppCompatActivity() {
                     stmt.executeUpdateDelete()
 
 
-                }finally {
+                } finally {
                     db.close()
                 }
 
@@ -169,7 +184,7 @@ class RegisterActivity : AppCompatActivity() {
                     grantCameraPermission()
                 }
             } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
-                 //カメラ機能がなければトーストを表示する。
+            //カメラ機能がなければトーストを表示する。
         }
 
 
@@ -177,16 +192,60 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
 
+
+
         test_button.setOnClickListener {
-           Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
-               if (checkCameraPermission()) {
-                   takeBarCode()
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
+                if (checkCameraPermission()) {
+                    takeBarCode()
 
-               } else {
-                   grantBarCodePermission()
-               }
+                } else {
+                    grantBarCodePermission()
+                }
 
-           } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
+            } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
+
+            if (isbn != null) {
+                val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
+                
+                //okHttpクライアントの設定
+                val okHttpClient = OkHttpClient()
+                
+                //リクエストの中に情報を入れ込む
+                val request = Request.Builder().url(url).build()
+
+                //Callバックの中に情報を入れ込む。そして、非同期で実装。
+                okHttpClient.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        //失敗したときのログを出力
+                       Log.d("failure API Response", e.localizedMessage)
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        //成功したときの命令
+                        try{
+                            //jsonデータの全体取得
+                            val rootJson = JSONObject(response.body?.string())
+
+                            //"items"タグのデータを取得。配列でないといけない。
+                            val items = rootJson.getJSONArray("items")
+
+                            //bookNameとbookImageに取得した値を入れたいので、メインスレッドに戻る。reflectResultに後の処理を任せる。
+                            val reflectResult = ReflectResult(items)
+
+
+                        } catch (e : IOException) {
+                            e.printStackTrace()
+                        }
+
+
+                    }
+
+                })
+            }
+
+
+
 
         }
 
@@ -197,16 +256,27 @@ class RegisterActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
 
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            //カメラを使った場合の処理
             val imageBitmap = data?.extras?.get("data") as Bitmap
             book_image.setImageBitmap(imageBitmap)
-        }
 
-        else {
+        } else {
+            //バーコードから来た場合
             val resultBarcode = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-       }
 
-
+            if(resultBarcode != null) {
+                //nullだった場合。トーストの表示
+                if(resultBarcode.contents == null) {
+                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
+                } else {
+                    //バーコードスキャナーで受け取った値を代入する。ボタンのリスナー処理に戻る
+                    isbn = resultBarcode.contents
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
 
 
     }
@@ -233,26 +303,32 @@ class RegisterActivity : AppCompatActivity() {
     //持っていればtrueを返す。
     private fun checkCameraPermission() = PackageManager.PERMISSION_GRANTED ==
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA)
-            // Manifest.permission.CAMERAっていう許可とっているかな？
+    // Manifest.permission.CAMERAっていう許可とっているかな？
 
     //パーミッションを得るための関数
     private fun grantCameraPermission() =
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions(
+            this,
             arrayOf(Manifest.permission.CAMERA),
-            CAMERA_PERMISSION_REQUEST_CODE)
+            CAMERA_PERMISSION_REQUEST_CODE
+        )
 
     //バーコードからパーミッションを得るためのメソッド
-    private fun  grantBarCodePermission() =
-        ActivityCompat.requestPermissions(this,
+    private fun grantBarCodePermission() =
+        ActivityCompat.requestPermissions(
+            this,
             arrayOf(Manifest.permission.CAMERA),
-            BARCODE_PERMISSION_REQUEST_CODE)
+            BARCODE_PERMISSION_REQUEST_CODE
+        )
 
 
     //パーミッションを得たときにカメラの起動する関数。
     //取得の確認をするメソッド。
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<out String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
 
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() &&
@@ -263,14 +339,41 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         //バーコードリクエストコードを持っていたらバーコードを起動する。
-        if(requestCode == BARCODE_PERMISSION_REQUEST_CODE) {
+        if (requestCode == BARCODE_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
                 takeBarCode()
             }
         }
     }
 
+    private class ReflectResult {
+        constructor(items : JSONArray) {
+            try {
+                for (i in 0 until items.length()) {
+                    //itemsタグのi番目を取得
+                    val item = items.getJSONObject(i)
+
+                    //itemsタグの中のｖolumeInfoを取得
+                    val volumeInfo = item.getJSONObject("volumeInfo")
+
+                    //volumeInfo内のtitleタグを取得
+                    titleBarCode = volumeInfo.getString("title")
+
+                    //volumeInfoからimageLinksを取得
+                    val imageLinks = volumeInfo.getJSONObject("imageLinks")
+
+                    //imageLinksからサムネイルをゲット
+                    ImageUrl = imageLinks.getString("thumbnail")
+                }
+            } catch (e : JSONException) {
+                e.printStackTrace()
+            }
+
+        }
+
+    }
 
 
 
