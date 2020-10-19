@@ -237,16 +237,9 @@ class RegisterActivity : AppCompatActivity() {
                         } catch (e : IOException) {
                             e.printStackTrace()
                         }
-
-
                     }
-
                 })
             }
-
-
-
-
         }
 
 
