@@ -1,18 +1,20 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -25,7 +27,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.lang.reflect.ReflectPermission
+import java.net.HttpURLConnection
+import java.net.URL
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -33,19 +36,23 @@ class RegisterActivity : AppCompatActivity() {
         const val CAMERA_REQUEST_CODE = 1
         const val CAMERA_PERMISSION_REQUEST_CODE = 2
         const val BARCODE_PERMISSION_REQUEST_CODE = 3
-        var isbn : String? = null
-        var titleBarCode : String = ""
-        var ImageUrl : String = ""
+        var isbn: String? = "9784297110215"
+        var titleBarCode: String = ""
+        var ImageUrl: String? = null
+        lateinit var handler: Handler
+        lateinit var imageView: ImageView
+        lateinit var editText: EditText
     }
 
 
-
-    override  fun onCreate(savedInstanceState: Bundle?) {
+    override protected fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
 
-        val handler = Handler()
+        handler = Handler()
+        imageView = findViewById(R.id.book_image)
+        editText = findViewById(R.id.book_name_input)
         val id = intent.getIntExtra("_id", -1)
 
 
@@ -164,13 +171,7 @@ class RegisterActivity : AppCompatActivity() {
 
                 startActivity(intent)
             }
-
-
         }
-
-
-
-
 
         book_image.setOnClickListener {
             //ユーザーの端末にカメラ機能があるかどうかの確認
@@ -204,13 +205,16 @@ class RegisterActivity : AppCompatActivity() {
                 }
 
             } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
+        }
 
+        test2_button.setOnClickListener {
+            println("開始")
             if (isbn != null) {
                 val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
-                
+
                 //okHttpクライアントの設定
                 val okHttpClient = OkHttpClient()
-                
+
                 //リクエストの中に情報を入れ込む
                 val request = Request.Builder().url(url).build()
 
@@ -218,12 +222,12 @@ class RegisterActivity : AppCompatActivity() {
                 okHttpClient.newCall(request).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
                         //失敗したときのログを出力
-                       Log.d("failure API Response", e.localizedMessage)
+                        Log.d("failure API Response", e.localizedMessage)
                     }
 
                     override fun onResponse(call: Call, response: Response) {
                         //成功したときの命令
-                        try{
+                        try {
                             //jsonデータの全体取得
                             val rootJson = JSONObject(response.body?.string())
 
@@ -233,16 +237,16 @@ class RegisterActivity : AppCompatActivity() {
                             //bookNameとbookImageに取得した値を入れたいので、メインスレッドに戻る。reflectResultに後の処理を任せる。
                             val reflectResult = ReflectResult(items)
 
+                            handler.post(reflectResult)
 
-                        } catch (e : IOException) {
+                        } catch (e: IOException) {
                             e.printStackTrace()
                         }
                     }
                 })
             }
+
         }
-
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -258,9 +262,9 @@ class RegisterActivity : AppCompatActivity() {
             //バーコードから来た場合
             val resultBarcode = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
-            if(resultBarcode != null) {
+            if (resultBarcode != null) {
                 //nullだった場合。トーストの表示
-                if(resultBarcode.contents == null) {
+                if (resultBarcode.contents == null) {
                     Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
                 } else {
                     //バーコードスキャナーで受け取った値を代入する。ボタンのリスナー処理に戻る
@@ -341,8 +345,8 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private class ReflectResult {
-        constructor(items : JSONArray) {
+    private class ReflectResult : Runnable {
+        constructor(items: JSONArray) {
             try {
                 for (i in 0 until items.length()) {
                     //itemsタグのi番目を取得
@@ -359,16 +363,71 @@ class RegisterActivity : AppCompatActivity() {
 
                     //imageLinksからサムネイルをゲット
                     ImageUrl = imageLinks.getString("thumbnail")
+
                 }
-            } catch (e : JSONException) {
+            } catch (e: JSONException) {
                 e.printStackTrace()
             }
-
         }
 
+        override fun run() {
+            val imagedownload = ImageDownload()
+            imagedownload.execute()
+        }
     }
 
+    class ImageDownload() : AsyncTask<String, String, Bitmap>() {
+
+        override fun doInBackground(vararg p0: String?): Bitmap? {
+            //URLで取得した画像を格納するためのメソッド
+            var image: Bitmap? = null
 
 
+            //MainActivityからurlを取得
+            val url = URL(ImageUrl)
 
+            //インターネット接続するためのオブジェクトを作成
+            val con = url.openConnection() as HttpURLConnection
+
+            //接続の時間と、画像を読み込む時間を設定
+            con.readTimeout = 10000
+            con.connectTimeout = 10000
+
+            //GETに設定。情報を取得するだけなので
+            con.requestMethod = "GET"
+
+            con.instanceFollowRedirects = false
+
+            //ヘッダーの設定
+            con.setRequestProperty("Accept-Language", "jp")
+
+            try {
+                //接続
+                con.connect()
+
+                //データを取得する
+                val inst = con.inputStream
+
+                //Bitamp型に直す
+                val bitmap = BitmapFactory.decodeStream(inst)
+
+                //変数imageに格納する
+                image = bitmap
+
+                //接続を切る
+                inst.close()
+
+            } catch (e: IOException) {
+                Log.d("IOException", e.toString())
+            }
+
+            con.disconnect()
+            return image
+        }
+
+        override fun onPostExecute(result: Bitmap?) {
+            imageView.setImageBitmap(result)
+            editText.setText(titleBarCode)
+        }
+    }
 }
