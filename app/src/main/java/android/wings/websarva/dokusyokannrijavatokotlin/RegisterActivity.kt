@@ -36,16 +36,16 @@ class RegisterActivity : AppCompatActivity() {
         const val CAMERA_REQUEST_CODE = 1
         const val CAMERA_PERMISSION_REQUEST_CODE = 2
         const val BARCODE_PERMISSION_REQUEST_CODE = 3
-        var isbn: String? = "9784297110215"
-        var titleBarCode: String = ""
-        var ImageUrl: String? = null
+        var isbn: String = ""
+        var title: String = ""
+        var imageUrl: String? = null
         lateinit var handler: Handler
         lateinit var imageView: ImageView
         lateinit var editText: EditText
     }
 
 
-    override protected fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
@@ -206,47 +206,6 @@ class RegisterActivity : AppCompatActivity() {
 
             } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
         }
-
-        test2_button.setOnClickListener {
-            println("開始")
-            if (isbn != null) {
-                val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
-
-                //okHttpクライアントの設定
-                val okHttpClient = OkHttpClient()
-
-                //リクエストの中に情報を入れ込む
-                val request = Request.Builder().url(url).build()
-
-                //Callバックの中に情報を入れ込む。そして、非同期で実装。
-                okHttpClient.newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        //失敗したときのログを出力
-                        Log.d("failure API Response", e.localizedMessage)
-                    }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        //成功したときの命令
-                        try {
-                            //jsonデータの全体取得
-                            val rootJson = JSONObject(response.body?.string())
-
-                            //"items"タグのデータを取得。配列でないといけない。
-                            val items = rootJson.getJSONArray("items")
-
-                            //bookNameとbookImageに取得した値を入れたいので、メインスレッドに戻る。reflectResultに後の処理を任せる。
-                            val reflectResult = ReflectResult(items)
-
-                            handler.post(reflectResult)
-
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    }
-                })
-            }
-
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -269,13 +228,50 @@ class RegisterActivity : AppCompatActivity() {
                 } else {
                     //バーコードスキャナーで受け取った値を代入する。ボタンのリスナー処理に戻る
                     isbn = resultBarcode.contents
+
+                    //無事に取得できればGoogleBooksAPIに接続し本の画像とタイトルを取得
+                    if (isbn != null) {
+                        val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
+
+                        //okHttpクライアントの設定
+                        val okHttpClient = OkHttpClient()
+
+                        //リクエストの中に情報を入れ込む
+                        val request = Request.Builder().url(url).build()
+
+                        //Callバックの中に情報を入れ込む。そして、非同期で実装。
+                        okHttpClient.newCall(request).enqueue(object : Callback {
+
+                            override fun onFailure(call: Call, e: IOException) {
+                                //失敗したときのログを出力
+                                Log.d("failure API Response", e.localizedMessage)
+                            }
+
+                            override fun onResponse(call: Call, response: Response) {
+                                //成功したときの命令
+                                try {
+                                    //jsonデータの全体取得
+                                    val rootJson = JSONObject(response.body?.string())
+
+                                    //"items"タグのデータを取得。配列でないといけない。
+                                    val items = rootJson.getJSONArray("items")
+
+                                    //bookNameとbookImageに取得した値を入れたいので、メインスレッドに戻る。reflectResultに後の処理を任せる。
+                                    val reflectResult = ReflectResult(items)
+
+                                    handler.post(reflectResult)
+
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        })
+                    }
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
-
-
     }
 
     //バーコードリーダー起動メソッド
@@ -356,13 +352,13 @@ class RegisterActivity : AppCompatActivity() {
                     val volumeInfo = item.getJSONObject("volumeInfo")
 
                     //volumeInfo内のtitleタグを取得
-                    titleBarCode = volumeInfo.getString("title")
+                    title = volumeInfo.getString("title")
 
                     //volumeInfoからimageLinksを取得
                     val imageLinks = volumeInfo.getJSONObject("imageLinks")
 
                     //imageLinksからサムネイルをゲット
-                    ImageUrl = imageLinks.getString("thumbnail")
+                    imageUrl = imageLinks.getString("thumbnail")
 
                 }
             } catch (e: JSONException) {
@@ -384,7 +380,7 @@ class RegisterActivity : AppCompatActivity() {
 
 
             //MainActivityからurlを取得
-            val url = URL(ImageUrl)
+            val url = URL(imageUrl)
 
             //インターネット接続するためのオブジェクトを作成
             val con = url.openConnection() as HttpURLConnection
@@ -427,7 +423,7 @@ class RegisterActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: Bitmap?) {
             imageView.setImageBitmap(result)
-            editText.setText(titleBarCode)
+            editText.setText(title)
         }
     }
 }
