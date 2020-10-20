@@ -188,14 +188,7 @@ class RegisterActivity : AppCompatActivity() {
             //カメラ機能がなければトーストを表示する。
         }
 
-
-        back_button.setOnClickListener {
-            finish()
-        }
-
-
-
-        test_button.setOnClickListener {
+        barcode_button.setOnClickListener {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
                 if (checkCameraPermission()) {
                     takeBarCode()
