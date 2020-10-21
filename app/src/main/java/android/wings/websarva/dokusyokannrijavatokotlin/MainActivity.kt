@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        intentBookRegisterButton.setOnClickListener(View.OnClickListener {
+
+        add_fab.setOnClickListener(View.OnClickListener {
 
             val intent = Intent(this, RegisterActivity::class.java)
 
