@@ -17,16 +17,13 @@ class Detail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        val  id = intent.getIntExtra("_id", 0)
+        val  id = intent.getIntExtra("id", 0)
 
         //アダプターのセット
         detail_pager.adapter = DetailTabAdapter(supportFragmentManager, this, id)
 
         //タブにpegerの情報をセット
         detail_tabLayout.setupWithViewPager(detail_pager)
-
-
-
 
 
     }

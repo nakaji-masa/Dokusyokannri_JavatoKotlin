@@ -15,6 +15,7 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Int
 
     override fun getItem(position: Int): Fragment {
        //押しているタブによって返すフラグメントを変える
+        println(id)
         when(position) {
             0 -> {
                 return DetailFragment.newInstance(id)
