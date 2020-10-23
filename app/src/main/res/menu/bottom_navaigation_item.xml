@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/book_read_item"
+        android:title="@string/read_book"
+        android:icon="@mipmap/book_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/graph_item"
+        android:title="@string/graph"
+        android:icon="@mipmap/graph_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/settings_item"
+        android:title="設定"
+        android:icon="@mipmap/settings_icon"
+        app:showAsAction="ifRoom"/>
 
 </menu>
