@@ -10,36 +10,42 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.booklist_cell.*
 import java.nio.file.Files.find
 
+
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var realm : Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //アクションバーのセット
+        setSupportActionBar(parent_toolbar)
 
+        realm = Realm.getDefaultInstance()
 
+        val bookList = realm.where(BookListObject::class.java).findAll()
 
-        //DataBaseHelperオブジェクトをインスタンス化
-        val helper = DataBaseHelper(this)
+        val adapter = BookListAdapterMain(this, bookList, true)
 
-        //sqLiteDatabaseからhelperを取得
-        val sqLiteDatabase: SQLiteDatabase = helper.getReadableDatabase()
+        //レイアウトマネージャーなどの設定
+        book_recyeclerview.setHasFixedSize(true)
+        book_recyeclerview.layoutManager = LinearLayoutManager(this)
+        book_recyeclerview.adapter = adapter
 
-        //Bookデータベースから値を取得。結果をcursorへ代入する。
-        val cursor = sqLiteDatabase.query("BookList", arrayOf("_id", "bookName", "bookImage"), null, null, null, null, null)
-
-        //corsorの値をBaseadapterに格納
-        val adapter: BaseAdapter = CursorAdapter(this, R.layout.booklist_cell, cursor, arrayOf("_id", "bookName", "bookImage"), intArrayOf(
-            R.id.book_list_id, R.id.book_list_name, R.id.book_list_Image))
-
-        //listViewへ格納
-        bookList.adapter = adapter
-
-
+        //リスナーの設定
+        adapter.setOnItemClickListener(object :  BookListAdapterMain.OnItemClickListener {
+            override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {
+                val intent = Intent(view.context, Detail::class.java)
+                intent.putExtra("id", clickedId)
+                startActivity(intent)
+            }
+        })
 
 
         add_fab.setOnClickListener(View.OnClickListener {
@@ -50,19 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        bookList.setOnItemClickListener { adapterView, view, i, l ->
-
-            val const = view as ConstraintLayout
-
-            val id = const.findViewById<TextView>(R.id.book_list_id).text.toString().toInt()
-
-
-            val intent = Intent(this, Detail::class.java)
-
-            intent.putExtra("_id", id)
-
-            startActivity(intent)
-        }
     }
 }
 

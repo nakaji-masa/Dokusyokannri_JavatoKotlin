@@ -1,7 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,14 +11,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.zxing.integration.android.IntentIntegrator
+import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_register.*
 import okhttp3.*
 import org.json.JSONArray
@@ -44,132 +46,82 @@ class RegisterActivity : AppCompatActivity() {
         lateinit var editText: EditText
     }
 
+    private lateinit var realm: Realm
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
 
+        realm = Realm.getDefaultInstance()
         handler = Handler()
         imageView = findViewById(R.id.book_image)
-        editText = findViewById(R.id.book_name_input)
-        val id = intent.getIntExtra("_id", -1)
+        editText = findViewById(R.id.book_title_input)
+        val id = intent.getIntExtra("id", -1)
 
 
 
-        if (id != -1) {
-            val helper = DataBaseHelper(this)
-
-            val db = helper.writableDatabase
-
-            try {
-                val sql =
-                    "SELECT bookName, deadline, bookNotice, bookActionPlan, bookImage FROM BookList WHERE _id =$id"
-
-                val cursor = db.rawQuery(sql, null)
-
-                var arrayByte = ByteArray(0)
-
-                while (cursor.moveToNext()) {
-                    book_name_input.setText(cursor.getString(cursor.getColumnIndex("bookName")))
-                    book_deadline_input.setText(cursor.getString(cursor.getColumnIndex("deadline")))
-                    book_notice_input.setText(cursor.getString(cursor.getColumnIndex("bookNotice")))
-                    book_actionPlan_input.setText(cursor.getString(cursor.getColumnIndex("bookActionPlan")))
-                    arrayByte = cursor.getBlob(cursor.getColumnIndex("bookImage"))
-                    book_image.setImageBitmap(
-                        BitmapFactory.decodeByteArray(
-                            arrayByte,
-                            0,
-                            arrayByte.size
-                        )
-                    )
-                }
-
-            } finally {
-                db.close()
-            }
-
-        }
 
         save_button.setOnClickListener {
             if (id == -1) {
-                if (book_name_input.text.toString() == "" || book_deadline_input.text.toString() == "" ||
+                if (book_title_input.text.toString() == "" || book_date_input.text.toString() == "" ||
                     book_notice_input.text.toString() == "" || book_actionPlan_input.text.toString() == ""
                 ) {
                     Toast.makeText(this, "未入力の項目があります。", Toast.LENGTH_LONG).show()
                 } else {
-                    //DataBaseHelperクラスのインスタンスを作成
-                    val helper = DataBaseHelper(this)
+                    realm.executeTransaction {
+                        val maxId = realm.where<BookListObject>().max("id")
+                        val nextId = (maxId?.toInt() ?: 0) + 1
+                        val book = realm.createObject<BookListObject>(nextId)
 
-                    //データーベースに書き込みを加える
-                    val db = helper.writableDatabase
-
-                    try {
-                        val sqlInsert =
-                            "INSERT INTO BookList (bookName, deadline, bookNotice, bookActionPlan, bookImage) VALUES(?, ?, ?, ?, ?)"
-
-                        //レコードの追加
-                        val stmt = db.compileStatement(sqlInsert)
-
-                        //保存したい値を格納
-                        stmt.bindString(1, book_name_input.text.toString())
-                        stmt.bindString(2, book_deadline_input.text.toString())
-                        stmt.bindString(3, book_notice_input.text.toString())
-                        stmt.bindString(4, book_actionPlan_input.text.toString())
-
-                        //bitmap型からbyteArray型に変換
+                        book.title = book_title_input.text.toString()
+                        book.date = book_date_input.text.toString()
+                        book.notice = book_notice_input.text.toString()
+                        book.actionPlan = book_actionPlan_input.text.toString()
                         val byteArrayOutputStream = ByteArrayOutputStream()
-                        var bitmap = (book_image.drawable as BitmapDrawable).bitmap
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-
-                        //保存する値を格納
-                        stmt.bindBlob(5, byteArrayOutputStream.toByteArray())
-
-                        //sql文の実行
-                        stmt.executeInsert()
-
-                    } finally {
-                        db.close()
+                        (book_image.drawable as BitmapDrawable).bitmap.compress(
+                            Bitmap.CompressFormat.PNG,
+                            100,
+                            byteArrayOutputStream
+                        )
+                        book.image = byteArrayOutputStream.toByteArray()
                     }
-                    val intent = Intent(this, MainActivity::class.java)
 
-                    startActivity(intent)
-
+                    AlertDialog.Builder(this)
+                        .setMessage("追加しました")
+                        .setPositiveButton("OK") { dialog, which ->
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                        }
+                        .show()
                 }
 
             } else {
-                val helper = DataBaseHelper(this)
 
-                val db = helper.writableDatabase
-
-                try {
-                    val sql =
-                        "UPDATE BookList SET bookName = ?, deadline = ?, bookNotice = ?, bookActionPlan = ?, bookImage = ?  WHERE _id = ?"
-
-                    val stmt = db.compileStatement(sql)
-
-                    stmt.bindString(1, book_name_input.text.toString())
-                    println(book_name_input.text.toString())
-                    stmt.bindString(2, book_deadline_input.text.toString())
-                    stmt.bindString(3, book_notice_input.text.toString())
-                    stmt.bindString(4, book_actionPlan_input.text.toString())
+                realm.executeTransaction {
+                    val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
+                    book?.title = book_title_input.text.toString()
+                    book?.date = book_date_input.text.toString()
+                    book?.notice = book_notice_input.text.toString()
+                    book?.actionPlan = book_actionPlan_input.text.toString()
 
                     val byteArrayOutputStream = ByteArrayOutputStream()
-                    val bitmap = (book_image.drawable as BitmapDrawable).bitmap
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-                    stmt.bindBlob(5, byteArrayOutputStream.toByteArray())
-                    stmt.bindLong(6, id.toLong())
+                    (book_image.drawable as BitmapDrawable).bitmap.compress(
+                        Bitmap.CompressFormat.PNG,
+                        100,
+                        byteArrayOutputStream
+                    )
 
-                    stmt.executeUpdateDelete()
-
-
-                } finally {
-                    db.close()
+                    book?.image = byteArrayOutputStream.toByteArray()
                 }
-
-                val intent = Intent(this, MainActivity::class.java)
-
-                startActivity(intent)
+                AlertDialog.Builder(this)
+                    .setMessage("変更しました")
+                    .setPositiveButton("OK"){dialog, which ->
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .show()
             }
         }
 
@@ -254,7 +206,7 @@ class RegisterActivity : AppCompatActivity() {
 
                                     handler.post(reflectResult)
 
-                                } catch (e: IOException) {
+                                } catch (e: JSONException) {
                                     e.printStackTrace()
                                 }
                             }
@@ -269,6 +221,7 @@ class RegisterActivity : AppCompatActivity() {
 
     //バーコードリーダー起動メソッド
     private fun takeBarCode() {
+        Toast.makeText(this, "上のバーコードを撮ってください。", Toast.LENGTH_LONG).show()
         val intentIntegrator = IntentIntegrator(this)
             .setBeepEnabled(false)
             .apply {
@@ -418,5 +371,10 @@ class RegisterActivity : AppCompatActivity() {
             imageView.setImageBitmap(result)
             editText.setText(title)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }
