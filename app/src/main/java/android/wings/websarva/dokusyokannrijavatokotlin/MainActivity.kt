@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         //アクションバーのセット
         setSupportActionBar(parent_toolbar)
 
+
         realm = Realm.getDefaultInstance()
 
         val bookList = realm.where(BookListObject::class.java).findAll()

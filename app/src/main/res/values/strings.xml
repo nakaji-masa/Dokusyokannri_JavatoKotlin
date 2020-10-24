@@ -22,7 +22,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="barcode_button">バーコード検索</string>
-    <string name="read_book">読んだ本</string>
+    <string name="read_book">本棚</string>
     <string name="graph">グラフ</string>
     <string name="settings">設定</string>
 </resources>
