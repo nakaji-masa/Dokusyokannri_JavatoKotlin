@@ -5,19 +5,19 @@
     <item
         android:id="@+id/book_read_item"
         android:title="@string/read_book"
-        android:icon="@mipmap/book_icon"
+        android:icon="@drawable/baseline_menu_book_black_18dp"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/graph_item"
         android:title="@string/graph"
-        android:icon="@mipmap/graph_icon"
+        android:icon="@drawable/baseline_assessment_black_18dp"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/settings_item"
-        android:title="設定"
-        android:icon="@mipmap/settings_icon"
+        android:title="@string/settings"
+        android:icon="@drawable/baseline_build_black_18dp"
         app:showAsAction="ifRoom"/>
 
 </menu>
