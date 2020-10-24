@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
         val adapter = BookListAdapterMain(this, bookList, true)
 
         //レイアウトマネージャーなどの設定
-        book_recyeclerview.setHasFixedSize(true)
-        book_recyeclerview.layoutManager = LinearLayoutManager(this)
-        book_recyeclerview.adapter = adapter
+        book_recyclerview.setHasFixedSize(true)
+        book_recyclerview.layoutManager = LinearLayoutManager(this)
+        book_recyclerview.adapter = adapter
 
         //リスナーの設定
         adapter.setOnItemClickListener(object :  BookListAdapterMain.OnItemClickListener {
