@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dokusyokannri java to Kotlin</string>
+    <string name="app_name">Book　Action</string>
     <string name="registerButton">読む本を登録する</string>
     <string name="Book_name_input">1.読んだ本の名前を入力してください</string>
     <string name="Book_deadline_input">2.いつ読んだかを入力してください</string>
