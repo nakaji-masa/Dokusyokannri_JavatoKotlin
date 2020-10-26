@@ -1,6 +1,7 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -117,7 +118,7 @@ class RegisterActivity : AppCompatActivity() {
                 }
                 AlertDialog.Builder(this)
                     .setMessage("変更しました")
-                    .setPositiveButton("OK"){dialog, which ->
+                    .setPositiveButton("OK") { dialog, which ->
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     }
@@ -313,8 +314,12 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         override fun run() {
-            val imagedownload = ImageDownload()
-            imagedownload.execute()
+            if (imageUrl != null) {
+                val imageDownload = ImageDownload()
+                imageDownload.execute()
+            } else {
+                editText.setText(title)
+            }
         }
     }
 
@@ -323,7 +328,6 @@ class RegisterActivity : AppCompatActivity() {
         override fun doInBackground(vararg p0: String?): Bitmap? {
             //URLで取得した画像を格納するためのメソッド
             var image: Bitmap? = null
-
 
             //MainActivityからurlを取得
             val url = URL(imageUrl)
