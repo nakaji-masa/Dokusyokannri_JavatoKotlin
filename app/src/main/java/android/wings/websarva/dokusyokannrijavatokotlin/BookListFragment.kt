@@ -19,6 +19,7 @@ class BookListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         realm = Realm.getDefaultInstance()
+
     }
 
     override fun onCreateView(
@@ -29,6 +30,8 @@ class BookListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
 
         val bookList = realm.where(BookListObject::class.java).findAll()
         val adapter = BookListAdapterMain(view.context, bookList, true)
@@ -61,5 +64,10 @@ class BookListFragment : Fragment() {
 
                 }
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }

@@ -60,6 +60,16 @@ class RegisterActivity : AppCompatActivity() {
         imageView = findViewById(R.id.book_image)
         editText = findViewById(R.id.book_title_input)
         val id = intent.getIntExtra("id", -1)
+        println(id)
+
+        if(id != -1) {
+            val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
+            book_title_input.setText(book?.title)
+            book_date_input.setText(book?.date)
+            book_notice_input.setText(book?.notice)
+            book_actionPlan_input.setText(book?.actionPlan)
+            book_image.setImageBitmap(BitmapFactory.decodeByteArray(book?.image, 0, book?.image!!.size))
+        }
 
 
 

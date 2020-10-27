@@ -1,5 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import io.realm.Realm
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_register.*
@@ -19,7 +21,7 @@ private const val ARG_PARAM2 = "param2"
 
 
 class DetailFragment : Fragment() {
-    private var id: Int?  = null
+    private var id: Int? = null
     private lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,10 +58,35 @@ class DetailFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        //本の内容を削除する
+        delete_button.setOnClickListener {
+            realm.executeTransaction {
+                realm.where<BookListObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
+            }
+
+            AlertDialog.Builder(view.context)
+                .setMessage("削除しました。")
+                .setPositiveButton("OK") { dialog, which ->
+                    val intent = Intent(view.context, MainActivity::class.java)
+                    startActivity(intent)
+                }.show()
+        }
+
+        //本の内容を変更する
+        ChangeButton.setOnClickListener {
+            val intent = Intent(view.context, RegisterActivity::class.java)
+            intent.putExtra("id", id)
+            println(id)
+            startActivity(intent)
+        }
+    }
+
     companion object {
 
         @JvmStatic
-        fun newInstance(param1 : Int) : DetailFragment{
+        fun newInstance(param1: Int): DetailFragment {
             //インスタンスの生成
             val fragment = DetailFragment()
 
@@ -76,5 +103,10 @@ class DetailFragment : Fragment() {
             return fragment
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }
