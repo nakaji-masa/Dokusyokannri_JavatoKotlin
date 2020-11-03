@@ -33,7 +33,7 @@ class BookListAdapterMain(
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        val book: BookListObject = bookList?.get(position) ?: return
+        val book: BookListObject = bookList.get(position) ?: return
 
         holder.bookImage.setImageBitmap(book.image?.size?.let {
             BitmapFactory.decodeByteArray(book.image, 0, it)
@@ -48,7 +48,7 @@ class BookListAdapterMain(
     }
 
     override fun getItemCount(): Int {
-        return bookList?.size ?: 0
+        return bookList.size
     }
 
     interface OnItemClickListener{
