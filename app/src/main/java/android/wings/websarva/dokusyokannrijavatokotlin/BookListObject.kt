@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey
 
 open class BookListObject : RealmObject() {
     @PrimaryKey
-    var id : Int? = null
+    var id : Int = 0
 
     var title : String = ""
 
@@ -16,5 +16,4 @@ open class BookListObject : RealmObject() {
     var actionPlan : String = ""
 
     var image : ByteArray? = null
-
 }
