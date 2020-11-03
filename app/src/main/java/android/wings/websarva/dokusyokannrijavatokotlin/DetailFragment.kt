@@ -42,7 +42,6 @@ class DetailFragment : Fragment() {
 
         realm = Realm.getDefaultInstance()
 
-        println(id)
         val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
 
         view.book_title_view.text = book?.title
@@ -51,7 +50,7 @@ class DetailFragment : Fragment() {
         view.book_actionPlan_view.text = book?.actionPlan
         view.book_image_view.setImageBitmap(book?.image?.size?.let {
             BitmapFactory.decodeByteArray(
-                book?.image, 0,
+                book.image, 0,
                 it
             )
         })
