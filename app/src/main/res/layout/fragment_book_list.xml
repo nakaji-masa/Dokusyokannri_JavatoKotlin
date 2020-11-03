@@ -6,21 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".BookListFragment">
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/book_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="50dp"
-        android:paddingBottom="60dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="70dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="bottom|end"
         android:backgroundTint="@android:color/holo_green_light"
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
