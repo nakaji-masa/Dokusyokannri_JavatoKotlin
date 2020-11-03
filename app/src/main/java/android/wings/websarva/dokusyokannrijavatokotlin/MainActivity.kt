@@ -26,8 +26,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //アクションバーのセット
-        setSupportActionBar(parent_toolbar)
 
         val fragment = BookListFragment()
 
