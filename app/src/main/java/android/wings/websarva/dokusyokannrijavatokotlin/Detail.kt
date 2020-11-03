@@ -4,6 +4,7 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -22,16 +23,28 @@ class Detail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         realm = Realm.getDefaultInstance()
 
-        val  id = intent.getIntExtra("id", 0)
+        val id = intent.getIntExtra("id", 0)
 
         //アダプターのセット
         detail_pager.adapter = DetailTabAdapter(supportFragmentManager, this, id)
 
-        //タブにpegerの情報をセット
+        //タブにpagerの情報をセット
         detail_tabLayout.setupWithViewPager(detail_pager)
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        } else {
+            return super.onOptionsItemSelected(item)
+        }
 
     }
 }

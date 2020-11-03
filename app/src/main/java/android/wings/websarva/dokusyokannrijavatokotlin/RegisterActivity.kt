@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -53,6 +54,10 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        setTitle(R.string.registerButton)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
         realm = Realm.getDefaultInstance()
@@ -333,7 +338,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    class ImageDownload() : AsyncTask<String, String, Bitmap>() {
+    class ImageDownload : AsyncTask<String, String, Bitmap>() {
 
         override fun doInBackground(vararg p0: String?): Bitmap? {
             //URLで取得した画像を格納するためのメソッド
@@ -384,6 +389,19 @@ class RegisterActivity : AppCompatActivity() {
         override fun onPostExecute(result: Bitmap?) {
             imageView.setImageBitmap(result)
             editText.setText(title)
+        }
+    }
+
+    //戻るボタンを押したときの処理
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
         }
     }
 
