@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
 import io.realm.kotlin.where
@@ -31,14 +32,14 @@ class BookListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
-
         val bookList = realm.where(BookListObject::class.java).findAll()
         val adapter = BookListAdapterMain(view.context, bookList, true)
 
         book_recyclerview.setHasFixedSize(true)
         book_recyclerview.layoutManager = LinearLayoutManager(view.context)
         book_recyclerview.adapter = adapter
+        val itemDecoration = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
+        book_recyclerview.addItemDecoration(itemDecoration)
 
         adapter.setOnItemClickListener(object : BookListAdapterMain.OnItemClickListener{
             override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {
