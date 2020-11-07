@@ -2,24 +2,19 @@ package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import io.realm.Realm
-import java.text.DecimalFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -56,6 +51,8 @@ class GraphFragment : Fragment() {
 
         //グラフ上に値を表示。
         set1.setDrawValues(true)
+        set1.valueFormatter = InsideValueFormatter()
+        set1.valueTextSize = 15F
 
 
         val dataSets = ArrayList<IBarDataSet>()
@@ -103,7 +100,7 @@ class GraphFragment : Fragment() {
 
         chart.axisLeft.valueFormatter = MyYAxisValueFormatter()
         chart.axisLeft.spaceTop = 15F
-        chart.axisLeft.setDrawTopYLabelEntry(true)
+        chart.axisLeft.setDrawGridLines(false)
 
     }
 
@@ -119,7 +116,6 @@ class GraphFragment : Fragment() {
 
 
     companion object {
-
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             GraphFragment().apply {
@@ -135,6 +131,13 @@ class GraphFragment : Fragment() {
             return value.toInt().toString() + "冊"
         }
 
+    }
+
+    //中のラベル表示をする。
+    class InsideValueFormatter : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            return value.toInt().toString()
+        }
     }
 
 
