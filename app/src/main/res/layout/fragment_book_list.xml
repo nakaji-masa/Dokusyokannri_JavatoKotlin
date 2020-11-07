@@ -21,7 +21,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="bottom|end"
-        android:backgroundTint="@android:color/holo_green_light"
+        android:backgroundTint="@color/colorPrimary"
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
         app:backgroundTint="@android:color/holo_green_light"
