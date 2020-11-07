@@ -22,7 +22,7 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Int
             }
 
             else -> {
-                return DetailFragment2()
+                return DetailActionFragment.newInstance(id)
             }
         }
     }

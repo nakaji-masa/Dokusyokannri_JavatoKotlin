@@ -28,7 +28,6 @@ class DetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             id = it.getInt("id")
-            println(id!!)
         }
     }
 
