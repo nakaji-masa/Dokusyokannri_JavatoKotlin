@@ -27,4 +27,7 @@
     <string name="settings">設定</string>
     <string name="date">日付</string>
     <string name="action_what">どんなアクションをしたか？</string>
+    <string name="action_date">実行した日付</string>
+    <string name="action_content_view">実行した内容</string>
+    <string name="next_action_view">次に実行する行動</string>
 </resources>
