@@ -1,175 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
     tools:context=".RegisterActivity">
 
-    <TextView
-        android:id="@+id/book_title_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Book_name_input"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <EditText
-        android:id="@+id/book_title_input"
+    <ScrollView
+        android:id="@+id/register_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:inputType="text"
-        android:maxLines="1"
-        android:textSize="20sp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_title_textview" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/book_date_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Book_deadline_input"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_title_input" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/book_date_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:inputType="date"
-        android:maxLines="1"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_date_textview" />
+            <TextView
+                style="@style/BasicTextView"
+                android:id="@+id/book_title_textview"
+                android:text="@string/Book_name_input"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/book_title_input"/>
 
-    <TextView
-        android:id="@+id/book_notice_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Book_notice_input"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_date_input" />
 
-    <EditText
-        android:id="@+id/book_notice_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:inputType="text"
-        android:maxLines="5"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_actionPlan_textview" />
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BasicEditText"
+                android:id="@+id/book_title_input"
+                android:inputType="text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_title_textview"
+                app:layout_constraintBottom_toTopOf="@+id/book_date_textview"/>
 
-    <TextView
-        android:id="@+id/book_actionPlan_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Book_actionPlan_input"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_actionPlan_input" />
+            <TextView
+                style="@style/BasicTextView"
+                android:id="@+id/book_date_textview"
+                android:text="@string/Book_deadline_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_title_input"
+                app:layout_constraintBottom_toTopOf="@id/book_date_input"/>
 
-    <EditText
-        android:id="@+id/book_actionPlan_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:inputType="text"
-        android:maxLines="5"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_notice_textview" />
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BasicEditText"
+                android:id="@+id/book_date_input"
+                android:inputType="date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_date_textview"
+                app:layout_constraintBottom_toTopOf="@+id/book_notice_textview"/>
 
-    <TextView
-        android:id="@+id/book_image_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Book_image"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_notice_input" />
+            <TextView
+                style="@style/BasicTextView"
+                android:id="@+id/book_notice_textview"
+                android:text="@string/Book_notice_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_date_input"
+                app:layout_constraintBottom_toTopOf="@+id/book_notice_input"/>
 
-    <ImageButton
-        android:id="@+id/book_image"
-        android:layout_width="50dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_image_textview"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BasicEditTextMultiLine"
+                android:id="@+id/book_notice_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_notice_textview"
+                app:layout_constraintBottom_toTopOf="@+id/book_actionPlan_textview"/>
 
-    <Button
+            <TextView
+                style="@style/BasicTextView"
+                android:id="@+id/book_actionPlan_textview"
+                android:text="@string/Book_actionPlan_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/book_actionPlan_input"
+                app:layout_constraintTop_toBottomOf="@+id/book_notice_input" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BasicEditTextMultiLine"
+                android:id="@+id/book_actionPlan_input"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_actionPlan_textview"
+                app:layout_constraintBottom_toTopOf="@+id/book_image_textview"/>
+
+            <TextView
+                style="@style/BasicTextView"
+                android:id="@+id/book_image_textview"
+                android:text="@string/Book_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_actionPlan_input" />
+
+            <ImageButton
+                android:id="@+id/book_image"
+                android:layout_width="80dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_image_textview"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/barcode_button"
+        style="@style/BasicButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/colorPrimary"
         android:text="@string/barcode_button"
-        android:textSize="20sp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        style="?android:attr/borderlessButtonStyle"/>
+        app:layout_constraintTop_toBottomOf="@+id/register_scroll" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/BasicButton"
         android:id="@+id/save_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/colorPrimary"
         android:text="@string/Book_save_button"
-        android:textSize="20sp"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/barcode_button"
-        style="?android:attr/borderlessButtonStyle"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/register_scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
