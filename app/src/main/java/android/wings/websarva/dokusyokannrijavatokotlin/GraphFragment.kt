@@ -2,9 +2,11 @@ package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -15,20 +17,28 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.where
+import java.time.Month
+import java.util.*
 import kotlin.collections.ArrayList
 
 
 class GraphFragment : Fragment() {
 
-    private lateinit var realm : Realm
-
+    private lateinit var realm: Realm
+    private var bookThisYearCount: Float? = 0F
+    private var bookLastYearCount: Float? = 0F
+    private var bookThisMonthCount: Float? = 0F
+    private var bookLastMonthCount: Float? = 0F
+    private var monthCount: ArrayList<Float> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
 
-        realm = Realm.getDefaultInstance()
+        realm = Realm.getInstance(RealmConfigObject.graphConfig)
     }
 
     override fun onCreateView(
@@ -37,11 +47,141 @@ class GraphFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_graph, container, false)
 
+        //現在の年、月を取得
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        var index = 0
+
+
+        //realmからグラフの情報を取得する。
+        realm.executeTransaction {
+            var graph = realm.where<GraphObject>().findFirst()
+            if (graph == null) {
+                graph = realm.createObject()
+                graph.graphList.add(GraphYearObject())
+                graph.graphList[index]?.year = calendar.get(Calendar.YEAR)
+            }
+
+            var graphYear = graph.graphList[index]
+
+
+            if (graphYear?.year != year) {
+                //年を決める
+                println("年探し実行")
+                for (i in 0..graph.graphList.size - 1) {
+                    if (year == graph.graphList[i]?.year) {
+                        graphYear = graph.graphList[i]
+                        break
+                    }
+
+
+                    if (i == graph.graphList.size - 1) {
+                        graph.graphList.add(GraphYearObject())
+                        graphYear = graph.graphList[i + 1]
+                        graphYear?.year = calendar.get(Calendar.YEAR)
+                    }
+
+                    index++
+                }
+            }
+
+            if (month != 1) {
+                getBookCount(graphYear, month)
+            } else {
+                bookThisMonthCount = graphYear?.jan
+                if (index != 0) {
+                    bookLastMonthCount = graph.graphList[index - 1]?.dec
+                }
+            }
+
+
+            if (index != 0) {
+                //今年の分の読んだ数を格納
+                graph.graphList[index]?.jan?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.feb?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.mar?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.apr?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.may?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.jun?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.jul?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.aug?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.sep?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.oct?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.nov?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.dec?.let { it1 -> monthCount.add(it1) }
+
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.jan?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.feb?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.mar?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.apr?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.may?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.jun?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.jul?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.aug?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.sep?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.oct?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.nov?.let { it1 -> bookLastYearCount?.plus(it1) }
+                bookLastYearCount =
+                    graph.graphList[index - 1]?.dec?.let { it1 -> bookLastYearCount?.plus(it1) }
+
+
+            } else {
+                graph.graphList[index]?.jan?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.feb?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.mar?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.apr?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.may?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.jun?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.jul?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.aug?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.sep?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.oct?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.nov?.let { it1 -> monthCount.add(it1) }
+                graph.graphList[index]?.dec?.let { it1 -> monthCount.add(it1) }
+
+            }
+
+            //今年の本数を取得
+            for (j in 0..monthCount.size - 1) {
+                bookThisYearCount = bookThisYearCount?.plus(monthCount[j])
+            }
+
+        }
+
+
+        //今月のTextViewに入れる
+        val thisMonthTextView = view.findViewById<TextView>(R.id.thisMonth_readBook_count)
+        thisMonthTextView.text = bookThisMonthCount?.toInt().toString()
+
+        //先月のTextViewに入れる
+        val lastMonthTextView = view.findViewById<TextView>(R.id.lastMonth_readBook_count)
+        lastMonthTextView.text = bookLastMonthCount?.toInt().toString()
+
+        //今年のTextViewに入れる
+        val thisYearTextView = view.findViewById<TextView>(R.id.thisYear_readBook_count)
+        thisYearTextView.text = bookThisYearCount?.toInt().toString()
+
+        //昨年のTextViewに入れる
+        val lastYearTextView = view.findViewById<TextView>(R.id.lastYear_readBook_count)
+        lastYearTextView.text = bookLastYearCount?.toInt().toString()
+
         val chart = view.findViewById<BarChart>(R.id.chart)
 
         val values = ArrayList<BarEntry>()
 
-        setBookCount(12, values)
+        setBookCount(monthCount, values)
 
         setUpChart(chart)
 
@@ -86,7 +226,8 @@ class GraphFragment : Fragment() {
         chart.axisLeft.labelCount = 10
 
         //x軸の設定
-        val month = arrayOf("", "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月")
+        val month =
+            arrayOf("", "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月")
         //x軸に単位が表示される。
         chart.xAxis.valueFormatter = IndexAxisValueFormatter(month)
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -104,13 +245,11 @@ class GraphFragment : Fragment() {
 
     }
 
-    private fun setBookCount(count : Int, values : ArrayList<BarEntry>) {
-        var readBook = 1F
-        var month = 1F
-        for(i in 1..count) {
-            values.add(BarEntry(month, readBook))
-            readBook += 3
-            month += 1
+    private fun setBookCount(monthArray: ArrayList<Float>, values: ArrayList<BarEntry>) {
+        var element = 1F
+        for(i in 1..monthArray.size) {
+            values.add(BarEntry(element ,monthArray[i - 1]))
+            element++
         }
     }
 
@@ -138,6 +277,69 @@ class GraphFragment : Fragment() {
         override fun getFormattedValue(value: Float): String {
             return value.toInt().toString()
         }
+    }
+
+    private fun getBookCount(graphYear: GraphYearObject?, month: Int) {
+
+        //月を決める
+        when (month) {
+
+            2 -> {
+                this.bookThisMonthCount = graphYear?.feb
+                this.bookLastMonthCount = graphYear?.jan
+            }
+
+            3 -> {
+                this.bookThisMonthCount = graphYear?.mar
+                this.bookLastMonthCount = graphYear?.feb
+            }
+
+            4 -> {
+                this.bookThisMonthCount = graphYear?.apr
+                this.bookLastMonthCount = graphYear?.mar
+            }
+
+            5 -> {
+                this.bookThisMonthCount = graphYear?.may
+                this.bookLastMonthCount = graphYear?.apr
+            }
+
+            6 -> {
+                this.bookThisMonthCount = graphYear?.jun
+                this.bookLastMonthCount = graphYear?.may
+            }
+
+            7 -> {
+                this.bookThisMonthCount = graphYear?.jul
+                this.bookLastMonthCount = graphYear?.jun
+            }
+
+            8 -> {
+                this.bookThisMonthCount = graphYear?.aug
+                this.bookLastMonthCount = graphYear?.jul
+            }
+
+            9 -> {
+                this.bookThisMonthCount = graphYear?.sep
+                this.bookLastMonthCount = graphYear?.aug
+            }
+
+            10 -> {
+                this.bookThisMonthCount = graphYear?.oct
+                this.bookLastMonthCount = graphYear?.sep
+            }
+
+            11 -> {
+                this.bookThisMonthCount = graphYear?.nov
+                this.bookLastMonthCount = graphYear?.oct
+            }
+
+            12 -> {
+                this.bookThisMonthCount = graphYear?.dec
+                this.bookLastMonthCount = graphYear?.nov
+            }
+        }
+
     }
 
 

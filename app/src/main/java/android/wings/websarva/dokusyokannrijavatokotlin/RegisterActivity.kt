@@ -1,7 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -33,7 +32,12 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Calendar.*
 
+@Suppress(
+    "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS",
+    "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
+)
 class RegisterActivity : AppCompatActivity() {
 
     companion object {
@@ -48,7 +52,8 @@ class RegisterActivity : AppCompatActivity() {
         lateinit var editText: EditText
     }
 
-    private lateinit var realm: Realm
+    private lateinit var bookListRealm: Realm
+    private lateinit var graphRealm: Realm
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,23 +65,36 @@ class RegisterActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
-        realm = Realm.getDefaultInstance()
+        bookListRealm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        graphRealm = Realm.getInstance(RealmConfigObject.graphConfig)
+
         handler = Handler()
         imageView = findViewById(R.id.book_image)
         editText = findViewById(R.id.book_title_input)
-        val id = intent.getIntExtra("id", -1)
-        println(id)
 
-        if(id != -1) {
-            val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
+        //日付を取得
+        val dateEditText = findViewById<EditText>(R.id.book_date_input)
+        dateEditText.setText(GetDateObject.getToday())
+
+        //日付の入力不可
+        dateEditText.isEnabled = false
+
+        val id = intent.getIntExtra("id", -1)
+
+        if (id != -1) {
+            val book = bookListRealm.where<BookListObject>().equalTo("id", id).findFirst()
             book_title_input.setText(book?.title)
             book_date_input.setText(book?.date)
             book_notice_input.setText(book?.notice)
             book_actionPlan_input.setText(book?.actionPlan)
-            book_image.setImageBitmap(BitmapFactory.decodeByteArray(book?.image, 0, book?.image!!.size))
+            book_image.setImageBitmap(
+                BitmapFactory.decodeByteArray(
+                    book?.image,
+                    0,
+                    book?.image!!.size
+                )
+            )
         }
-
-
 
 
         save_button.setOnClickListener {
@@ -86,11 +104,11 @@ class RegisterActivity : AppCompatActivity() {
                 ) {
                     Toast.makeText(this, "未入力の項目があります。", Toast.LENGTH_LONG).show()
                 } else {
-                    realm.executeTransaction {
-                        val maxId = realm.where<BookListObject>().max("id")
-                        val nextId = (maxId?.toInt() ?: 0) + 1
-                        val book = realm.createObject<BookListObject>(nextId)
 
+                    bookListRealm.executeTransaction {
+                        val maxId = bookListRealm.where<BookListObject>().max("id")
+                        val nextId = (maxId?.toInt() ?: 0) + 1
+                        val book = bookListRealm.createObject<BookListObject>(nextId)
                         book.title = book_title_input.text.toString()
                         book.date = book_date_input.text.toString()
                         book.notice = book_notice_input.text.toString()
@@ -104,6 +122,93 @@ class RegisterActivity : AppCompatActivity() {
                         book.image = byteArrayOutputStream.toByteArray()
                     }
 
+                    graphRealm.executeTransaction {
+                        var graph = graphRealm.where<GraphObject>().findFirst()
+                        val calendar = getInstance()
+                        val year = calendar.get(YEAR)
+                        val month = calendar.get(MONTH)
+
+                        if (graph == null) {
+                            graph = graphRealm.createObject()
+                            graph.graphList.add(GraphYearObject())
+                            graph.graphList[0]?.year = year
+                        }
+
+                        var graphYear = graph.graphList[0]
+
+
+                        if (graphYear?.year != year) {
+                            //年を決める
+                            for(i in 0..graph.graphList.size - 1) {
+                                if (year == graph.graphList[i]?.year) {
+                                    graphYear = graph.graphList[i]
+                                    break
+                                }
+
+                                if (i == graph.graphList.size - 1) {
+                                    println("登録もこっちに行っている？")
+                                    graph.graphList.add(GraphYearObject())
+                                    graphYear = graph.graphList[i + 1]
+                                    graphYear?.year = year
+                                }
+
+                            }
+                        }
+                        when (month) {
+                            1 -> {
+                                graphYear?.jan = graphYear?.jan?.plus(1F)!!
+                            }
+
+                            2 -> {
+                                graphYear?.feb = graphYear?.feb?.plus(1F)!!
+                            }
+
+                            3 -> {
+                                graphYear?.mar = graphYear?.mar?.plus(1F)!!
+                            }
+
+                            4 -> {
+                                graphYear?.apr = graphYear?.apr?.plus(1F)!!
+                            }
+
+                            5 -> {
+                                graphYear?.may = graphYear?.may?.plus(1F)!!
+                            }
+
+                            6 -> {
+                                graphYear?.jun = graphYear?.jun?.plus(1F)!!
+                            }
+
+                            7 -> {
+                                graphYear?.jul = graphYear?.jul?.plus(1F)!!
+                            }
+
+                            8 -> {
+                                graphYear?.aug = graphYear?.aug?.plus(1F)!!
+                            }
+
+                            9 -> {
+                                graphYear?.sep = graphYear?.sep?.plus(1F)!!
+                            }
+
+                            10 -> {
+                                graphYear?.oct = graphYear?.oct?.plus(1F)!!
+                            }
+
+                            11 -> {
+                                graphYear?.nov = graphYear?.nov?.plus(1F)!!
+                            }
+
+                            12 -> {
+                                graphYear?.dec = graphYear?.dec?.plus(1F)!!
+                            }
+                        }
+                        Log.d("graph", "count complete!!")
+                    }
+
+
+
+
                     AlertDialog.Builder(this)
                         .setMessage("追加しました")
                         .setPositiveButton("OK") { dialog, which ->
@@ -115,8 +220,8 @@ class RegisterActivity : AppCompatActivity() {
 
             } else {
 
-                realm.executeTransaction {
-                    val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
+                bookListRealm.executeTransaction {
+                    val book = bookListRealm.where<BookListObject>().equalTo("id", id).findFirst()
                     book?.title = book_title_input.text.toString()
                     book?.date = book_date_input.text.toString()
                     book?.notice = book_notice_input.text.toString()
@@ -180,7 +285,8 @@ class RegisterActivity : AppCompatActivity() {
 
         } else {
             //バーコードから来た場合
-            val resultBarcode = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+            val resultBarcode =
+                IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
             if (resultBarcode != null) {
                 //nullだった場合。トーストの表示
@@ -191,43 +297,43 @@ class RegisterActivity : AppCompatActivity() {
                     isbn = resultBarcode.contents
 
                     //無事に取得できればGoogleBooksAPIに接続し本の画像とタイトルを取得
-                    if (isbn != null) {
-                        val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
 
-                        //okHttpクライアントの設定
-                        val okHttpClient = OkHttpClient()
+                    val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
 
-                        //リクエストの中に情報を入れ込む
-                        val request = Request.Builder().url(url).build()
+                    //okHttpクライアントの設定
+                    val okHttpClient = OkHttpClient()
 
-                        //Callバックの中に情報を入れ込む。そして、非同期で実装。
-                        okHttpClient.newCall(request).enqueue(object : Callback {
+                    //リクエストの中に情報を入れ込む
+                    val request = Request.Builder().url(url).build()
 
-                            override fun onFailure(call: Call, e: IOException) {
-                                //失敗したときのログを出力
-                                Log.d("failure API Response", e.localizedMessage)
+                    //Callバックの中に情報を入れ込む。そして、非同期で実装。
+                    okHttpClient.newCall(request).enqueue(object : Callback {
+
+                        override fun onFailure(call: Call, e: IOException) {
+                            //失敗したときのログを出力
+                            Log.d("failure API Response", e.localizedMessage)
+                        }
+
+                        override fun onResponse(call: Call, response: Response) {
+                            //成功したときの命令
+                            try {
+                                //jsonデータの全体取得
+                                val rootJson = JSONObject(response.body?.string())
+
+                                //"items"タグのデータを取得。配列でないといけない。
+                                val items = rootJson.getJSONArray("items")
+
+                                //bookNameとbookImageに取得した値を入れたいので、メインスレッドに戻る。reflectResultに後の処理を任せる。
+                                val reflectResult = ReflectResult(items)
+
+                                handler.post(reflectResult)
+
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
                             }
+                        }
+                    })
 
-                            override fun onResponse(call: Call, response: Response) {
-                                //成功したときの命令
-                                try {
-                                    //jsonデータの全体取得
-                                    val rootJson = JSONObject(response.body?.string())
-
-                                    //"items"タグのデータを取得。配列でないといけない。
-                                    val items = rootJson.getJSONArray("items")
-
-                                    //bookNameとbookImageに取得した値を入れたいので、メインスレッドに戻る。reflectResultに後の処理を任せる。
-                                    val reflectResult = ReflectResult(items)
-
-                                    handler.post(reflectResult)
-
-                                } catch (e: JSONException) {
-                                    e.printStackTrace()
-                                }
-                            }
-                        })
-                    }
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data)
@@ -241,7 +347,7 @@ class RegisterActivity : AppCompatActivity() {
         val intentIntegrator = IntentIntegrator(this)
             .setBeepEnabled(false)
             .apply {
-                captureActivity = Portrait::class.java
+                captureActivity = PortraitActivity::class.java
             }.initiateScan()
     }
 
@@ -394,7 +500,7 @@ class RegisterActivity : AppCompatActivity() {
 
     //戻るボタンを押したときの処理
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
@@ -407,6 +513,7 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        realm.close()
+        bookListRealm.close()
+        graphRealm.close()
     }
 }
