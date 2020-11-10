@@ -1,9 +1,7 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
 import io.realm.RealmRecyclerViewAdapter
-import java.util.zip.Inflater
 
-class BookListAdapterMain(
+class BookListAdapter(
     private val context: Context,
     private var bookList: OrderedRealmCollection<BookListObject>,
     private val autoUpdate: Boolean
-) : RealmRecyclerViewAdapter<BookListObject, BookListAdapterMain.BookViewHolder>(bookList, autoUpdate) {
+) : RealmRecyclerViewAdapter<BookListObject, BookListAdapter.BookViewHolder>(bookList, autoUpdate) {
 
     lateinit var listener: OnItemClickListener
 

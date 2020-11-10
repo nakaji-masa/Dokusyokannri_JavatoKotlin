@@ -39,7 +39,7 @@ class DetailFragment : Fragment() {
         //返すビュー変数を作成
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
 
-        realm = Realm.getDefaultInstance()
+        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
 
         val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
 
@@ -61,7 +61,7 @@ class DetailFragment : Fragment() {
         //本の内容を削除する
         delete_button.setOnClickListener {
             realm.executeTransaction {
-                realm.where<BookListObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
+                val book = realm.where<BookListObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
             }
 
             AlertDialog.Builder(view.context)

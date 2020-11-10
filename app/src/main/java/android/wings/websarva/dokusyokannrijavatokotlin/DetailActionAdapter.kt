@@ -11,10 +11,8 @@ import io.realm.RealmList
 import io.realm.RealmRecyclerViewAdapter
 
 class DetailActionAdapter(
-    private val context: Context,
-    private val bookActionList: OrderedRealmCollection<BookListObject>,
-    autoUpdate: Boolean
-) : RealmRecyclerViewAdapter<BookListObject, DetailActionAdapter.ViewHolder>(bookActionList, autoUpdate) {
+    private val bookActionList: RealmList<ActionPlanObject>?
+) : RecyclerView.Adapter<DetailActionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val actionDate = view.findViewById<TextView>(R.id.date_recycler_cell)
@@ -23,18 +21,18 @@ class DetailActionAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context)
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.action_recyclerview_cell, parent, false)
         return ViewHolder(view)
     }
 
 
     override fun getItemCount(): Int {
-        return bookActionList[0].actionPlanDairy.size
+        return bookActionList?.size!!
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val action = bookActionList[0].actionPlanDairy[position]
+        val action = bookActionList?.get(position)
         holder.actionDate.text = action?.date
         holder.actionDo.text = action?.actionPlans
         holder.actionNext.text = action?.nextActionPlans

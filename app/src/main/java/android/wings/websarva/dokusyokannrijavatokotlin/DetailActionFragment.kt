@@ -29,11 +29,12 @@ class DetailActionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_action_detail, container, false)
-        realm = Realm.getDefaultInstance()
-        val book = realm.where<BookListObject>().equalTo("id", id).findAll()
+        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
+        val actionList = book?.actionPlanDairy
 
         //アダプターをセットする。
-        val adapter = DetailActionAdapter(view.context, book, true)
+        val adapter = DetailActionAdapter(actionList)
 
         //リサイクラービューの設定
         val recyclerView = view.findViewById<RecyclerView>(R.id.action_recycler_view)
@@ -71,5 +72,10 @@ class DetailActionFragment : Fragment() {
                     return fragment
                 }
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }

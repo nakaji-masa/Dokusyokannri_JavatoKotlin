@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
-import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_book_list.*
 
 
@@ -19,8 +18,8 @@ class BookListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        realm = Realm.getDefaultInstance()
 
+        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
     }
 
     override fun onCreateView(
@@ -33,7 +32,7 @@ class BookListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val bookList = realm.where(BookListObject::class.java).findAll()
-        val adapter = BookListAdapterMain(view.context, bookList, true)
+        val adapter = BookListAdapter(view.context, bookList, true)
 
         book_recyclerview.setHasFixedSize(true)
         book_recyclerview.layoutManager = LinearLayoutManager(view.context)
@@ -41,9 +40,9 @@ class BookListFragment : Fragment() {
         val itemDecoration = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
         book_recyclerview.addItemDecoration(itemDecoration)
 
-        adapter.setOnItemClickListener(object : BookListAdapterMain.OnItemClickListener{
+        adapter.setOnItemClickListener(object : BookListAdapter.OnItemClickListener{
             override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {
-                val intent = Intent(view.context, Detail::class.java)
+                val intent = Intent(view.context, DetailActivity::class.java)
                 intent.putExtra("id", clickedId)
                 startActivity(intent)
             }

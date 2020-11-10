@@ -3,6 +3,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.EditText
 import io.realm.Realm
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_action_register.*
@@ -18,11 +19,18 @@ class ActionRegisterActivity : AppCompatActivity() {
 
         id = intent.getIntExtra("id", 0)
 
+        //日付の取得
+        val editDate = findViewById<EditText>(R.id.action_date_edit)
+        editDate.setText(GetDateObject.getToday())
+
+        //日付の入力不可
+        editDate.isEnabled = false
+
         save_action_button.setOnClickListener {
-            realm = Realm.getDefaultInstance()
+            realm = Realm.getInstance(RealmConfigObject.bookListConfig)
 
             //テーブルに直接入れる？
-            val bookActionPlanObject = BookActionPlanObject()
+            val bookActionPlanObject = ActionPlanObject()
             bookActionPlanObject.date = action_date_edit.text.toString()
             bookActionPlanObject.actionPlans = action_do_edit.text.toString()
             bookActionPlanObject.nextActionPlans = action_next_edit.text.toString()
@@ -48,5 +56,10 @@ class ActionRegisterActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }
