@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Book Action</string>
     <string name="registerButton">読んだ本を登録</string>
-    <string name="Book_name_input">1.読んだ本の名前を入力してください</string>
-    <string name="Book_deadline_input">2.いつ読んだかを入力してください</string>
-    <string name="Book_notice_input">3.本を読んで気づいたこと・学んだこと</string>
-    <string name="Book_actionPlan_input">4.アクションプラン</string>
-    <string name="Book_image">5.本の表紙を撮ってください</string>
+    <string name="Book_name_input">読んだ本のタイトル</string>
+    <string name="Book_deadline_input">読んだ日付</string>
+    <string name="Book_notice_input">本を読んで気づいたこと・学んだこと</string>
+    <string name="Book_actionPlan_input">アクションプラン</string>
+    <string name="Book_image">本の表紙</string>
     <string name="Book_save_button">保存</string>
     <string name="Book_name_view">本の名前</string>
     <string name="Book_deadline_view">読み終わった日付</string>

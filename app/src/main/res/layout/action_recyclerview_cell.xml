@@ -18,7 +18,8 @@
             android:background="@color/colorAmberLight"
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:layout_marginStart="2dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
