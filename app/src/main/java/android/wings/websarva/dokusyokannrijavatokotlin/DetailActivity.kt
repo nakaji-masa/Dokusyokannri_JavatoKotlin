@@ -18,15 +18,12 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 
 class Detail : AppCompatActivity() {
 
-    private lateinit var realm: Realm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        realm = Realm.getDefaultInstance()
 
         val id = intent.getIntExtra("id", 0)
 
@@ -47,4 +44,5 @@ class Detail : AppCompatActivity() {
         }
 
     }
+
 }
