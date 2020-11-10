@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Detail"
+    tools:context=".DetailActivity"
     android:id="@+id/constraintLayout_detail">
 
     <FrameLayout
@@ -14,6 +14,7 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/detail_pager"
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         
