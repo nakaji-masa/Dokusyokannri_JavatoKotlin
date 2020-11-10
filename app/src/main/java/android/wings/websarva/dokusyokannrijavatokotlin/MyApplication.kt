@@ -8,16 +8,21 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-    //Realmの初期化
+        //Realmの初期化
         Realm.init(this)
 
-        //Realmデータベースの設定
-        val config = RealmConfiguration.Builder()
+        val bookListConfig = RealmConfiguration.Builder()
             .name("bookList")
             .build()
 
-        //設定をセット
-        Realm.setDefaultConfiguration(config)
+        val graphConfig = RealmConfiguration.Builder()
+            .name("graphData")
+            .build()
 
+        //設定をセット
+        Realm.setDefaultConfiguration(bookListConfig)
+
+        Realm.setDefaultConfiguration(graphConfig)
     }
+
 }
