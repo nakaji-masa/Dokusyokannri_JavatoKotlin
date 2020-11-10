@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".ActionRegisterActivity"></activity>
         <activity android:name=".Portrait" />
-        <activity android:name=".Detail" />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
