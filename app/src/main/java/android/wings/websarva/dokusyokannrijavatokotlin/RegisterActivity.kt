@@ -126,7 +126,7 @@ class RegisterActivity : AppCompatActivity() {
                         var graph = graphRealm.where<GraphObject>().findFirst()
                         val calendar = getInstance()
                         val year = calendar.get(YEAR)
-                        val month = calendar.get(MONTH)
+                        val month = calendar.get(MONTH) + 1
 
                         if (graph == null) {
                             graph = graphRealm.createObject()

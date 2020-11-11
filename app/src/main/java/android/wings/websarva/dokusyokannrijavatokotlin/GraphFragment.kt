@@ -68,13 +68,11 @@ class GraphFragment : Fragment() {
 
             if (graphYear?.year != year) {
                 //年を決める
-                println("年探し実行")
                 for (i in 0..graph.graphList.size - 1) {
                     if (year == graph.graphList[i]?.year) {
                         graphYear = graph.graphList[i]
                         break
                     }
-
 
                     if (i == graph.graphList.size - 1) {
                         graph.graphList.add(GraphYearObject())
@@ -208,11 +206,13 @@ class GraphFragment : Fragment() {
 
     private fun setUpChart(chart: BarChart) {
 
-        //グラフの説明を消す
+        //グラフのタイトル設定
         chart.description.isEnabled = false
+
 
         //背景やズームを禁止する。
         chart.setPinchZoom(false)
+        chart.setTouchEnabled(false)
         chart.setDrawGridBackground(false)
         chart.setMaxVisibleValueCount(20)
         chart.setDrawBarShadow(false)
@@ -247,8 +247,8 @@ class GraphFragment : Fragment() {
 
     private fun setBookCount(monthArray: ArrayList<Float>, values: ArrayList<BarEntry>) {
         var element = 1F
-        for(i in 1..monthArray.size) {
-            values.add(BarEntry(element ,monthArray[i - 1]))
+        for (i in 1..monthArray.size) {
+            values.add(BarEntry(element, monthArray[i - 1]))
             element++
         }
     }
