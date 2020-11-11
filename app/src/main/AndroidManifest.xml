@@ -20,8 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ActionRegisterActivity"></activity>
-        <activity android:name=".Portrait" />
+        <activity android:name=".ActionRegisterActivity"/>
+        <activity android:name=".PortraitActivity" />
         <activity android:name=".DetailActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">
