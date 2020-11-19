@@ -22,10 +22,16 @@ import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListO
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphYearObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.Realm
 import io.realm.kotlin.createObject
@@ -62,6 +68,7 @@ RegisterActivity : AppCompatActivity() {
 
     private lateinit var bookListRealm: Realm
     private lateinit var graphRealm: Realm
+    private var firebaseMaxId: Long = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +111,20 @@ RegisterActivity : AppCompatActivity() {
             )
         }
 
+        //firebaseのdatabaseに登録された時のリスナーを設定
+        val dataStore = FirebaseDatabase.getInstance()
+        val reference = dataStore.getReference("books")
+        reference.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                //現在保存されているデータの数を取得する。
+                firebaseMaxId = snapshot.childrenCount
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@RegisterActivity, "データ登録失敗", Toast.LENGTH_LONG).show()
+            }
+        })
+
 
         save_button.setOnClickListener {
             if (id == -1) {
@@ -113,20 +134,25 @@ RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this, "未入力の項目があります。", Toast.LENGTH_LONG).show()
                 } else {
 
+                    val title = book_title_input.text.toString()
+                    val date = book_date_input.text.toString()
+                    val notice = book_notice_input.text.toString()
+                    val actionPlan = book_actionPlan_input.text.toString()
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    (book_image.drawable as BitmapDrawable).bitmap.compress(
+                        Bitmap.CompressFormat.PNG,
+                        100,
+                        byteArrayOutputStream
+                    )
+
                     bookListRealm.executeTransaction {
                         val maxId = bookListRealm.where<BookListObject>().max("id")
                         val nextId = (maxId?.toInt() ?: 0) + 1
                         val book = bookListRealm.createObject<BookListObject>(nextId)
-                        book.title = book_title_input.text.toString()
-                        book.date = book_date_input.text.toString()
-                        book.notice = book_notice_input.text.toString()
-                        book.actionPlan = book_actionPlan_input.text.toString()
-                        val byteArrayOutputStream = ByteArrayOutputStream()
-                        (book_image.drawable as BitmapDrawable).bitmap.compress(
-                            Bitmap.CompressFormat.PNG,
-                            100,
-                            byteArrayOutputStream
-                        )
+                        book.title = title
+                        book.date = date
+                        book.notice = notice
+                        book.actionPlan = actionPlan
                         book.image = byteArrayOutputStream.toByteArray()
                     }
 
@@ -210,7 +236,13 @@ RegisterActivity : AppCompatActivity() {
                                 graphYear?.dec = graphYear?.dec?.plus(1F)!!
                             }
                         }
-                        Log.d("graph", "count complete!!")
+
+                        //Firebaseに登録する。
+                        val bookData = BookHelper(title, date, notice, actionPlan, byteArrayOutputStream.toString())
+
+                        reference.child((firebaseMaxId + 1).toString()).setValue(bookData)
+
+                        Toast.makeText(this, "Firebaseに登録成功", Toast.LENGTH_LONG).show()
                     }
 
 
