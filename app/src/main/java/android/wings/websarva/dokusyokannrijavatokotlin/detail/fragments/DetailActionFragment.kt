@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.wings.websarva.dokusyokannrijavatokotlin.activities.ActionRegisterActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailActionAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm

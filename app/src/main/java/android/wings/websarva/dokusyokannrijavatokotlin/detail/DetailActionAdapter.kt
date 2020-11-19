@@ -1,14 +1,13 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.detail
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import androidx.recyclerview.widget.RecyclerView
-import io.realm.OrderedRealmCollection
 import io.realm.RealmList
-import io.realm.RealmRecyclerViewAdapter
 
 class DetailActionAdapter(
     private val bookActionList: RealmList<ActionPlanObject>?

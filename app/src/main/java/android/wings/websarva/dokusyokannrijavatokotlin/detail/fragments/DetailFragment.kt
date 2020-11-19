@@ -1,18 +1,20 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.appcompat.app.AlertDialog
 import io.realm.Realm
 import io.realm.kotlin.where
-import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.activity_register.view.*
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_detail.view.*
 

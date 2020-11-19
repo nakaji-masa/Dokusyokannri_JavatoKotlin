@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.realm.config
 
 import io.realm.RealmConfiguration
 

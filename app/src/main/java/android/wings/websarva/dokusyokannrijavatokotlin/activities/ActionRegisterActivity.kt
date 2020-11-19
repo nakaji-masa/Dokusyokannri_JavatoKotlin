@@ -1,9 +1,14 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.GetDateObject
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import io.realm.Realm
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_action_register.*

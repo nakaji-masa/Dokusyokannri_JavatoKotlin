@@ -1,16 +1,20 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.booklist.BookListAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_book_list.*
-
 
 class BookListFragment : Fragment() {
 
@@ -40,7 +44,7 @@ class BookListFragment : Fragment() {
         val itemDecoration = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
         book_recyclerview.addItemDecoration(itemDecoration)
 
-        adapter.setOnItemClickListener(object : BookListAdapter.OnItemClickListener{
+        adapter.setOnItemClickListener(object : BookListAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {
                 val intent = Intent(view.context, DetailActivity::class.java)
                 intent.putExtra("id", clickedId)

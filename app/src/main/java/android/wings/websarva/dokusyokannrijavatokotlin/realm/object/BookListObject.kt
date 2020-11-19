@@ -1,5 +1,6 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`
 
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

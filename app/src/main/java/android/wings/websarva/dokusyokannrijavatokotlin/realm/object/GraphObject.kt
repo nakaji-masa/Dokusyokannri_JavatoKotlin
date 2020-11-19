@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`
 
 import io.realm.RealmList
 import io.realm.RealmObject

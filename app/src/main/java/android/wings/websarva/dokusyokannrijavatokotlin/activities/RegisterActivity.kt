@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
 import android.Manifest
 import android.content.Intent
@@ -15,6 +15,13 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.GetDateObject
+import android.wings.websarva.dokusyokannrijavatokotlin.views.PortraitActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphYearObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -38,7 +45,8 @@ import java.util.Calendar.*
     "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS",
     "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
 )
-class RegisterActivity : AppCompatActivity() {
+class
+RegisterActivity : AppCompatActivity() {
 
     companion object {
         const val CAMERA_REQUEST_CODE = 1
@@ -146,7 +154,6 @@ class RegisterActivity : AppCompatActivity() {
                                 }
 
                                 if (i == graph.graphList.size - 1) {
-                                    println("登録もこっちに行っている？")
                                     graph.graphList.add(GraphYearObject())
                                     graphYear = graph.graphList[i + 1]
                                     graphYear?.year = year
@@ -492,6 +499,7 @@ class RegisterActivity : AppCompatActivity() {
             return image
         }
 
+        //ここでUIの更新を行う。ここでは重い処理は行わない。
         override fun onPostExecute(result: Bitmap?) {
             imageView.setImageBitmap(result)
             editText.setText(title)

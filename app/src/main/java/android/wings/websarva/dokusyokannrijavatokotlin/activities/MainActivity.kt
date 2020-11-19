@@ -1,21 +1,13 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
-import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.view.View
-import android.widget.*
-import android.widget.AdapterView.OnItemClickListener
-import android.wings.websarva.dokusyokannrijavatokotlin.R.id.book_read_item
+import android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments.BookListFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments.GraphFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments.SettingsFragment
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
-import java.nio.file.Files.find
 
 
 class MainActivity : AppCompatActivity() {

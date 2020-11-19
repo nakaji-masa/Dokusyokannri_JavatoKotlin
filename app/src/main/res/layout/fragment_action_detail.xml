@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActionFragment">
+    tools:context=".detail.fragments.DetailActionFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/action_recycler_view"

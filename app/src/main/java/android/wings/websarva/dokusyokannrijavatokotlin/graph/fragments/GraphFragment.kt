@@ -1,12 +1,15 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphYearObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -19,7 +22,6 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import io.realm.Realm
 import io.realm.kotlin.createObject
 import io.realm.kotlin.where
-import java.time.Month
 import java.util.*
 import kotlin.collections.ArrayList
 

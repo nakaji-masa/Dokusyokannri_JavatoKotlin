@@ -10,7 +10,7 @@
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    tools:context=".RegisterActivity">
+    tools:context=".activities.RegisterActivity">
 
     <ScrollView
         android:id="@+id/register_scroll"

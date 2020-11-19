@@ -1,6 +1,8 @@
-package android.wings.websarva.dokusyokannrijavatokotlin
+package android.wings.websarva.dokusyokannrijavatokotlin.detail
 
 import android.content.Context
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailActionFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
