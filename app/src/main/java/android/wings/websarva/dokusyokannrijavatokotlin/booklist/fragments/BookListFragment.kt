@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
+import kotlinx.android.synthetic.main.fragment_book_list.*
 
 class BookListFragment : Fragment() {
 
