@@ -15,9 +15,19 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/library_item"
+        android:title="@string/users_book"
+        android:icon="@drawable/ic_library"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/settings_item"
         android:title="@string/settings"
         android:icon="@drawable/ic_settings"
         app:showAsAction="ifRoom"/>
+
+
+
+
 
 </menu>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments.BookListFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments.GraphFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments.SettingsFragment
 import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
@@ -12,8 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var realm : Realm
-    
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,6 +46,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.settings_item -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.container, SettingsFragment())
+                        .commit()
+                    return@setOnNavigationItemSelectedListener true
+                }
+
+                R.id.library_item -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, LibraryFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }

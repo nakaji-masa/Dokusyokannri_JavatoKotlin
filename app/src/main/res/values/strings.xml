@@ -30,4 +30,5 @@
     <string name="action_date">実行した日付</string>
     <string name="action_content_view">実行した内容</string>
     <string name="next_action_view">次に実行する行動</string>
+    <string name="users_book">皆が読んだ本</string>
 </resources>
