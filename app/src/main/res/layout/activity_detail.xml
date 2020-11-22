@@ -8,18 +8,18 @@
     android:id="@+id/constraintLayout_detail">
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/detail_pager"
+        android:id="@+id/detailPager"
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/detail_tabLayout"
+            android:id="@+id/detailTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         

@@ -9,7 +9,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/book_recyclerview"
+        android:id="@+id/bookListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -25,7 +25,8 @@
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
         app:backgroundTint="@android:color/holo_green_light"
-        app:elevation="0dp" />
+        app:elevation="0dp"
+        android:contentDescription="@string/app_name" />
 
 
 </FrameLayout>

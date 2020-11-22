@@ -7,13 +7,13 @@
     tools:context=".detail.fragments.DetailActionFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/action_recycler_view"
+        android:id="@+id/actionDetailRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="3dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_actionPlan"
+        android:id="@+id/addActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
@@ -22,6 +22,7 @@
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
         app:elevation="0dp"
-        app:backgroundTint="@color/colorPrimary"/>
+        app:backgroundTint="@color/colorPrimary"
+        android:contentDescription="@string/app_name" />
 
 </FrameLayout>

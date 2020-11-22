@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Detail">
+    tools:context=".activities.DetailActivity">
 
     <ScrollView
-        android:id="@+id/scroll_detail"
+        android:id="@+id/detailScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/delete_button"
+        app:layout_constraintBottom_toTopOf="@+id/detailDeleteButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,81 +20,81 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/detail_book_title"
+                android:id="@+id/detailBookTitleContentTable"
                 style="@style/BasicTextView"
                 android:layout_width="0dp"
                 android:text="@string/Book_name_view"
-                app:layout_constraintEnd_toStartOf="@+id/book_image_view"
+                app:layout_constraintEnd_toStartOf="@+id/detailBookImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
-                android:id="@+id/book_title_view"
+                android:id="@+id/detailBookTitle"
                 style="@style/BasicTextViewDetail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/detail_book_date"
-                app:layout_constraintEnd_toStartOf="@id/book_image_view"
+                app:layout_constraintBottom_toTopOf="@id/detailBookDateContentTable"
+                app:layout_constraintEnd_toStartOf="@id/detailBookImage"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_book_title" />
+                app:layout_constraintTop_toBottomOf="@+id/detailBookTitleContentTable" />
 
 
             <TextView
-                android:id="@+id/detail_book_date"
+                android:id="@+id/detailBookDateContentTable"
                 style="@style/BasicTextView"
                 android:layout_width="0dp"
                 android:text="@string/Book_deadline_view"
-                app:layout_constraintEnd_toStartOf="@+id/book_image_view"
+                app:layout_constraintEnd_toStartOf="@+id/detailBookImage"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_title_view" />
+                app:layout_constraintTop_toBottomOf="@+id/detailBookTitle" />
 
             <TextView
-                android:id="@+id/book_date_view"
+                android:id="@+id/detailBookDate"
                 style="@style/BasicTextViewDetail"
-                app:layout_constraintEnd_toStartOf="@+id/book_image_view"
+                app:layout_constraintEnd_toStartOf="@+id/detailBookImage"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detail_book_date" />
+                app:layout_constraintTop_toBottomOf="@id/detailBookDateContentTable" />
 
             <TextView
-                android:id="@+id/detail_notice_view"
+                android:id="@+id/detailBookNoticeContentTable"
                 style="@style/BasicTextView"
                 android:text="@string/Book_Notice_view"
                 android:layout_marginTop="30dp"
-                app:layout_constraintBottom_toTopOf="@+id/book_notice_view"
+                app:layout_constraintBottom_toTopOf="@+id/detailBookNotice"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_date_view" />
+                app:layout_constraintTop_toBottomOf="@+id/detailBookDate" />
 
             <TextView
-                android:id="@+id/book_notice_view"
+                android:id="@+id/detailBookNotice"
                 style="@style/BasicTextViewDetail"
-                app:layout_constraintBottom_toTopOf="@+id/detail_actionPlan_view"
+                app:layout_constraintBottom_toTopOf="@+id/detailActionPlanContentTable"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_notice_view" />
+                app:layout_constraintTop_toBottomOf="@+id/detailBookNoticeContentTable" />
 
             <TextView
-                android:id="@+id/detail_actionPlan_view"
+                android:id="@+id/detailActionPlanContentTable"
                 style="@style/BasicTextView"
                 android:text="@string/Book_ActionPlan_view"
-                app:layout_constraintBottom_toTopOf="@+id/book_actionPlan_view"
+                app:layout_constraintBottom_toTopOf="@+id/detailActionPlan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_notice_view" />
+                app:layout_constraintTop_toBottomOf="@+id/detailBookNotice" />
 
 
             <TextView
-                android:id="@+id/book_actionPlan_view"
+                android:id="@+id/detailActionPlan"
                 style="@style/BasicTextViewDetail"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detail_actionPlan_view" />
+                app:layout_constraintTop_toBottomOf="@id/detailActionPlanContentTable" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/book_image_view"
+                android:id="@+id/detailBookImage"
                 android:layout_width="100dp"
                 android:layout_height="160dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -103,32 +103,32 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/delete_button"
+        android:id="@+id/detailDeleteButton"
         style="@style/BasicButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Delete_Button"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_detail"
+        app:layout_constraintTop_toBottomOf="@+id/detailScroll"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ChangeButton"
+        app:layout_constraintEnd_toStartOf="@+id/detailChangeButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/ChangeButton"
+        android:id="@+id/detailChangeButton"
         style="@style/BasicButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Change_Button"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_detail"
+        app:layout_constraintTop_toBottomOf="@+id/detailScroll"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/delete_button" />
+        app:layout_constraintStart_toEndOf="@+id/detailDeleteButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

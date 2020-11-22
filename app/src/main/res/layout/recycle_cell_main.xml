@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="5dp"
@@ -10,16 +9,16 @@
     android:background="@drawable/recycler_cell_tap">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/book_recycle_image"
+        android:id="@+id/bookListCellImage"
         android:layout_width="50dp"
         android:layout_height="80dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/book_recycle_title"/>
+        app:layout_constraintEnd_toStartOf="@+id/bookListCellTitle"/>
 
     <TextView
-        android:id="@+id/book_recycle_title"
+        android:id="@+id/bookListCellTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lines="2"
@@ -27,7 +26,7 @@
         android:paddingEnd="5dp"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/book_recycle_image"
+        app:layout_constraintStart_toEndOf="@+id/bookListCellImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

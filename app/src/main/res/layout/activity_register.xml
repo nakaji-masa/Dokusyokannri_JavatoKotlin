@@ -13,10 +13,10 @@
     tools:context=".activities.RegisterActivity">
 
     <ScrollView
-        android:id="@+id/register_scroll"
+        android:id="@+id/registerScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/save_button"
+        app:layout_constraintBottom_toTopOf="@id/registerSaveButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,91 +27,91 @@
 
             <TextView
                 style="@style/BasicTextView"
-                android:id="@+id/book_title_textview"
+                android:id="@+id/registerBookTitle"
                 android:text="@string/Book_name_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/book_title_input"/>
+                app:layout_constraintBottom_toTopOf="@+id/registerBookTitleInput"/>
 
 
             <androidx.appcompat.widget.AppCompatEditText
                 style="@style/BasicEditText"
-                android:id="@+id/book_title_input"
+                android:id="@+id/registerBookTitleInput"
                 android:inputType="text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_title_textview"
-                app:layout_constraintBottom_toTopOf="@+id/book_date_textview"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookTitle"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookDate"/>
 
             <TextView
                 style="@style/BasicTextView"
-                android:id="@+id/book_date_textview"
+                android:id="@+id/registerBookDate"
                 android:text="@string/Book_deadline_input"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_title_input"
-                app:layout_constraintBottom_toTopOf="@id/book_date_input"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookTitleInput"
+                app:layout_constraintBottom_toTopOf="@id/registerBookDateInput"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 style="@style/BasicEditText"
-                android:id="@+id/book_date_input"
+                android:id="@+id/registerBookDateInput"
                 android:inputType="date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_date_textview"
-                app:layout_constraintBottom_toTopOf="@+id/book_notice_textview"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookDate"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookNotice"/>
 
             <TextView
                 style="@style/BasicTextView"
-                android:id="@+id/book_notice_textview"
+                android:id="@+id/registerBookNotice"
                 android:text="@string/Book_notice_input"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_date_input"
-                app:layout_constraintBottom_toTopOf="@+id/book_notice_input"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookDateInput"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookNoticeInput"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 style="@style/BasicEditTextMultiLine"
-                android:id="@+id/book_notice_input"
+                android:id="@+id/registerBookNoticeInput"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_notice_textview"
-                app:layout_constraintBottom_toTopOf="@+id/book_actionPlan_textview"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookNotice"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlan"/>
 
             <TextView
                 style="@style/BasicTextView"
-                android:id="@+id/book_actionPlan_textview"
+                android:id="@+id/registerBookActionPlan"
                 android:text="@string/Book_actionPlan_input"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/book_actionPlan_input"
-                app:layout_constraintTop_toBottomOf="@+id/book_notice_input" />
+                app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlanInput"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookNoticeInput" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 style="@style/BasicEditTextMultiLine"
-                android:id="@+id/book_actionPlan_input"
+                android:id="@+id/registerBookActionPlanInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_actionPlan_textview"
-                app:layout_constraintBottom_toTopOf="@+id/book_image_textview"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookActionPlan"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookImage"/>
 
             <TextView
                 style="@style/BasicTextView"
-                android:id="@+id/book_image_textview"
+                android:id="@+id/registerBookImage"
                 android:text="@string/Book_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_actionPlan_input" />
+                app:layout_constraintTop_toBottomOf="@+id/registerBookActionPlanInput" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/book_image"
+                android:id="@+id/registerBookImageInput"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
                 android:layout_marginTop="8dp"
                 app:srcCompat="@android:drawable/ic_menu_camera"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_image_textview"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookImage"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -119,21 +119,21 @@
     </ScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/barcode_button"
+        android:id="@+id/registerBarcodeButton"
         style="@style/BasicButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/barcode_button"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save_button"
+        app:layout_constraintEnd_toStartOf="@+id/registerSaveButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_scroll" />
+        app:layout_constraintTop_toBottomOf="@+id/registerScroll" />
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/BasicButton"
-        android:id="@+id/save_button"
+        android:id="@+id/registerSaveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Book_save_button"
@@ -141,7 +141,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/barcode_button"
-        app:layout_constraintTop_toBottomOf="@+id/register_scroll" />
+        app:layout_constraintStart_toEndOf="@+id/registerBarcodeButton"
+        app:layout_constraintTop_toBottomOf="@+id/registerScroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

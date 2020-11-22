@@ -20,14 +20,14 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/white"
-            app:layout_constraintBottom_toTopOf="@+id/table_readBook"
+            app:layout_constraintBottom_toTopOf="@+id/tableReadBook"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <TableLayout
-            android:id="@+id/table_readBook"
+            android:id="@+id/tableReadBook"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -43,12 +43,12 @@
                 android:layout_height="match_parent">
 
                 <TableRow
-                    android:id="@+id/thisMonth_row"
+                    android:id="@+id/thisMonthRow"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginBottom="1dp"
                     android:background="@android:color/white"
-                    app:layout_constraintBottom_toTopOf="@+id/lastMonth_row"
+                    app:layout_constraintBottom_toTopOf="@+id/lastMonthRow"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,17 +66,16 @@
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <TextView
-                            android:id="@+id/thisMonth_readBook_count"
+                            android:id="@+id/thisMonthReadBookCount"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
                             android:gravity="center"
-                            android:text="0"
                             android:textSize="25sp"
-                            app:layout_constraintEnd_toStartOf="@+id/book_unit" />
+                            app:layout_constraintEnd_toStartOf="@+id/thisMonthReadUnit" />
 
                         <TextView
-                            android:id="@+id/book_unit"
+                            android:id="@+id/thisMonthReadUnit"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
@@ -90,13 +89,13 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/lastMonth_row"
+                    android:id="@+id/lastMonthRow"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginBottom="1dp"
                     android:background="@android:color/white"
-                    app:layout_constraintBottom_toTopOf="@+id/thisYear_row"
-                    app:layout_constraintTop_toBottomOf="@+id/thisMonth_row">
+                    app:layout_constraintBottom_toTopOf="@+id/thisYearRow"
+                    app:layout_constraintTop_toBottomOf="@+id/thisMonthRow">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -113,17 +112,16 @@
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <TextView
-                            android:id="@+id/lastMonth_readBook_count"
+                            android:id="@+id/lastMonthReadBookCount"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
                             android:gravity="center"
-                            android:text="0"
                             android:textSize="25sp"
-                            app:layout_constraintEnd_toStartOf="@+id/lastMonth_book_unit" />
+                            app:layout_constraintEnd_toStartOf="@+id/lastMonthBookUnit" />
 
                         <TextView
-                            android:id="@+id/lastMonth_book_unit"
+                            android:id="@+id/lastMonthBookUnit"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
@@ -137,13 +135,13 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/thisYear_row"
+                    android:id="@+id/thisYearRow"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginBottom="1dp"
                     android:background="@android:color/white"
-                    app:layout_constraintBottom_toTopOf="@+id/lastYear_row"
-                    app:layout_constraintTop_toBottomOf="@+id/lastMonth_row">
+                    app:layout_constraintBottom_toTopOf="@+id/lastYearRow"
+                    app:layout_constraintTop_toBottomOf="@+id/lastMonthRow">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -160,17 +158,16 @@
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <TextView
-                            android:id="@+id/thisYear_readBook_count"
+                            android:id="@+id/thisYearReadBookCount"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
                             android:gravity="center"
-                            android:text="0"
                             android:textSize="25sp"
-                            app:layout_constraintEnd_toStartOf="@+id/thisYear_book_unit" />
+                            app:layout_constraintEnd_toStartOf="@+id/thisYearBookUnit"/>
 
                         <TextView
-                            android:id="@+id/thisYear_book_unit"
+                            android:id="@+id/thisYearBookUnit"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
@@ -184,12 +181,12 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/lastYear_row"
+                    android:id="@+id/lastYearRow"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@android:color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/thisYear_row">
+                    app:layout_constraintTop_toBottomOf="@+id/thisYearRow">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -206,17 +203,16 @@
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <TextView
-                            android:id="@+id/lastYear_readBook_count"
+                            android:id="@+id/lastYearReadBookCount"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
                             android:gravity="center"
-                            android:text="0"
                             android:textSize="25sp"
-                            app:layout_constraintEnd_toStartOf="@+id/lastYear_book_unit" />
+                            app:layout_constraintEnd_toStartOf="@+id/lastYearBookUnit" />
 
                         <TextView
-                            android:id="@+id/lastYear_book_unit"
+                            android:id="@+id/lastYearBookUnit"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
