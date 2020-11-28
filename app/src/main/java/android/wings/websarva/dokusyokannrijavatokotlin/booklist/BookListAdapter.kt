@@ -1,7 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.booklist
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
 import io.realm.RealmRecyclerViewAdapter
@@ -21,9 +21,9 @@ class BookListAdapter(
 
     lateinit var listener: OnItemClickListener
 
-    class BookViewHolder(view : View) : RecyclerView.ViewHolder(view) {
-        val bookImage : ImageView = view.findViewById(R.id.book_recycle_image)
-        val bookTitle : TextView = view.findViewById(R.id.book_recycle_title)
+    class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val bookImage: ImageView = view.findViewById(R.id.bookListCellImage)
+        val bookTitle: TextView = view.findViewById(R.id.bookListCellTitle)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -34,9 +34,7 @@ class BookListAdapter(
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book: BookListObject = bookList.get(position) ?: return
 
-        holder.bookImage.setImageBitmap(book.image?.size?.let {
-            BitmapFactory.decodeByteArray(book.image, 0, it)
-        })
+        GlideHelper.viewGlide(book.image, holder.bookImage)
 
         holder.bookTitle.text = book.title
 
@@ -50,11 +48,11 @@ class BookListAdapter(
         return bookList.size
     }
 
-    interface OnItemClickListener{
+    interface OnItemClickListener {
         fun onItemClickListener(view: View, position: Int, clickedId: Int?)
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener){
+    fun setOnItemClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
 

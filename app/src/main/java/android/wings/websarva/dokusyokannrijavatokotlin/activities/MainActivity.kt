@@ -7,7 +7,6 @@ import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments.SettingsFragment
 import androidx.appcompat.app.AppCompatActivity
-import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -22,37 +21,37 @@ class MainActivity : AppCompatActivity() {
 
         val transaction = supportFragmentManager.beginTransaction()
 
-        transaction.replace(R.id.container, fragment)
+        transaction.replace(R.id.mainContainer, fragment)
 
         transaction.commit()
 
-        bottom_navigationView.setOnNavigationItemSelectedListener {item ->
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
 
             when(item.itemId){
                 R.id.book_read_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, BookListFragment())
+                        .replace(R.id.mainContainer, BookListFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.graph_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, GraphFragment())
+                        .replace(R.id.mainContainer, GraphFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.settings_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, SettingsFragment())
+                        .replace(R.id.mainContainer, SettingsFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.library_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, LibraryFragment())
+                        .replace(R.id.mainContainer, LibraryFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }

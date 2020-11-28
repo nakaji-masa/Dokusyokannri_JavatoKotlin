@@ -162,19 +162,19 @@ class GraphFragment : Fragment() {
 
 
         //今月のTextViewに入れる
-        val thisMonthTextView = view.findViewById<TextView>(R.id.thisMonth_readBook_count)
+        val thisMonthTextView = view.findViewById<TextView>(R.id.thisMonthReadBookCount)
         thisMonthTextView.text = bookThisMonthCount?.toInt().toString()
 
         //先月のTextViewに入れる
-        val lastMonthTextView = view.findViewById<TextView>(R.id.lastMonth_readBook_count)
+        val lastMonthTextView = view.findViewById<TextView>(R.id.lastMonthReadBookCount)
         lastMonthTextView.text = bookLastMonthCount?.toInt().toString()
 
         //今年のTextViewに入れる
-        val thisYearTextView = view.findViewById<TextView>(R.id.thisYear_readBook_count)
+        val thisYearTextView = view.findViewById<TextView>(R.id.thisYearReadBookCount)
         thisYearTextView.text = bookThisYearCount?.toInt().toString()
 
         //昨年のTextViewに入れる
-        val lastYearTextView = view.findViewById<TextView>(R.id.lastYear_readBook_count)
+        val lastYearTextView = view.findViewById<TextView>(R.id.lastYearReadBookCount)
         lastYearTextView.text = bookLastYearCount?.toInt().toString()
 
         val chart = view.findViewById<BarChart>(R.id.chart)
@@ -187,7 +187,7 @@ class GraphFragment : Fragment() {
 
 
         val set1 = BarDataSet(values, "Data Set")
-        set1.color = Color.parseColor("#99cc00")
+        set1.color = resources.getColor(R.color.colorAccent)
 
         //グラフ上に値を表示。
         set1.setDrawValues(true)

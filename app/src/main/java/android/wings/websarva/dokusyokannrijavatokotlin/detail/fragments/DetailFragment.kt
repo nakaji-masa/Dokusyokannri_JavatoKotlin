@@ -1,7 +1,7 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,15 +12,13 @@ import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
 import io.realm.Realm
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_detail.view.*
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 
 class DetailFragment : Fragment() {
     private var id: Int? = null
@@ -45,23 +43,18 @@ class DetailFragment : Fragment() {
 
         val book = realm.where<BookListObject>().equalTo("id", id).findFirst()
 
-        view.book_title_view.text = book?.title
-        view.book_date_view.text = book?.date
-        view.book_notice_view.text = book?.notice
-        view.book_actionPlan_view.text = book?.actionPlan
-        view.book_image_view.setImageBitmap(book?.image?.size?.let {
-            BitmapFactory.decodeByteArray(
-                book.image, 0,
-                it
-            )
-        })
+        view.detailBookTitle.text = book?.title
+        view.detailBookDate.text = book?.date
+        view.detailBookNotice.text = book?.notice
+        view.detailActionPlan.text = book?.actionPlan
+        GlideHelper.viewGlide(book?.image!!, view.detailBookImage)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         //本の内容を削除する
-        delete_button.setOnClickListener {
+        detailDeleteButton.setOnClickListener {
             realm.executeTransaction {
                 val book = realm.where<BookListObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
             }
@@ -75,7 +68,7 @@ class DetailFragment : Fragment() {
         }
 
         //本の内容を変更する
-        ChangeButton.setOnClickListener {
+        detailChangeButton.setOnClickListener {
             val intent = Intent(view.context, RegisterActivity::class.java)
             intent.putExtra("id", id)
             println(id)

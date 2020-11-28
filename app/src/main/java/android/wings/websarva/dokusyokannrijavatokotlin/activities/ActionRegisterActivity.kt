@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.GetDateObject
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.GetDateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
@@ -25,20 +25,20 @@ class ActionRegisterActivity : AppCompatActivity() {
         id = intent.getIntExtra("id", 0)
 
         //日付の取得
-        val editDate = findViewById<EditText>(R.id.action_date_edit)
-        editDate.setText(GetDateObject.getToday())
+        val editDate = findViewById<EditText>(R.id.actionRegisterDateInput)
+        editDate.setText(GetDateHelper.getToday())
 
         //日付の入力不可
         editDate.isEnabled = false
 
-        save_action_button.setOnClickListener {
+        actionRegisterSaveButton.setOnClickListener {
             realm = Realm.getInstance(RealmConfigObject.bookListConfig)
 
             //テーブルに直接入れる？
             val bookActionPlanObject = ActionPlanObject()
-            bookActionPlanObject.date = action_date_edit.text.toString()
-            bookActionPlanObject.actionPlans = action_do_edit.text.toString()
-            bookActionPlanObject.nextActionPlans = action_next_edit.text.toString()
+            bookActionPlanObject.date = actionRegisterDateInput.text.toString()
+            bookActionPlanObject.actionPlans = actionRegisterDoInput.text.toString()
+            bookActionPlanObject.nextActionPlans = actionRegisterDoNextInput.text.toString()
 
             //ここからrealmに入れていく
             realm.beginTransaction()
@@ -51,13 +51,13 @@ class ActionRegisterActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
+                true
             }
             else -> {
-                return super.onOptionsItemSelected(item)
+                super.onOptionsItemSelected(item)
             }
         }
 

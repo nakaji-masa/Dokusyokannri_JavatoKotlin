@@ -17,7 +17,7 @@ open class BookListObject : RealmObject() {
 
     var actionPlan : String = ""
 
-    var image : ByteArray? = null
+    var image : String = ""
 
     var actionPlanDairy : RealmList<ActionPlanObject> = RealmList()
 

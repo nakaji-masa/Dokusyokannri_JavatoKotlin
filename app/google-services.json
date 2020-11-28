@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "928364382985",
+    "firebase_url": "https://book-action-ca664.firebaseio.com",
+    "project_id": "book-action-ca664",
+    "storage_bucket": "book-action-ca664.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:928364382985:android:2834342db94731a7b621d8",
+        "android_client_info": {
+          "package_name": "android.wings.websarva.dokusyokannrijavatokotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "928364382985-3r59m19gh9jg5m1vj2ufrmb1elr1a55k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8Ag5HJxe3nEK_5SW2YleDxJJIceUw_r4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "928364382985-3r59m19gh9jg5m1vj2ufrmb1elr1a55k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

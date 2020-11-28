@@ -19,10 +19,10 @@ class DetailActivity : AppCompatActivity() {
         val id = intent.getIntExtra("id", 0)
 
         //アダプターのセット
-        detail_pager.adapter = DetailTabAdapter(supportFragmentManager, this, id)
+        detailPager.adapter = DetailTabAdapter(supportFragmentManager, this, id)
 
         //タブにpagerの情報をセット
-        detail_tabLayout.setupWithViewPager(detail_pager)
+        detailTabLayout.setupWithViewPager(detailPager)
 
     }
 

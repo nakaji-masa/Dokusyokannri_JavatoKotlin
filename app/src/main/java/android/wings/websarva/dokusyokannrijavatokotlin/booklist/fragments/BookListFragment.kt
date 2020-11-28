@@ -39,11 +39,11 @@ class BookListFragment : Fragment() {
         val bookList = realm.where(BookListObject::class.java).findAll()
         val adapter = BookListAdapter(view.context, bookList, true)
 
-        book_recyclerview.setHasFixedSize(true)
-        book_recyclerview.layoutManager = LinearLayoutManager(view.context)
-        book_recyclerview.adapter = adapter
+        bookListRecyclerView.setHasFixedSize(true)
+        bookListRecyclerView.layoutManager = LinearLayoutManager(view.context)
+        bookListRecyclerView.adapter = adapter
         val itemDecoration = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
-        book_recyclerview.addItemDecoration(itemDecoration)
+        bookListRecyclerView.addItemDecoration(itemDecoration)
 
         adapter.setOnItemClickListener(object : BookListAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {

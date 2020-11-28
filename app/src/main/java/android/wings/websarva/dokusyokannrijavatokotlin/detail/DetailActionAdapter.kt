@@ -14,9 +14,9 @@ class DetailActionAdapter(
 ) : RecyclerView.Adapter<DetailActionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val actionDate = view.findViewById<TextView>(R.id.date_recycler_cell)
-        val actionDo = view.findViewById<TextView>(R.id.do_recycler_cell)
-        val actionNext = view.findViewById<TextView>(R.id.next_recycler_cell)
+        val actionDate = view.findViewById<TextView>(R.id.actionRecyclerCellHeader)
+        val actionDo = view.findViewById<TextView>(R.id.actionRecyclerCellDo)
+        val actionNext = view.findViewById<TextView>(R.id.actionRecyclerCellNextDo)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

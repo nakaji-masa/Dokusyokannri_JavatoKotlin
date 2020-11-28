@@ -42,7 +42,7 @@ class DetailActionFragment : Fragment() {
         val adapter = DetailActionAdapter(actionList)
 
         //リサイクラービューの設定
-        val recyclerView = view.findViewById<RecyclerView>(R.id.action_recycler_view)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.actionDetailRecyclerView)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -52,7 +52,7 @@ class DetailActionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        add_actionPlan.setOnClickListener {
+        addActionButton.setOnClickListener {
             val intent = Intent(view.context, ActionRegisterActivity::class.java)
             intent.putExtra("id", id)
             startActivity(intent)
