@@ -13,8 +13,6 @@ open class BookListObject : RealmObject() {
 
     var date : String = ""
 
-    var notice : String = ""
-
     var actionPlan : String = ""
 
     var image : String = ""

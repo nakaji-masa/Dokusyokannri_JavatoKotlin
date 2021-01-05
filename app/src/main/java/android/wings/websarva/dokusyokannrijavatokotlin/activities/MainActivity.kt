@@ -1,11 +1,13 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments.BookListFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments.GraphFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments.SettingsFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.user.UserActivity
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -15,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         val fragment = BookListFragment()
 
@@ -59,8 +60,6 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnNavigationItemSelectedListener false
         }
-
-
     }
 }
 

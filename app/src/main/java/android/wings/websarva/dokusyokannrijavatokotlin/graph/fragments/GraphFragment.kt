@@ -1,6 +1,5 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphYearObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
@@ -23,17 +22,13 @@ import io.realm.Realm
 import io.realm.kotlin.createObject
 import io.realm.kotlin.where
 import java.util.*
+import java.util.logging.LogRecord
 import kotlin.collections.ArrayList
 
 
 class GraphFragment : Fragment() {
 
     private lateinit var realm: Realm
-    private var bookThisYearCount: Float? = 0F
-    private var bookLastYearCount: Float? = 0F
-    private var bookThisMonthCount: Float? = 0F
-    private var bookLastMonthCount: Float? = 0F
-    private var monthCount: ArrayList<Float> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,139 +44,61 @@ class GraphFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_graph, container, false)
 
-        //現在の年、月を取得
+        //現在の年月を取得
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        var index = 0
+        val month = calendar.get(Calendar.MONTH)
+        var bookThisYearCount = 0
+        var bookLastYearCount = 0
+        var bookThisMonthCount = 0
+        var bookLastMonthCount = 0
 
 
         //realmからグラフの情報を取得する。
-        realm.executeTransaction {
-            var graph = realm.where<GraphObject>().findFirst()
-            if (graph == null) {
-                graph = realm.createObject()
-                graph.graphList.add(GraphYearObject())
-                graph.graphList[index]?.year = calendar.get(Calendar.YEAR)
+        val record = realm.where(GraphObject::class.java).findAll()
+        val lastYearRecord = record.lastOrNull { it.year == year - 1 }
+        lastYearRecord?.let {
+            bookLastYearCount = it.graphList.sum("readCount").toInt()
+        }
+        val thisYearRecord = record.lastOrNull { it.year == year }
+        thisYearRecord?.let { graphObj ->
+            bookThisYearCount = graphObj.graphList.sum("readCount").toInt()
+            graphObj.graphList[month]?.let {
+                bookThisMonthCount = it.readCount
             }
-
-            var graphYear = graph.graphList[index]
-
-
-            if (graphYear?.year != year) {
-                //年を決める
-                for (i in 0..graph.graphList.size - 1) {
-                    if (year == graph.graphList[i]?.year) {
-                        graphYear = graph.graphList[i]
-                        break
-                    }
-
-                    if (i == graph.graphList.size - 1) {
-                        graph.graphList.add(GraphYearObject())
-                        graphYear = graph.graphList[i + 1]
-                        graphYear?.year = calendar.get(Calendar.YEAR)
-                    }
-
-                    index++
+            if (month == 0) {
+                lastYearRecord?.graphList?.get(11)?.let {
+                    bookLastMonthCount = it.readCount
+                }
+            } else {
+                graphObj.graphList[month - 1]?.let {
+                    bookLastMonthCount = it.readCount
                 }
             }
-
-            if (month != 1) {
-                getBookCount(graphYear, month)
-            } else {
-                bookThisMonthCount = graphYear?.jan
-                if (index != 0) {
-                    bookLastMonthCount = graph.graphList[index - 1]?.dec
-                }
-            }
-
-
-            if (index != 0) {
-                //今年の分の読んだ数を格納
-                graph.graphList[index]?.jan?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.feb?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.mar?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.apr?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.may?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.jun?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.jul?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.aug?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.sep?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.oct?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.nov?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.dec?.let { it1 -> monthCount.add(it1) }
-
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.jan?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.feb?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.mar?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.apr?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.may?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.jun?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.jul?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.aug?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.sep?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.oct?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.nov?.let { it1 -> bookLastYearCount?.plus(it1) }
-                bookLastYearCount =
-                    graph.graphList[index - 1]?.dec?.let { it1 -> bookLastYearCount?.plus(it1) }
-
-
-            } else {
-                graph.graphList[index]?.jan?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.feb?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.mar?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.apr?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.may?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.jun?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.jul?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.aug?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.sep?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.oct?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.nov?.let { it1 -> monthCount.add(it1) }
-                graph.graphList[index]?.dec?.let { it1 -> monthCount.add(it1) }
-
-            }
-
-            //今年の本数を取得
-            for (j in 0..monthCount.size - 1) {
-                bookThisYearCount = bookThisYearCount?.plus(monthCount[j])
-            }
-
         }
 
 
         //今月のTextViewに入れる
         val thisMonthTextView = view.findViewById<TextView>(R.id.thisMonthReadBookCount)
-        thisMonthTextView.text = bookThisMonthCount?.toInt().toString()
+        thisMonthTextView.text = bookThisMonthCount.toString()
 
         //先月のTextViewに入れる
         val lastMonthTextView = view.findViewById<TextView>(R.id.lastMonthReadBookCount)
-        lastMonthTextView.text = bookLastMonthCount?.toInt().toString()
+        lastMonthTextView.text = bookLastMonthCount.toString()
 
         //今年のTextViewに入れる
         val thisYearTextView = view.findViewById<TextView>(R.id.thisYearReadBookCount)
-        thisYearTextView.text = bookThisYearCount?.toInt().toString()
+        thisYearTextView.text = bookThisYearCount.toString()
 
         //昨年のTextViewに入れる
         val lastYearTextView = view.findViewById<TextView>(R.id.lastYearReadBookCount)
-        lastYearTextView.text = bookLastYearCount?.toInt().toString()
+        lastYearTextView.text = bookLastYearCount.toString()
 
         val chart = view.findViewById<BarChart>(R.id.chart)
 
         val values = ArrayList<BarEntry>()
 
-        setBookCount(monthCount, values)
+        setBookCount(thisYearRecord, values)
 
         setUpChart(chart)
 
@@ -247,24 +164,17 @@ class GraphFragment : Fragment() {
 
     }
 
-    private fun setBookCount(monthArray: ArrayList<Float>, values: ArrayList<BarEntry>) {
-        var element = 1F
-        for (i in 1..monthArray.size) {
-            values.add(BarEntry(element, monthArray[i - 1]))
-            element++
+    private fun setBookCount(record: GraphObject?, values: ArrayList<BarEntry>) {
+        for (i in 1..12) {
+            val month = record?.graphList?.get(i - 1)
+            if (month != null) {
+                values.add(BarEntry(i.toFloat(), month.readCount.toFloat()))
+            } else {
+                values.add(BarEntry(i.toFloat(), 0F))
+            }
         }
     }
 
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            GraphFragment().apply {
-                arguments = Bundle().apply {
-
-                }
-            }
-    }
 
     //y軸に単位を入れてあげる。
     class MyYAxisValueFormatter : ValueFormatter() {
@@ -281,67 +191,14 @@ class GraphFragment : Fragment() {
         }
     }
 
-    private fun getBookCount(graphYear: GraphYearObject?, month: Int) {
+    companion object {
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            GraphFragment().apply {
+                arguments = Bundle().apply {
 
-        //月を決める
-        when (month) {
-
-            2 -> {
-                this.bookThisMonthCount = graphYear?.feb
-                this.bookLastMonthCount = graphYear?.jan
+                }
             }
-
-            3 -> {
-                this.bookThisMonthCount = graphYear?.mar
-                this.bookLastMonthCount = graphYear?.feb
-            }
-
-            4 -> {
-                this.bookThisMonthCount = graphYear?.apr
-                this.bookLastMonthCount = graphYear?.mar
-            }
-
-            5 -> {
-                this.bookThisMonthCount = graphYear?.may
-                this.bookLastMonthCount = graphYear?.apr
-            }
-
-            6 -> {
-                this.bookThisMonthCount = graphYear?.jun
-                this.bookLastMonthCount = graphYear?.may
-            }
-
-            7 -> {
-                this.bookThisMonthCount = graphYear?.jul
-                this.bookLastMonthCount = graphYear?.jun
-            }
-
-            8 -> {
-                this.bookThisMonthCount = graphYear?.aug
-                this.bookLastMonthCount = graphYear?.jul
-            }
-
-            9 -> {
-                this.bookThisMonthCount = graphYear?.sep
-                this.bookLastMonthCount = graphYear?.aug
-            }
-
-            10 -> {
-                this.bookThisMonthCount = graphYear?.oct
-                this.bookLastMonthCount = graphYear?.sep
-            }
-
-            11 -> {
-                this.bookThisMonthCount = graphYear?.nov
-                this.bookLastMonthCount = graphYear?.oct
-            }
-
-            12 -> {
-                this.bookThisMonthCount = graphYear?.dec
-                this.bookLastMonthCount = graphYear?.nov
-            }
-        }
-
     }
 
 

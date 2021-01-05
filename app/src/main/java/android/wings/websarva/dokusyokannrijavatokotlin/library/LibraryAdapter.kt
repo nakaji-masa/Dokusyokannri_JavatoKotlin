@@ -30,9 +30,9 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
     FirestoreRecyclerAdapter<BookHelper, LibraryAdapter.ViewHolder>(options) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val bookImageCell: ImageView = view.findViewById(R.id.bookImageUsersCell)
-        val bookDateCell: TextView = view.findViewById(R.id.bookDateUsersActuallyTextViewCell)
-        val bookTitleCell: TextView = view.findViewById(R.id.bookTitleUsersActuallyTextViewCell)
+        //val bookImageCell: ImageView = view.findViewById(R.id.bookImageUsersCell)
+        //val bookDateCell: TextView = view.findViewById(R.id.bookDateUsersActuallyTextViewCell)
+        //val bookTitleCell: TextView = view.findViewById(R.id.bookTitleUsersActuallyTextViewCell)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,9 +43,9 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: BookHelper) {
-        holder.bookTitleCell.text = model.title
-        holder.bookDateCell.text = model.date
-        GlideHelper.viewGlide(model.image, holder.bookImageCell)
+       // holder.bookTitleCell.text = model.title
+        //holder.bookDateCell.text = model.date
+        //GlideHelper.viewGlide(model.image, holder.bookImageCell)
     }
 
 }

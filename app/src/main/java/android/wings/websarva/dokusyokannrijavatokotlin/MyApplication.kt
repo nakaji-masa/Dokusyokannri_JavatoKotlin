@@ -1,12 +1,15 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.app.Application
+import android.content.Context
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        context = applicationContext
 
         //Realmの初期化
         Realm.init(this)
@@ -25,4 +28,11 @@ class MyApplication : Application() {
         Realm.setDefaultConfiguration(graphConfig)
     }
 
+    companion object {
+        private lateinit var context: Context
+        //コンテキストを取得
+        fun getAppContext() : Context {
+            return context
+        }
+    }
 }

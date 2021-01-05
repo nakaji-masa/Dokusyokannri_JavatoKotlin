@@ -45,7 +45,6 @@ class DetailFragment : Fragment() {
 
         view.detailBookTitle.text = book?.title
         view.detailBookDate.text = book?.date
-        view.detailBookNotice.text = book?.notice
         view.detailActionPlan.text = book?.actionPlan
         GlideHelper.viewGlide(book?.image!!, view.detailBookImage)
         return view
@@ -56,7 +55,7 @@ class DetailFragment : Fragment() {
         //本の内容を削除する
         detailDeleteButton.setOnClickListener {
             realm.executeTransaction {
-                val book = realm.where<BookListObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
+                realm.where<BookListObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
             }
 
             AlertDialog.Builder(view.context)

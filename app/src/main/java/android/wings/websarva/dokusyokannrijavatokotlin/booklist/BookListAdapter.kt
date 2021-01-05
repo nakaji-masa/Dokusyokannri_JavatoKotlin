@@ -1,6 +1,7 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.booklist
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class BookListAdapter(
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book: BookListObject = bookList.get(position) ?: return
+        Log.d("adapter", book.image)
 
         GlideHelper.viewGlide(book.image, holder.bookImage)
 
