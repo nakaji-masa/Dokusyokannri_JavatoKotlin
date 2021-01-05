@@ -7,17 +7,11 @@
         </shape>
     </item>
 
-    <item android:state_enabled="true" android:state_pressed="false">
+    <item android:state_enabled="true">
         <shape android:shape="rectangle">
             <corners android:radius="5dp" />
             <solid android:color="@color/colorAccent" />
         </shape>
     </item>
 
-    <item android:state_enabled="true" android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="5dp" />
-            <solid android:color="@color/colorGrey" />
-        </shape>
-    </item>
 </selector>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+
+        <TextView
+            android:id="@+id/welcome_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="@string/welcome_app"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@+id/appIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/appIcon"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="25dp"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintBottom_toTopOf="@+id/googleRegisterView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/welcome_app"
+            app:srcCompat="@drawable/ic_app" />
+
+        <android.wings.websarva.dokusyokannrijavatokotlin.views.SignInView
+            android:id="@+id/googleRegisterView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            app:background="@drawable/google_sign_in_view_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appIcon"
+            app:layout_constraintWidth_percent="0.8"
+            app:set_image="@drawable/googleg_standard_color_18"
+            app:set_text="@string/google_register_text" />
+
+        <android.wings.websarva.dokusyokannrijavatokotlin.views.SignInView
+            android:id="@+id/twitterRegisterView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:background="@drawable/twitter_sign_in_view_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/googleRegisterView"
+            app:layout_constraintWidth_percent="0.8"
+            app:set_image="@drawable/ic_twitter"
+            app:set_text="@string/twitter_register_text" />
+
+        <android.wings.websarva.dokusyokannrijavatokotlin.views.SignInView
+            android:id="@+id/mailRegisterView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:background="@drawable/mail_sign_in_view_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/twitterRegisterView"
+            app:layout_constraintWidth_percent="0.8"
+            app:set_image="@drawable/ic_mail_white"
+            app:set_text="@string/mail_register_text" />
+
+        <android.wings.websarva.dokusyokannrijavatokotlin.views.SignInView
+            android:id="@+id/mailLoginView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:background="@drawable/mail_login_sign_in_view_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mailRegisterView"
+            app:layout_constraintWidth_percent="0.8"
+            app:set_image="@drawable/ic_mail_black"
+            app:set_text="@string/mail_login_text"
+            app:textColor="@android:color/black" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

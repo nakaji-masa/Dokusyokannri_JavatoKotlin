@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SignInView">
+        <attr name="set_image" format="reference" />
+        <attr name="set_text" format="string" />
+        <attr name="background" format="reference"/>
+        <attr name="textColor" format="color"/>
+    </declare-styleable>
+</resources>

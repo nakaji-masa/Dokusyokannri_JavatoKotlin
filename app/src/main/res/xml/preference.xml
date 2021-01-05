@@ -13,5 +13,7 @@
         android:key="privacy_policy"
         android:title="プライバシーポリシー"/>
 
-
+    <Preference
+        android:key="logout"
+        android:title="ログアウト"/>
 </PreferenceScreen>

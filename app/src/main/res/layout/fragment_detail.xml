@@ -39,7 +39,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailBookTitleContentTable" />
 
-
             <TextView
                 android:id="@+id/detailBookDateContentTable"
                 style="@style/BasicTextView"
@@ -57,32 +56,13 @@
                 app:layout_constraintTop_toBottomOf="@id/detailBookDateContentTable" />
 
             <TextView
-                android:id="@+id/detailBookNoticeContentTable"
-                style="@style/BasicTextView"
-                android:text="@string/Book_Notice_view"
-                android:layout_marginTop="30dp"
-                app:layout_constraintBottom_toTopOf="@+id/detailBookNotice"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailBookDate" />
-
-            <TextView
-                android:id="@+id/detailBookNotice"
-                style="@style/BasicTextViewDetail"
-                app:layout_constraintBottom_toTopOf="@+id/detailActionPlanContentTable"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailBookNoticeContentTable" />
-
-            <TextView
                 android:id="@+id/detailActionPlanContentTable"
                 style="@style/BasicTextView"
                 android:text="@string/Book_ActionPlan_view"
                 app:layout_constraintBottom_toTopOf="@+id/detailActionPlan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailBookNotice" />
-
+                app:layout_constraintTop_toBottomOf="@+id/detailBookDate" />
 
             <TextView
                 android:id="@+id/detailActionPlan"
@@ -91,7 +71,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/detailActionPlanContentTable" />
-
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/detailBookImage"

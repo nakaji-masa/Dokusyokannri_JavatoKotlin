@@ -31,12 +31,11 @@
                 android:layout_marginBottom="32dp"
                 android:padding="8dp"
                 android:background="@drawable/input_image_background"
-                app:srcCompat="@drawable/ic_add_camera"
+                app:srcCompat="@drawable/ic_book_default_image"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookDate"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
-
 
             <TextView
                 style="@style/BasicTextView"
@@ -56,7 +55,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/registerBookDate"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookTitle"/>
 
-
             <TextView
                 style="@style/BasicTextView"
                 android:id="@+id/registerBookTitle"
@@ -73,23 +71,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/registerBookTitle"
-                app:layout_constraintBottom_toTopOf="@+id/registerBookNotice"/>
-
-            <TextView
-                style="@style/BasicTextView"
-                android:id="@+id/registerBookNotice"
-                android:text="@string/Book_notice_input"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookTitleInput"
-                app:layout_constraintBottom_toTopOf="@+id/registerBookNoticeInput"/>
-
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BasicEditTextMultiLine"
-                android:id="@+id/registerBookNoticeInput"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookNotice"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlan"/>
 
             <TextView
@@ -99,7 +80,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlanInput"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookNoticeInput" />
+                app:layout_constraintTop_toBottomOf="@+id/registerBookTitleInput" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 style="@style/BasicEditTextMultiLine"

@@ -33,4 +33,34 @@
     <string name="users_book">皆が読んだ本</string>
     <string name="defaultImage">defaultImage</string>
     <string name="noDefaultImage">NoDefaultImage</string>
+    <string name="book_author">著:</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="userName">ユーザーネーム</string>
+    <string name="password">パスワード(英数字8文字以上)</string>
+    <string name="newRegister">新規登録</string>
+    <string name="login">ログイン</string>
+    <string name="imageSelect">画像を選択</string>
+    <string name="mail_address">メールアドレス</string>
+    <string name="welcome_app">Book Actionへようこそ</string>
+    <string name="google_register_text">Googleで登録・ログイン</string>
+    <string name="twitter_register_text">Twitterで登録・ログイン</string>
+    <string name="mail_register_text">メールアドレスで登録</string>
+    <string name="mail_login_text">メールアドレスでログイン</string>
+    <string name="userIntroductionString">自己紹介文(150文字以内)</string>
+    <string name="save_text">保存</string>
+
+    <string name="google_client_id">googleClient</string>
 </resources>

@@ -11,4 +11,6 @@
     <color name="colorBackground">#DFD9D7</color>
 
     <color name="colorGrey">#bdbdbd</color>
+    <color name="twitterColor">#00aced </color>
+    <color name="white">#FFFFFF</color>
 </resources>
