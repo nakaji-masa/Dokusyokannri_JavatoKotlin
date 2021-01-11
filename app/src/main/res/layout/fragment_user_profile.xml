@@ -81,7 +81,7 @@
         android:id="@+id/userInfoSaveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/action_button_background"
+        android:background="@drawable/bar_button_bg"
         android:enabled="false"
         android:text="@string/save_text"
         android:textSize="25sp"

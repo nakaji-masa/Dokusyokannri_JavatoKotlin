@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.GetDateHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
@@ -26,7 +26,7 @@ class ActionRegisterActivity : AppCompatActivity() {
 
         //日付の取得
         val editDate = findViewById<EditText>(R.id.actionRegisterDateInput)
-        editDate.setText(GetDateHelper.getToday())
+        editDate.setText(DateHelper.getToday())
 
         //日付の入力不可
         editDate.isEnabled = false

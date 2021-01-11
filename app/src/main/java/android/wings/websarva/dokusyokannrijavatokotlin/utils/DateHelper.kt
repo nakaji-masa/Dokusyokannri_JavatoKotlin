@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
 
-object GetDateHelper {
+object DateHelper {
     fun getToday(): String {
         val sdf = SimpleDateFormat("yyyy年MM月dd日", Locale.JAPAN)
         val date = Date()

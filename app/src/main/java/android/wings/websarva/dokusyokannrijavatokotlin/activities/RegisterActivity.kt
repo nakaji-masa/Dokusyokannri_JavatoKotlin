@@ -1,11 +1,9 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
@@ -24,14 +22,15 @@ import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMont
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.GetDateHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.Realm
 import io.realm.kotlin.createObject
@@ -41,7 +40,6 @@ import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
 
@@ -49,14 +47,18 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
     private lateinit var bookListRealm: Realm
     private lateinit var graphRealm: Realm
-    private var documentId: Long = 0
+    private lateinit var menuSaveButton: Button
     private var id: Int = -1
     private var title = ""
+    private var authors = ""
     private var thumbnail = ""
-    private var imagePath = ""
-    private lateinit var menuSaveButton: Button
-    val runnable = Runnable {
+    private var imagePath = R.drawable.ic_book_default_image.toString()
+    private val runnable = Runnable {
         registerBookTitleInput.setText(title)
+        if (authors != "") {
+            authors = authors.substring(2, authors.length - 2)
+        }
+        registerBookAuthorInput.setText(authors)
         Glide.with(this).load(thumbnail).into(registerBookImageInput)
         imagePath = thumbnail
     }
@@ -76,7 +78,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         registerBookActionPlanInput.addTextChangedListener(this)
 
         //日付の入力不可
-        registerBookDateInput.setText(GetDateHelper.getToday())
+        registerBookDateInput.setText(DateHelper.getToday())
         registerBookDateInput.isEnabled = false
 
         id = intent.getIntExtra(INTENT_ID, -1)
@@ -139,7 +141,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
                     override fun onFailure(call: Call, e: IOException) {
                         //失敗したときのログを出力
-                        Log.d("failure API Response", e.localizedMessage)
+                       e.printStackTrace()
                     }
 
                     override fun onResponse(call: Call, response: Response) {
@@ -161,6 +163,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
                                 //タイトルを取得する
                                 title = volumeInfo.getString(JSON_TITLE)
+
+                                //著者を取得する
+                                authors = volumeInfo.getString(JSON_AUTHORS)
 
                                 //imageLinksを取得する
                                 val imageLinks = volumeInfo.getJSONObject(JSON_IMAGE_LINKS)
@@ -236,7 +241,6 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 val nextId = (maxId?.toInt() ?: 0) + 1
                 val book = bookListRealm.createObject<BookListObject>(nextId)
                 //ドキュメントのidを取得。realmと連動した形にする。
-                documentId = nextId.toLong()
                 book.title = title
                 book.date = date
                 book.actionPlan = actionPlan
@@ -266,20 +270,23 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 }
             }
 
+            val docId = UUID.randomUUID().toString()
 
-            val db = FirebaseFirestore.getInstance()
+
             val book = BookHelper(
+                docId,
+                DateHelper.getToday(),
                 title,
-                date,
                 actionPlan,
-                imagePath
+                authors,
+                imagePath,
+                AuthHelper.getUid(),
+                mutableListOf(),
+                mutableListOf(),
+                Date()
             )
 
-            ///fireStoreへ登録
-            db.collection("books")
-                .document(documentId.toString())
-                .set(book)
-
+            FireStoreHelper.savePostData(book)
 
             AlertDialog.Builder(this)
                 .setMessage("追加しました")
@@ -302,7 +309,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             AlertDialog.Builder(this)
                 .setMessage("変更しました")
                 .setPositiveButton("OK") { dialog, which ->
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                     startActivity(intent)
                 }
                 .show()
@@ -379,6 +386,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         const val JSON_ITEMS = "items"
         const val JSON_VOLUME_INFO = "volumeInfo"
         const val JSON_TITLE = "title"
+        const val JSON_AUTHORS = "authors"
         const val JSON_IMAGE_LINKS = "imageLinks"
         const val JSON_THUMBNAIL = "thumbnail"
     }

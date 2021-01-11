@@ -30,14 +30,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_camera" />
+                app:srcCompat="@drawable/ic_account" />
 
             <TextView
                 android:id="@+id/userName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="nakaji"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -49,7 +48,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="2020年12月31日"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/userImage"
@@ -72,7 +70,6 @@
                 android:id="@+id/userActionPlan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"
                 android:textColor="@android:color/black"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -99,7 +96,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_camera" />
+                app:srcCompat="@android:drawable/ic_menu_camera"
+                android:contentDescription="@string/app_name" />
 
             <TextView
                 android:id="@+id/userBookTitle"
@@ -107,10 +105,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="メモの魔力"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/userAuthor"
                 app:layout_constraintStart_toEndOf="@+id/userBookImage"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -132,7 +128,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="前田裕二"
                 android:textSize="15sp"
                 app:layout_constraintStart_toEndOf="@+id/userAuthor"
                 app:layout_constraintTop_toBottomOf="@+id/userBookTitle" />
@@ -158,19 +153,37 @@
                 android:layout_height="30dp"
                 android:contentDescription="@string/app_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_favorite" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/favoriteCount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="10"
+                android:layout_marginStart="8dp"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/favoriteImage"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/commentImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@string/app_name"
+                app:layout_constraintStart_toEndOf="@+id/favoriteCount"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/commentCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/commentImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

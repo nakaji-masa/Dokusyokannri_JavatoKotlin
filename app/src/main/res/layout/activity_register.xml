@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="8dp"
     android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
     tools:context=".activities.RegisterActivity">
@@ -29,66 +29,83 @@
                 android:layout_height="160dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="32dp"
-                android:padding="8dp"
                 android:background="@drawable/input_image_background"
-                app:srcCompat="@drawable/ic_book_default_image"
-                app:layout_constraintTop_toTopOf="parent"
+                android:padding="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookDate"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_book_default_image" />
+
+            <TextView
+                android:id="@+id/registerBookDate"
+                style="@style/BasicTextView"
+                android:text="@string/Book_deadline_input"
+                app:layout_constraintBottom_toTopOf="@id/registerBookDateInput"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookImageInput" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/registerBookDateInput"
+                style="@style/BasicEditText"
+                android:inputType="date"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookAuthor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookDate" />
 
             <TextView
                 style="@style/BasicTextView"
-                android:id="@+id/registerBookDate"
-                android:text="@string/Book_deadline_input"
-                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/registerBookAuthor"
+                android:text="@string/author"
+                app:layout_constraintBottom_toTopOf="@id/registerBookAuthorInput"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookImageInput"
-                app:layout_constraintBottom_toTopOf="@id/registerBookDateInput"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookDateInput"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 style="@style/BasicEditText"
-                android:id="@+id/registerBookDateInput"
-                android:inputType="date"
+                android:id="@+id/registerBookAuthorInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookDate"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookAuthor"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookTitle"/>
 
             <TextView
-                style="@style/BasicTextView"
                 android:id="@+id/registerBookTitle"
+                style="@style/BasicTextView"
                 android:text="@string/Book_name_input"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookTitleInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/registerBookDateInput"
-                app:layout_constraintBottom_toTopOf="@+id/registerBookTitleInput"/>
+                app:layout_constraintTop_toBottomOf="@id/registerBookAuthorInput" />
 
             <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BasicEditText"
                 android:id="@+id/registerBookTitleInput"
+                style="@style/BasicEditText"
                 android:inputType="text"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlan"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookTitle"
-                app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlan"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/registerBookTitle" />
 
             <TextView
-                style="@style/BasicTextView"
                 android:id="@+id/registerBookActionPlan"
+                style="@style/BasicTextView"
                 android:text="@string/Book_actionPlan_input"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlanInput"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/registerBookTitleInput" />
 
             <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BasicEditTextMultiLine"
                 android:id="@+id/registerBookActionPlanInput"
+                style="@style/BasicEditTextMultiLine"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/registerBookActionPlan"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/registerBookActionPlan" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

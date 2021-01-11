@@ -3,6 +3,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin.user.fragments
 import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -21,12 +22,15 @@ import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.Base
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStorageHelper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_user_profile.view.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 
 class UserProfileFragment : BaseAuthFragment(), TextWatcher {
@@ -62,8 +66,11 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
         super.onViewCreated(view, savedInstanceState)
         profileUserName.addTextChangedListener(this)
         saveButton.setOnClickListener {
-
-            userImageRef.putFile(imageUri).addOnCompleteListener {
+            val bitmap = (profileImage.drawable as RoundedBitmapDrawable).bitmap
+            val baos = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
+            userImageRef.putBytes(data).addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.d(TAG_STORAGE, "saveStorage: success")
                 } else {
@@ -156,4 +163,4 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
 }
 
-data class UserInfo(val userName: String = "", val introduction: String = "", val imageRef: String)
+data class UserInfo(val userName: String = "", val introduction: String = "", val imageRef: String = "")

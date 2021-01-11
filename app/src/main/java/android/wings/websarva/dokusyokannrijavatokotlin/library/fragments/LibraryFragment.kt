@@ -7,12 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.library.LibraryAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.firestore.FirebaseFirestore
 
 
 class LibraryFragment : Fragment() {
@@ -29,8 +26,7 @@ class LibraryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_library, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_library, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,12 +34,7 @@ class LibraryFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.usersBookList)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.setHasFixedSize(true)
-
-        val options = FirestoreRecyclerOptions.Builder<BookHelper>()
-            .setQuery(FirebaseFirestore.getInstance().collection("books"), BookHelper::class.java)
-            .build()
-
-        adapter = LibraryAdapter(options)
+        adapter = LibraryAdapter(FireStoreHelper.getRecyclerOptions())
         recyclerView.adapter = adapter
     }
 

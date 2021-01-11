@@ -61,6 +61,10 @@
     <string name="mail_login_text">メールアドレスでログイン</string>
     <string name="userIntroductionString">自己紹介文(150文字以内)</string>
     <string name="save_text">保存</string>
+    <string name="no_user_name">取得できませんでした</string>
 
     <string name="google_client_id">googleClient</string>
+    <string name="author">著者</string>
+    <string name="post_text">投稿する</string>
+    <string name="comment_input">コメントを記入</string>
 </resources>

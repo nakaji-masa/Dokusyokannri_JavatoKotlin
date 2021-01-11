@@ -8,7 +8,7 @@
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/action_button_background"
+        android:background="@drawable/bar_button_bg"
         android:enabled="false"
         android:text="@string/Book_save_button"
         android:textColor="@android:color/white"

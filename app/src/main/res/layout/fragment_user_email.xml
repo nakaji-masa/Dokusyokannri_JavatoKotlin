@@ -53,7 +53,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="32dp"
-            android:background="@drawable/action_button_background"
+            android:background="@drawable/bar_button_bg"
             android:enabled="false"
             android:padding="5dp"
             android:text="@string/newRegister"
