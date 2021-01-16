@@ -11,13 +11,15 @@ import android.view.inputmethod.InputMethodManager
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.library.CommentAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookCommentHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.register.ModelHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.library_cell.*
 
@@ -32,8 +34,10 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
         commentEdit.addTextChangedListener(this)
 
         // 選択した投稿・ユーザーのデータを取得
-        val bookData = ModelHelper.getPostData()
-        val userData = ModelHelper.getLoadedUserData()
+        val bookJson = intent.extras?.getString(BOOK_DATA_KEY)
+        val userJson = intent.extras?.getString(USER_DATA_KEY)
+        val bookData = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
+        val userData = Gson().fromJson<UserInfo>(userJson, UserInfo::class.java)
 
         // 選択した投稿のデータを表示
         userReadDate.text = bookData.date
@@ -42,7 +46,7 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
         userBookTitle.text = bookData.title
         userAuthorName.text = bookData.author
         userName.text = userData.userName
-        GlideHelper.viewUserImage(userData.userImage, userImage)
+        GlideHelper.viewUserImage(userData.userImageUrl, userImage)
 
         // いいねのアイコンを表示する
         showPostFavorite(bookData.likedUserList)
@@ -101,7 +105,6 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                ModelHelper.resetData()
                 finish()
                 true
             }
@@ -112,7 +115,6 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
     }
 
     override fun onBackPressed() {
-        ModelHelper.resetData()
         finish()
     }
 
@@ -124,6 +126,11 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable?) {
+    }
+
+    companion object {
+        const val BOOK_DATA_KEY = "BookHelper"
+        const val USER_DATA_KEY = "userInfo"
     }
 
 }

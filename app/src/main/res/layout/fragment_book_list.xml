@@ -6,13 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".booklist.fragments.BookListFragment">
 
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bookListRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
@@ -27,6 +24,5 @@
         app:backgroundTint="@android:color/holo_green_light"
         app:elevation="0dp"
         android:contentDescription="@string/app_name" />
-
 
 </FrameLayout>

@@ -1,6 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.library
 
-import android.graphics.BitmapFactory
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookCommentHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStorageHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.os.Handler
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
-import com.bumptech.glide.Glide
 
 class CommentAdapter(private val commentList: List<BookCommentHelper>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
@@ -36,11 +34,9 @@ class CommentAdapter(private val commentList: List<BookCommentHelper>) :
         GlobalScope.launch {
             val userInfo = FireStoreHelper.getUserData(commentList[position].userUid)
             if (userInfo != null) {
-                val byteArray = FireStorageHelper.getImageByteArray(userInfo.imageRef)
-                val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
                 handler.post {
                     holder.userName.text = userInfo.userName
-                    GlideHelper.viewUserImage(bitmap, holder.userImage)
+                    GlideHelper.viewUserImage(userInfo.userImageUrl, holder.userImage)
                     holder.comment.text = commentList[position].comment
                     holder.date.text = commentList[position].date
                 }

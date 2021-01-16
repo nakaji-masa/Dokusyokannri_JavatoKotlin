@@ -1,12 +1,10 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.booklist
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
@@ -23,8 +21,7 @@ class BookListAdapter(
     lateinit var listener: OnItemClickListener
 
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val bookImage: ImageView = view.findViewById(R.id.bookListCellImage)
-        val bookTitle: TextView = view.findViewById(R.id.bookListCellTitle)
+        val imageView : ImageView = view.findViewById(R.id.cellBookImage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -34,11 +31,8 @@ class BookListAdapter(
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book: BookListObject = bookList.get(position) ?: return
-        Log.d("adapter", book.image)
 
-        GlideHelper.viewGlide(book.image, holder.bookImage)
-
-        holder.bookTitle.text = book.title
+        GlideHelper.viewGlide(book.image, holder.imageView)
 
         holder.itemView.setOnClickListener {
             listener.onItemClickListener(it, position, book.id)

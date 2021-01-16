@@ -292,8 +292,6 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 .setMessage("追加しました")
                 .setPositiveButton("OK") { dialog, which ->
                     finish()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
                 }
                 .show()
 
@@ -309,8 +307,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             AlertDialog.Builder(this)
                 .setMessage("変更しました")
                 .setPositiveButton("OK") { dialog, which ->
-                    val intent = Intent(this@RegisterActivity, MainActivity::class.java)
-                    startActivity(intent)
+                    finish()
                 }
                 .show()
         }

@@ -8,45 +8,44 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
 import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStorageHelper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_user_profile.view.*
-import java.io.ByteArrayInputStream
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
-class UserProfileFragment : BaseAuthFragment(), TextWatcher {
+class
+UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
     private lateinit var profileUserName: EditText
     private lateinit var profileIntroduction: EditText
     private lateinit var profileImage: ImageView
     private lateinit var saveButton: Button
-    private lateinit var userImageRef: StorageReference
     private var imageUri: Uri = getDefaultUri()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
-        userImageRef = FireStorageHelper.getUserImageRef()
     }
 
     override fun onCreateView(
@@ -57,36 +56,36 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
         profileUserName = view.userNameInput
         profileIntroduction = view.userIntroductionInput
         profileImage = view.userImage
-        Glide.with(context).load(imageUri).into(profileImage)
         saveButton = view.userInfoSaveButton
+        Glide.with(context).load(imageUri).into(profileImage)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         profileUserName.addTextChangedListener(this)
+
         saveButton.setOnClickListener {
-            val bitmap = (profileImage.drawable as RoundedBitmapDrawable).bitmap
+            view.userInfoProgressBar.visibility = View.VISIBLE
+            val bitmap = (profileImage.drawable as BitmapDrawable).bitmap
             val baos = ByteArrayOutputStream()
             bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
-            userImageRef.putBytes(data).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.d(TAG_STORAGE, "saveStorage: success")
-                } else {
-                    Log.d(TAG_STORAGE, "saveStorage: failed")
-                }
-            }
 
-            val userInfo =
-                UserInfo(
-                    profileUserName.text.toString(),
-                    profileIntroduction.text.toString(),
-                    FireStorageHelper.getRefPath()
-                )
-            userCollection.document(AuthHelper.getUid()).set(userInfo).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    moveToMainActivity()
+            GlobalScope.launch {
+                FireStorageHelper.saveImage(data)
+                val userInfo =
+                    UserInfo(
+                        profileUserName.text.toString(),
+                        profileIntroduction.text.toString(),
+                        FireStorageHelper.getDownloadUrl()
+                    )
+                userCollection.document(AuthHelper.getUid()).set(userInfo).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        moveToMainActivity()
+                    } else {
+                        Toast.makeText(activity, "登録に失敗しました", Toast.LENGTH_SHORT).show()
+                    }
+                    view.userInfoProgressBar.visibility = View.INVISIBLE
                 }
             }
         }
@@ -151,7 +150,6 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
     companion object {
         private const val READ_RC = 1
-        private const val TAG_STORAGE = "fireStorage"
 
         @JvmStatic
         fun newInstance() =
@@ -162,5 +160,3 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
     }
 
 }
-
-data class UserInfo(val userName: String = "", val introduction: String = "", val imageRef: String = "")

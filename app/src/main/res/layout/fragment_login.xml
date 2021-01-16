@@ -84,12 +84,14 @@
             app:textColor="@android:color/black" />
 
         <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/loginProgressBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:indeterminate="true"
             android:visibility="invisible"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_in"
+            android:indeterminateTint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -7,19 +7,15 @@ import kotlinx.coroutines.tasks.await
 object FireStorageHelper {
     private val storageRef = FirebaseStorage.getInstance().reference
 
-    fun getUserImageRef() : StorageReference {
-        return storageRef.child(getRefPath())
+    suspend fun saveImage(bytes: ByteArray) {
+        storageRef.child(getRefPath()).putBytes(bytes).await()
     }
 
-    fun getStorageReference(): StorageReference {
-        return storageRef
+    private fun getRefPath() :String {
+        return AuthHelper.getUid() + ".jpg"
     }
 
-    suspend fun getImageByteArray(fileName: String): ByteArray {
-        return storageRef.child(fileName).getBytes(1024 * 1024).await()
-    }
-
-    fun getRefPath() :String {
-        return  AuthHelper.getUid() + ".jpg"
+    suspend fun getDownloadUrl() : String{
+        return storageRef.child(getRefPath()).downloadUrl.await().toString()
     }
 }

@@ -13,8 +13,7 @@ import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
 import kotlinx.android.synthetic.main.fragment_user_email.view.*
-import kotlinx.android.synthetic.main.fragment_user_email.view.progress_bar
-import java.util.regex.Matcher
+import kotlinx.android.synthetic.main.fragment_user_email.view.loginProgressBar
 import java.util.regex.Pattern
 
 class UserEmailFragment : BaseAuthFragment(), TextWatcher {
@@ -38,7 +37,7 @@ class UserEmailFragment : BaseAuthFragment(), TextWatcher {
         inputEmail = view.inputMailAddress
         inputPassword = view.inputPassword
         signInButton = view.signInButton
-        setProgressBar(view.progress_bar)
+        setProgressBar(view.loginProgressBar)
         return view
     }
 

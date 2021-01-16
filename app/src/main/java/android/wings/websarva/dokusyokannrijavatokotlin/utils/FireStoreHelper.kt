@@ -2,7 +2,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin.utils
 
 
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.UserInfo
+import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.tasks.await
@@ -28,7 +28,7 @@ object FireStoreHelper {
 
     suspend fun getUserData(uid: String): UserInfo? {
         val snapshot = userCollection.document(uid).get().await()
-        return snapshot.toObject(UserInfo::class.java)
+        return snapshot?.toObject(UserInfo::class.java)
     }
 
     // 登録した本をfireStoreに登録
@@ -43,7 +43,6 @@ object FireStoreHelper {
                     .whereNotEqualTo("uid", AuthHelper.getUid())
                     .orderBy("uid")
                     .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
-
             )
             .build()
     }

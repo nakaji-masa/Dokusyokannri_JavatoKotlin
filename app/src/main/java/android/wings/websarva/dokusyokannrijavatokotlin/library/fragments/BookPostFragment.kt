@@ -25,7 +25,7 @@ class BookPostFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             BookPostFragment().apply {
                 arguments = Bundle().apply {
 

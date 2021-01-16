@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -19,10 +19,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import io.realm.Realm
-import io.realm.kotlin.createObject
-import io.realm.kotlin.where
 import java.util.*
-import java.util.logging.LogRecord
 import kotlin.collections.ArrayList
 
 
@@ -102,9 +99,8 @@ class GraphFragment : Fragment() {
 
         setUpChart(chart)
 
-
         val set1 = BarDataSet(values, "Data Set")
-        set1.color = resources.getColor(R.color.colorAccent)
+        set1.color = ContextCompat.getColor(requireContext(), R.color.colorAccent)
 
         //グラフ上に値を表示。
         set1.setDrawValues(true)
@@ -193,7 +189,7 @@ class GraphFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             GraphFragment().apply {
                 arguments = Bundle().apply {
 

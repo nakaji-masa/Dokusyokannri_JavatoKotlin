@@ -1,7 +1,9 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +14,11 @@ import android.wings.websarva.dokusyokannrijavatokotlin.booklist.BookListAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_book_list.*
+
 
 class BookListFragment : Fragment() {
 
@@ -39,11 +42,21 @@ class BookListFragment : Fragment() {
         val bookList = realm.where(BookListObject::class.java).findAll()
         val adapter = BookListAdapter(view.context, bookList, true)
 
-        bookListRecyclerView.setHasFixedSize(true)
-        bookListRecyclerView.layoutManager = LinearLayoutManager(view.context)
+        // 画面のサイズを取得する
+        val dm = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(dm)
+        val width = dm.widthPixels / requireContext().resources.displayMetrics.density.toInt()
+
+        // リサイクラービューの設定
+        bookListRecyclerView.layoutManager = GridLayoutManager(
+                view.context,
+                3,
+                GridLayoutManager.VERTICAL,
+                false
+            )
+        bookListRecyclerView.addItemDecoration(GridItemDecoration(width, 3))
         bookListRecyclerView.adapter = adapter
-        val itemDecoration = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
-        bookListRecyclerView.addItemDecoration(itemDecoration)
+        bookListRecyclerView.setHasFixedSize(true)
 
         adapter.setOnItemClickListener(object : BookListAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {
@@ -57,13 +70,16 @@ class BookListFragment : Fragment() {
             val intent = Intent(view.context, RegisterActivity::class.java)
             startActivity(intent)
         }
-
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
+    }
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             BookListFragment().apply {
                 arguments = Bundle().apply {
 
@@ -71,8 +87,22 @@ class BookListFragment : Fragment() {
             }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
+}
+
+class GridItemDecoration(private val width: Int, private val spanCount: Int) : RecyclerView.ItemDecoration() {
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        val space = (width - 300) / 6
+        outRect.left = space
+        outRect.right = space
+        outRect.bottom = space
+
+        if (parent.getChildLayoutPosition(view) < spanCount)
+            outRect.top = space
+
     }
 }

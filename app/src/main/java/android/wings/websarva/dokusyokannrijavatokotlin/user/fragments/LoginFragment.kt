@@ -38,7 +38,7 @@ class LoginFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setProgressBar(view.progress_bar)
+        setProgressBar(view.loginProgressBar)
         view.googleRegisterView.setOnClickListener {
             googleSignIn()
         }
