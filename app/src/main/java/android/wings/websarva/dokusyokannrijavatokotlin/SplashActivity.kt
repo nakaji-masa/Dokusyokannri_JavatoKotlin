@@ -3,21 +3,15 @@ package android.wings.websarva.dokusyokannrijavatokotlin
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.user.UserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
 import java.lang.Runnable
-import java.nio.channels.AlreadyBoundException
 
 class SplashActivity : AppCompatActivity() {
-    private val fireStore = FirebaseFirestore.getInstance()
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
 
