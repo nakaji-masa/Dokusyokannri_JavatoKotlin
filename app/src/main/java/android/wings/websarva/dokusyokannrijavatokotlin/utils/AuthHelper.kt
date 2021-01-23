@@ -1,8 +1,5 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.utils
 
-import android.app.Application
-import android.content.Context
-import android.provider.Settings.Secure.getString
 import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -22,23 +19,42 @@ object AuthHelper {
         googleSignInClient = GoogleSignIn.getClient(MyApplication.getAppContext(), gso)
     }
 
+    /**
+     * ログアウトをするメソッド
+     */
     fun signOut() {
         mAuth.signOut()
         googleSignInClient.signOut()
     }
 
+    /**
+     * 認証情報を返すメソッド
+     * @return mAuth 認証情報
+     */
     fun getFirebaseAuth(): FirebaseAuth {
         return mAuth
     }
 
+    /**
+     * GoogleSignClientを返すメソッド
+     * @return GoogleSignClient
+     */
     fun getGoogleSignClient(): GoogleSignInClient {
         return googleSignInClient
     }
 
+    /**
+     * uidを返すメソッド
+     * @return String uid
+     */
     fun getUid(): String{
         return mAuth.uid.toString()
     }
 
+    /**
+     * ログインしているかを判定するメソッド
+     * @return Boolean
+     */
     fun isLogin() :Boolean {
         return mAuth.currentUser != null
     }

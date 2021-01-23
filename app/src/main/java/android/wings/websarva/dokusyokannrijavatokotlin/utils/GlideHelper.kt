@@ -9,6 +9,11 @@ import com.bumptech.glide.request.RequestOptions
 
 object GlideHelper {
 
+    /**
+     * 本の画像を表示するメソッド
+     * @param imagePlace url
+     * @param imageView ImageView
+     */
     fun viewGlide(imagePlace: String, imageView: ImageView) {
         if (imagePlace.isEmpty()) {
             Glide.with(imageView.context).load(
@@ -22,6 +27,11 @@ object GlideHelper {
         }
     }
 
+    /**
+     * プロフィールの画像を表示するメソッド
+     * @param url 画像のURL
+     * @param imageView ImageView
+     */
     fun viewUserImage(url: String, imageView: ImageView) {
         val requestOptions = RequestOptions
             .circleCropTransform()

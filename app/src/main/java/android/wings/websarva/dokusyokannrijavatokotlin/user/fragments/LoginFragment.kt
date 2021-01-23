@@ -57,6 +57,21 @@ class LoginFragment : BaseAuthFragment() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                Log.d(TAG_GOOGLE, "firebaseAuthWithGoogle:" + account?.idToken)
+                signInAccountWithGoogle(account?.idToken!!)
+
+            } catch (e: ApiException) {
+                Log.w(TAG_GOOGLE, "google sign in failed", e)
+            }
+        }
+    }
+
     /**
      * Googleにサインインするメソッド
      * @param idToken
@@ -102,21 +117,6 @@ class LoginFragment : BaseAuthFragment() {
             }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_GOOGLE_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                Log.d(TAG_GOOGLE, "firebaseAuthWithGoogle:" + account?.idToken)
-                signInAccountWithGoogle(account?.idToken!!)
-
-            } catch (e: ApiException) {
-                Log.w(TAG_GOOGLE, "google sign in failed", e)
-            }
-        }
-    }
-
     /**
      * メールアドレスで登録・ログインするフラグメントへ遷移するメソッド
      */
@@ -126,7 +126,6 @@ class LoginFragment : BaseAuthFragment() {
         transaction?.addToBackStack(null)
         transaction?.commit()
     }
-
 
     companion object {
         const val TAG_GOOGLE = "Google"

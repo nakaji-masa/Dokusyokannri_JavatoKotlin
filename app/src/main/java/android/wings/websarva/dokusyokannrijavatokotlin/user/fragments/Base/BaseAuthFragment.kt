@@ -31,11 +31,17 @@ open class BaseAuthFragment : Fragment() {
         userCollection = FirebaseFirestore.getInstance().collection(USER_COLLECTION_PATH)
     }
 
+    /**
+     * トーストを表示するメソッド
+     */
     fun displayFailedToast() {
         Toast.makeText(requireContext(), "登録に失敗しました。", Toast.LENGTH_LONG).show()
     }
 
 
+    /**
+     * プロフィール情報があるかないかで遷移する画面を変えるメソッド
+     */
     fun moveToNextView() {
         GlobalScope.launch {
             if (FireStoreHelper.hasUserDocument()) {
@@ -46,6 +52,9 @@ open class BaseAuthFragment : Fragment() {
         }
     }
 
+    /**
+     * プロフィール入力画面に遷移するメソッド
+     */
     fun moveToUserProfileRegisterFragment() {
         val transaction = activity?.supportFragmentManager?.beginTransaction()
         transaction?.replace(R.id.userContainer, UserProfileFragment.newInstance())
@@ -53,6 +62,9 @@ open class BaseAuthFragment : Fragment() {
         hideProgressBar()
     }
 
+    /**
+     * メインの画面に遷移するメソッド
+     */
     fun moveToMainActivity() {
         val intent = Intent(requireActivity(), MainActivity::class.java)
         startActivity(intent)
@@ -60,14 +72,24 @@ open class BaseAuthFragment : Fragment() {
         hideProgressBar()
     }
 
+    /**
+     * フィールドのprogressBarをセットするメソッド
+     * @param bar ProgressBar
+     */
     fun setProgressBar(bar: ProgressBar) {
         progressBar = bar
     }
 
+    /**
+     * ProgressBarを表示するメソッド
+     */
     fun showProgressBar() {
         progressBar?.visibility = View.VISIBLE
     }
 
+    /**
+     * ProgressBarを非表示にするメソッド
+     */
     fun hideProgressBar() {
         progressBar?.visibility = View.INVISIBLE
     }

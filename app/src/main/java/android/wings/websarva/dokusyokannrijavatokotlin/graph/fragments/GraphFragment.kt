@@ -121,6 +121,7 @@ class GraphFragment : Fragment() {
 
     /**
      * グラフの設定をするメソッド
+     * @param chart 縦グラフ
      */
     private fun setUpChart(chart: BarChart) {
 
@@ -165,6 +166,8 @@ class GraphFragment : Fragment() {
 
     /**
      * 1月から12月までの値を格納するメソッド
+     * @param record realmから取得したグラフのデータ
+     * @param values グラフに表示するためのデータ
      */
     private fun setBookCount(record: GraphObject?, values: ArrayList<BarEntry>) {
         for (i in 1..12) {

@@ -177,7 +177,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         }
     }
 
-    //バーコードリーダー起動メソッド
+    /**
+     * バーコードスキャンを起動するメソッド
+     */
     private fun takeBarCode() {
         Toast.makeText(this, "上のバーコードを撮ってください。", Toast.LENGTH_LONG).show()
         IntentIntegrator(this)
@@ -187,8 +189,10 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             }.initiateScan()
     }
 
-    //カメラ機能とストレージ機能のパーミッションをとっているか確認。
-    //持っていればtrueを返す。
+    /**
+     * カメラの権限を得ているか判定するメソッド
+     * @return Boolean
+     */
     private fun checkCameraPermission() = PackageManager.PERMISSION_GRANTED ==
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA)
             && PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
@@ -196,7 +200,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
-    //バーコードからパーミッションを得るためのメソッド
+    /**
+     * ユーザーに権限を要求するメソッド
+     */
     private fun grantBarCodePermission() =
         ActivityCompat.requestPermissions(
             this,
@@ -222,6 +228,10 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         }
     }
 
+    /**
+     * 本のデータを保存または更新するメソッド
+     * @param id BookObjectのid
+     */
     private fun saveBookData(id: String?) {
         if (id == null) {
             val title = registerBookTitleInput.text.toString()
@@ -306,6 +316,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         }
     }
 
+    /**
+     * カメラの権限を得ていればバーコードスキャン、得ていなければ権限許可を要求するメソッド
+     */
     private fun searchBook() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
             if (checkCameraPermission()) {
@@ -357,6 +370,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     override fun afterTextChanged(s: Editable?) {
     }
 
+    /**
+     * 本のタイトルとアクションプランが入力されていれば、保存ボタンを活性化するメソッド
+     */
     private fun watchAllInput() {
         menuSaveButton?.isEnabled =
             !(registerBookTitleInput.text.isNullOrBlank() || registerBookActionPlanInput.text.isNullOrBlank())

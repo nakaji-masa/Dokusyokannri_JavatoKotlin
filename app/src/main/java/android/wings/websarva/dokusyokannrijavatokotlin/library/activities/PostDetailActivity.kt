@@ -74,34 +74,6 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
         }
     }
 
-    private fun showPostFavorite(likedUserList: List<String>) {
-        favoriteImage.setImageDrawable(
-            if (likedUserList.contains(AuthHelper.getUid())) {
-                ContextCompat.getDrawable(this, R.drawable.ic_like)
-            } else {
-                ContextCompat.getDrawable(this, R.drawable.ic_no_like)
-            }
-        )
-        favoriteCount.text = likedUserList.size.toString()
-    }
-
-    private fun showPostComment(commentList: List<BookCommentHelper>) {
-        commentImage.setImageDrawable(
-            if (commentList.any { it.userUid == AuthHelper.getUid() }) {
-                ContextCompat.getDrawable(this, R.drawable.ic_comment)
-            } else {
-                ContextCompat.getDrawable(this, R.drawable.ic_no_comment)
-            }
-        )
-        commentCount.text = commentList.size.toString()
-    }
-
-    private fun showRecyclerView(commentList: List<BookCommentHelper>) {
-        commentRecyclerView.layoutManager = LinearLayoutManager(this)
-        commentRecyclerView.setHasFixedSize(true)
-        commentRecyclerView.adapter = CommentAdapter(commentList)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -126,6 +98,46 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable?) {
+    }
+
+    /**
+     * いいねのアイコンの色をセットし、いいねの数をセットするメソッド
+     * @param likedUserList いいねの数が格納されているリスト
+     */
+    private fun showPostFavorite(likedUserList: List<String>) {
+        favoriteImage.setImageDrawable(
+            if (likedUserList.contains(AuthHelper.getUid())) {
+                ContextCompat.getDrawable(this, R.drawable.ic_like)
+            } else {
+                ContextCompat.getDrawable(this, R.drawable.ic_no_like)
+            }
+        )
+        favoriteCount.text = likedUserList.size.toString()
+    }
+
+    /**
+     * コメントのアイコンの色をセットし、コメントの数をセットするメソッド
+     * @param commentList コメントの数を格納されているメソッド
+     */
+    private fun showPostComment(commentList: List<BookCommentHelper>) {
+        commentImage.setImageDrawable(
+            if (commentList.any { it.userUid == AuthHelper.getUid() }) {
+                ContextCompat.getDrawable(this, R.drawable.ic_comment)
+            } else {
+                ContextCompat.getDrawable(this, R.drawable.ic_no_comment)
+            }
+        )
+        commentCount.text = commentList.size.toString()
+    }
+
+    /**
+     * リサイクラービューの設定をするメソッド
+     * @param commentList コメントのリスト
+     */
+    private fun showRecyclerView(commentList: List<BookCommentHelper>) {
+        commentRecyclerView.layoutManager = LinearLayoutManager(this)
+        commentRecyclerView.setHasFixedSize(true)
+        commentRecyclerView.adapter = CommentAdapter(commentList)
     }
 
     companion object {

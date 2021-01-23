@@ -15,7 +15,10 @@ object FireStoreHelper {
     private val postCollection = fireStore.collection(COLLECTION_POST_PATH)
 
 
-    //プロフィールは登録しているかのチェック
+    /**
+     * プロフィール情報があるか判定するメソッド
+     * @return Boolean
+     */
     suspend fun hasUserDocument(): Boolean {
         return try {
             fireStore.collection(COLLECTION_USER_PATH).document(AuthHelper.getUid()).get().await()
@@ -26,16 +29,27 @@ object FireStoreHelper {
         }
     }
 
+    /**
+     * Userコレクションからユーザー情報を取得する
+     * @return UserInfo ユーザー情報
+     */
     suspend fun getUserData(uid: String): UserInfo? {
         val snapshot = userCollection.document(uid).get().await()
         return snapshot?.toObject(UserInfo::class.java)
     }
 
-    // 登録した本をfireStoreに登録
+    /**
+     * FireStoreに本の情報を保存する
+     * @param data 保存するデータ
+     */
     fun savePostData(data: BookHelper) {
         postCollection.document(data.docId).set(data)
     }
 
+    /**
+     * RecyclerOptionsを取得するメソッド
+     * @return FirestoreRecyclerOptions
+     */
     fun getRecyclerOptions(): FirestoreRecyclerOptions<BookHelper> {
         return FirestoreRecyclerOptions.Builder<BookHelper>()
             .setQuery(
