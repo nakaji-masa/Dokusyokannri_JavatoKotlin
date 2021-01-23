@@ -1,44 +1,62 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail
 
 import android.content.Context
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailActionFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.ActionDairyFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.OnActionDairyFragmentListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-@Suppress("DEPRECATION")
-class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Int) : FragmentPagerAdapter(fm) {
+class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : String?) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
+    private val titleList = listOf("本の詳細", "アクションプランの記録")
+    var onDetailPagerAdapterListener: OnDetailPagerAdapterListener? = null
 
     override fun getCount(): Int {
         //タブの数を返す
-        return 2
+        return titleList.size
     }
 
     override fun getItem(position: Int): Fragment {
        //押しているタブによって返すフラグメントを変える
-        println(id)
-        when(position) {
+        return when(position) {
             0 -> {
-                return DetailFragment.newInstance(id)
+                DetailFragment.newInstance(id)
             }
 
             else -> {
-                return DetailActionFragment.newInstance(id)
+                val fragment = ActionDairyFragment.newInstance(id)
+                fragment.onActionDairyFragmentListener =
+                    object : OnActionDairyFragmentListener {
+                        override fun onAddButtonClicked(id: String) {
+                           onDetailPagerAdapterListener?.onAddButtonClicked(id)
+                        }
+
+                        override fun onItemClicked(bookId: String, actionId: String) {
+                            onDetailPagerAdapterListener?.onActionItemClicked(bookId, actionId)
+                        }
+                    }
+                fragment
             }
         }
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
         //タブの文字を決める
-        when(position) {
+        return when(position) {
             0 -> {
-                return "本の詳細"
+                titleList[position]
             }
 
             else -> {
-                return "アクションプランの経過"
+                titleList[position]
             }
         }
     }
+}
+
+interface OnDetailPagerAdapterListener {
+    fun onActionItemClicked(bookId: String, actionId: String)
+    fun onAddButtonClicked(bookId: String)
 }

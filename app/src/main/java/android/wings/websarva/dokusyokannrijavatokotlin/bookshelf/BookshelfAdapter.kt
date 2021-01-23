@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.booklist
+package android.wings.websarva.dokusyokannrijavatokotlin.bookshelf
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
 import io.realm.RealmRecyclerViewAdapter
 
-class BookListAdapter(
+class BookshelfAdapter(
     private val context: Context,
-    private var bookList: OrderedRealmCollection<BookListObject>,
-    private val autoUpdate: Boolean
-) : RealmRecyclerViewAdapter<BookListObject, BookListAdapter.BookViewHolder>(bookList, autoUpdate) {
+    private var book: OrderedRealmCollection<BookObject>,
+    autoUpdate: Boolean
+) : RealmRecyclerViewAdapter<BookObject, BookshelfAdapter.BookViewHolder>(book, autoUpdate) {
 
     lateinit var listener: OnItemClickListener
 
@@ -30,22 +30,23 @@ class BookListAdapter(
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        val book: BookListObject = bookList.get(position) ?: return
+        val book: BookObject = book[position] ?: return
 
-        GlideHelper.viewGlide(book.image, holder.imageView)
+        GlideHelper.viewGlide(book.imageUrl, holder.imageView)
 
         holder.itemView.setOnClickListener {
+            println("adapter:" + book.id)
             listener.onItemClickListener(it, position, book.id)
         }
 
     }
 
     override fun getItemCount(): Int {
-        return bookList.size
+        return book.size
     }
 
     interface OnItemClickListener {
-        fun onItemClickListener(view: View, position: Int, clickedId: Int?)
+        fun onItemClickListener(view: View, position: Int, clickedId: String?)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {

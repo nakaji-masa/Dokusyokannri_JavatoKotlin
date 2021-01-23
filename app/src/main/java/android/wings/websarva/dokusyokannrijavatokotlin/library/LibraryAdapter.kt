@@ -92,6 +92,11 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
         holder.commentCount.text = model.commentList.size.toString()
     }
 
+    /**
+     * いいねの数を保存するメソッド
+     * @param liked ユーザーが既にいいねを押しているか
+     * @param　firestoreに保存するためのデータ
+     */
     private fun pushFavorite(liked: Boolean, model: BookHelper) {
         if (liked) {
             model.likedUserList.remove(AuthHelper.getUid())
@@ -101,6 +106,12 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
         FireStoreHelper.savePostData(model)
     }
 
+    /**
+     * ユーザーがいいねをしているかで、戻り値のdrawableを決める
+     * @param context
+     * @param liked
+     * @return Drawable
+     */
     private fun getFabDrawable(context: Context, liked: Boolean): Drawable? {
         return if (liked) {
             ContextCompat.getDrawable(context, R.drawable.ic_like)
@@ -109,6 +120,12 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
         }
     }
 
+    /**
+     * ユーザー投稿に対してコメントをしているかで、戻り値のDrawableを変える
+     * @param context
+     * @param commented
+     * @return Drawable
+     */
     private fun getCommentDrawable(context: Context, commented: Boolean): Drawable? {
         return if (commented) {
             ContextCompat.getDrawable(context, R.drawable.ic_comment)

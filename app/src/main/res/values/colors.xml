@@ -13,4 +13,17 @@
     <color name="colorGrey">#bdbdbd</color>
     <color name="twitterColor">#00aced </color>
     <color name="white">#FFFFFF</color>
+
+    <color name="colorJanuary">#C7000B</color>
+    <color name="colorFebruary">#D28300</color>
+    <color name="colorMarch">#DFD000</color>
+    <color name="colorApril">#7BAA17</color>
+    <color name="colorMay">#00873C</color>
+    <color name="colorJune">#008A83</color>
+    <color name="colorJuly">#008DCB</color>
+    <color name="colorAugust">#005AA0</color>
+    <color name="colorSeptember">#181878</color>
+    <color name="colorOctober">#800073</color>
+    <color name="colorNovember">#C6006F</color>
+    <color name="colorDecember">#C70044</color>
 </resources>

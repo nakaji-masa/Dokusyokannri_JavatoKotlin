@@ -1,28 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".detail.fragments.DetailActionFragment">
+    tools:context=".detail.fragments.ActionDetailFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/actionDetailRecyclerView"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="3dp"/>
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@android:drawable/ic_input_add"
-        android:tint="@android:color/white"
-        app:elevation="0dp"
-        app:backgroundTint="@color/colorPrimary"
-        android:contentDescription="@string/app_name" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</FrameLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/actionUpdateButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/colorLight"
+            android:contentDescription="@string/app_name"
+            app:fabCustomSize="40dp"
+            app:layout_constraintEnd_toStartOf="@+id/actionDeleteButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_edit" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/actionDeleteButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:contentDescription="@string/app_name"
+            app:fabCustomSize="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_delete" />
+
+        <TextView
+            android:id="@+id/actionDetailTitleColumn"
+            style="@style/BasicInputActionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_title"
+            app:layout_constraintTop_toBottomOf="@+id/actionUpdateButton" />
+
+        <TextView
+            android:id="@+id/actionDetailTitle"
+            style="@style/BasicActionDetailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailTitleColumn" />
+
+        <FrameLayout
+            android:id="@+id/actionDetailDivider1"
+            style="@style/DividerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailTitle" />
+
+        <TextView
+            android:id="@+id/actionDetailDateColumn"
+            style="@style/BasicInputActionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/date"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDivider1" />
+
+        <TextView
+            android:id="@+id/actionDetailDate"
+            style="@style/BasicActionDetailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDateColumn" />
+
+        <FrameLayout
+            android:id="@+id/actionDetailDivider2"
+            style="@style/DividerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDate" />
+
+        <TextView
+            android:id="@+id/actionDetailWhatColumn"
+            style="@style/BasicInputActionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_what"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDivider2" />
+
+        <TextView
+            android:id="@+id/actionDetailWhat"
+            style="@style/BasicActionDetailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailWhatColumn" />
+
+        <FrameLayout
+            android:id="@+id/actionDetailDivider3"
+            style="@style/DividerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailWhat" />
+
+        <TextView
+            android:id="@+id/actionDetailCouldColumn"
+            style="@style/BasicInputActionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_could"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDivider3" />
+
+        <TextView
+            android:id="@+id/actionDetailCould"
+            style="@style/BasicActionDetailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailCouldColumn" />
+
+        <FrameLayout
+            android:id="@+id/actionDetailDivider4"
+            style="@style/DividerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailCould" />
+
+        <TextView
+            android:id="@+id/actionDetailCouldNotColumn"
+            style="@style/BasicInputActionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_could_not"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDivider4" />
+
+        <TextView
+            android:id="@+id/actionDetailCouldNot"
+            style="@style/BasicActionDetailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailCouldNotColumn" />
+
+        <FrameLayout
+            android:id="@+id/actionDetailDivider5"
+            style="@style/DividerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailCouldNot" />
+
+        <TextView
+            android:id="@+id/actionDetailNextColumn"
+            style="@style/BasicInputActionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_next"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailDivider5" />
+
+        <TextView
+            android:id="@+id/actionDetailNext"
+            style="@style/BasicActionDetailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/actionDetailNextColumn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

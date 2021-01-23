@@ -9,105 +9,123 @@
     <ScrollView
         android:id="@+id/detailScroll"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/detailDeleteButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/detailBookTitleContentTable"
-                style="@style/BasicTextView"
-                android:layout_width="0dp"
-                android:text="@string/Book_name_view"
-                app:layout_constraintEnd_toStartOf="@+id/detailBookImage"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/updateButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/colorLight"
+                android:contentDescription="@string/app_name"
+                app:fabCustomSize="40dp"
+                app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_edit" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/deleteButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:contentDescription="@string/app_name"
+                app:fabCustomSize="40dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_delete" />
+
+            <ImageView
+                android:id="@+id/detailBookImage"
+                android:layout_width="150dp"
+                android:layout_height="220dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/app_name"
+                app:layout_constraintBottom_toTopOf="@+id/detailBookTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateButton"
+                app:srcCompat="@drawable/ic_book" />
 
             <TextView
                 android:id="@+id/detailBookTitle"
-                style="@style/BasicTextViewDetail"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/detailBookDateContentTable"
-                app:layout_constraintEnd_toStartOf="@id/detailBookImage"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailBookTitleContentTable" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/detailBookImage" />
 
             <TextView
-                android:id="@+id/detailBookDateContentTable"
-                style="@style/BasicTextView"
-                android:layout_width="0dp"
-                android:text="@string/Book_deadline_view"
-                app:layout_constraintEnd_toStartOf="@+id/detailBookImage"
+                android:id="@+id/detailBookAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailBookTitle" />
 
-            <TextView
-                android:id="@+id/detailBookDate"
-                style="@style/BasicTextViewDetail"
-                app:layout_constraintEnd_toStartOf="@+id/detailBookImage"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detailBookDateContentTable" />
+            <FrameLayout
+                android:id="@+id/dividerLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/colorGrey"
+                app:layout_constraintTop_toBottomOf="@+id/detailBookAuthor" />
 
             <TextView
-                android:id="@+id/detailActionPlanContentTable"
-                style="@style/BasicTextView"
-                android:text="@string/Book_ActionPlan_view"
-                app:layout_constraintBottom_toTopOf="@+id/detailActionPlan"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/detailBookDateColumn"
+                style="@style/DetailColumnTextView"
+                android:text="@string/read_date"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dividerLayout1" />
+
+            <TextView
+                android:id="@+id/detailBookDate"
+                style="@style/DetailTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/detailBookDateColumn" />
+
+            <FrameLayout
+                android:id="@+id/dividerLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/colorGrey"
                 app:layout_constraintTop_toBottomOf="@+id/detailBookDate" />
 
             <TextView
-                android:id="@+id/detailActionPlan"
-                style="@style/BasicTextViewDetail"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/detailBookActionPlanColumn"
+                style="@style/DetailColumnTextView"
+                android:text="@string/book_actionPlan_input"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detailActionPlanContentTable" />
+                app:layout_constraintTop_toBottomOf="@+id/dividerLayout2" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/detailBookImage"
-                android:layout_width="100dp"
-                android:layout_height="160dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/detailBookActionPlan"
+                style="@style/DetailTextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailBookActionPlanColumn" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
-
-    <Button
-        android:id="@+id/detailDeleteButton"
-        style="@style/BasicButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/Delete_Button"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/detailScroll"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/detailChangeButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/detailChangeButton"
-        style="@style/BasicButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/Change_Button"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/detailScroll"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/detailDeleteButton" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

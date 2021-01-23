@@ -4,10 +4,11 @@ package android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import java.util.*
 
-open class BookListObject : RealmObject() {
+open class BookObject : RealmObject() {
     @PrimaryKey
-    var id : Int = 0
+    var id : String = ""
 
     var title : String = ""
 
@@ -15,7 +16,11 @@ open class BookListObject : RealmObject() {
 
     var actionPlan : String = ""
 
-    var image : String = ""
+    var imageUrl : String = ""
+
+    var author : String = ""
+
+    var createdAt : Date = Date()
 
     var actionPlanDairy : RealmList<ActionPlanObject> = RealmList()
 

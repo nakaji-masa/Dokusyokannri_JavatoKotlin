@@ -67,6 +67,11 @@ class UserEmailFragment : BaseAuthFragment(), TextWatcher {
 
     }
 
+    /**
+     * 新規登録するメソッド
+     * @param email
+     * @param password
+     */
     private fun createAccountWithEmailAndPassword(email: String, password: String) {
         showProgressBar()
         Log.d(TAG_EMAIL, "createAccount:${email}")
@@ -83,6 +88,11 @@ class UserEmailFragment : BaseAuthFragment(), TextWatcher {
             }
     }
 
+    /**
+     * ログインするメソッド
+     * @param email
+     * @param password
+     */
     private fun loginAccountWithEmailAndPassword(email: String, password: String) {
         showProgressBar()
         mAuth.signInWithEmailAndPassword(email, password)
@@ -106,11 +116,19 @@ class UserEmailFragment : BaseAuthFragment(), TextWatcher {
     override fun afterTextChanged(s: Editable?) {
     }
 
+    /**
+     * メールアドレスが入力されているか、書式はあっているかを判定するメソッド
+     * @return Boolean
+     */
     private fun isValidEmail(): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(inputEmail.text)
             .matches() && inputEmail.text.isNotBlank()
     }
 
+    /**
+     * パスワードが入力されているか、書式はあっているかを判定するメソッド
+     * @return Boolean
+     */
     private fun isValidPassword(): Boolean {
         val numberMatcher = Pattern.compile("[0-9]").matcher(inputPassword.text)
         val letterMatcher = Pattern.compile("[a-z]").matcher(inputPassword.text)

@@ -1,70 +1,55 @@
 <resources>
     <string name="app_name">Book Action</string>
-    <string name="registerButton">読んだ本を登録</string>
-    <string name="Book_name_input">読んだ本のタイトル</string>
-    <string name="Book_deadline_input">読んだ日付</string>
-    <string name="Book_notice_input">本を読んで気づいたこと・学んだこと</string>
-    <string name="Book_actionPlan_input">アクションプラン</string>
-    <string name="Book_image">本の表紙</string>
-    <string name="Book_save_button">保存</string>
-    <string name="Book_name_view">本の名前</string>
-    <string name="Book_deadline_view">読み終わった日付</string>
-    <string name="Book_Notice_view">気づいたこと・学んだこと</string>
-    <string name="Book_ActionPlan_view">アクションプラン</string>
-    <string name="Back_Button">戻る</string>
-    <string name="Change_Button">変更</string>
-    <string name="Delete_Button">削除</string>
-    <string name="dialog_title">アクションプランの確認</string>
-    <string name="dialog_msg">前回決めたアクションプランは実行できていますか？</string>
-    <string name="dialog_ok">はい</string>
-    <string name="dialog_ng">いいえ</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="register_button">読んだ本を登録</string>
+    <string name="book_name_input">読んだ本のタイトル</string>
+    <string name="book_deadline_input">読んだ日付</string>
+    <string name="book_actionPlan_input">アクションプラン</string>
+    <string name="book_image">本の表紙</string>
+    <string name="book_save_button">保存</string>
+    <string name="book_name_view">本の名前</string>
+    <string name="book_deadline_view">読み終わった日付</string>
+    <string name="book_notice_view">気づいたこと・学んだこと</string>
+    <string name="book_actionPlan_view">アクションプラン</string>
     <string name="barcode_button">バーコード検索</string>
     <string name="read_book">本棚</string>
     <string name="graph">グラフ</string>
     <string name="settings">設定</string>
     <string name="date">日付</string>
-    <string name="action_what">どんなアクションをしたか？</string>
-    <string name="action_date">実行した日付</string>
-    <string name="action_content_view">実行した内容</string>
     <string name="next_action_view">次に実行する行動</string>
     <string name="users_book">皆が読んだ本</string>
-    <string name="defaultImage">defaultImage</string>
-    <string name="noDefaultImage">NoDefaultImage</string>
     <string name="book_author">著:</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">Hello Square World!</string>
     <string name="userName">ユーザーネーム(必須)</string>
     <string name="password">パスワード(英数字8文字以上)</string>
-    <string name="newRegister">新規登録</string>
+    <string name="new_register">新規登録</string>
     <string name="login">ログイン</string>
-    <string name="imageSelect">画像を選択</string>
+    <string name="image_select">画像を選択</string>
     <string name="mail_address">メールアドレス</string>
     <string name="welcome_app">Book Actionへようこそ</string>
     <string name="google_register_text">Googleで登録・ログイン</string>
     <string name="twitter_register_text">Twitterで登録・ログイン</string>
     <string name="mail_register_text">メールアドレスで登録</string>
     <string name="mail_login_text">メールアドレスでログイン</string>
-    <string name="userIntroductionString">自己紹介文(150文字以内)</string>
+    <string name="user_introduction">自己紹介文(150文字以内)</string>
     <string name="save_text">保存</string>
     <string name="no_user_name">取得できませんでした</string>
-
-    <string name="google_client_id">googleClient</string>
-    <string name="author">著者</string>
+    <string name="author">著者:%1$s</string>
     <string name="post_text">投稿する</string>
     <string name="comment_input">コメントを記入</string>
+    <string name="read_date">読んだ日付</string>
+
+    <!--アクションプラン用の文字列-->
+    <string name="action_title">タイトル</string>
+    <string name="action_title_hint">タイトルを入力</string>
+    <string name="action_what">What</string>
+    <string name="action_what_hint">行動した内容を入力</string>
+    <string name="action_could">Could</string>
+    <string name="action_could_hint">できたことを入力</string>
+    <string name="action_could_not">Could Not</string>
+    <string name="action_could_not_hint">課題・改善点を入力</string>
+    <string name="action_next">Next Action Plan</string>
+    <string name="action_next_hint">次のアクションプランを入力</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

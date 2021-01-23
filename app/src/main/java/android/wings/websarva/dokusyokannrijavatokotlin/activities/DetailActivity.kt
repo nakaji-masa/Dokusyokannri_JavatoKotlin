@@ -2,10 +2,9 @@ package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailTabAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailSelectFragment
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
@@ -16,24 +15,37 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        val id = intent.getIntExtra("id", 0)
+        val id = intent.getStringExtra(BOOK_ID)
 
-        //アダプターのセット
-        detailPager.adapter = DetailTabAdapter(supportFragmentManager, this, id)
-
-        //タブにpagerの情報をセット
-        detailTabLayout.setupWithViewPager(detailPager)
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.detailContainer, DetailSelectFragment.newInstance(id))
+        transaction.commit()
 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
-        } else {
-            return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
+    }
 
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            finish()
+        } else {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    companion object {
+        const val BOOK_ID = "book_id"
+        const val ACTION_PLAN_ID = "action_id"
     }
 
 }

@@ -136,6 +136,9 @@ UserProfileFragment : BaseAuthFragment(), TextWatcher {
         }
     }
 
+    /**
+     * ユーザーのギャラリーへ遷移するメソッド
+     */
     private fun selectImage() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -143,6 +146,10 @@ UserProfileFragment : BaseAuthFragment(), TextWatcher {
         startActivityForResult(intent, READ_RC)
     }
 
+    /**
+     * デフォルトのUriを返すメソッド
+     * @return Uri
+     */
     private fun getDefaultUri(): Uri {
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
                 "android.wings.websarva.dokusyokannrijavatokotlin" + "/drawable" + "/ic_account")

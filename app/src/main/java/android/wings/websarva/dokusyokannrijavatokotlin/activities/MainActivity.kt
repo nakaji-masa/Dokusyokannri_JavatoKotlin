@@ -1,13 +1,11 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
-import android.content.Intent
 import android.os.Bundle
-import android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments.BookListFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.BookListFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments.GraphFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments.SettingsFragment
-import android.wings.websarva.dokusyokannrijavatokotlin.user.UserActivity
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -22,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         val transaction = supportFragmentManager.beginTransaction()
 
-        transaction.replace(R.id.mainContainer, fragment)
+        transaction.replace(R.id.detailContainer, fragment)
 
         transaction.commit()
 
@@ -31,28 +29,28 @@ class MainActivity : AppCompatActivity() {
             when(item.itemId){
                 R.id.book_read_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainContainer, BookListFragment())
+                        .replace(R.id.detailContainer, BookListFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.graph_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainContainer, GraphFragment())
+                        .replace(R.id.detailContainer, GraphFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.settings_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainContainer, SettingsFragment())
+                        .replace(R.id.detailContainer, SettingsFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.library_item -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainContainer, LibraryFragment())
+                        .replace(R.id.detailContainer, LibraryFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }

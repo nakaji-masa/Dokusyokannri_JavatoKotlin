@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.booklist.fragments
+package android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments
 
 import android.content.Intent
 import android.graphics.Rect
@@ -10,14 +10,14 @@ import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
-import android.wings.websarva.dokusyokannrijavatokotlin.booklist.BookListAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.BookshelfAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_book_list.*
+import kotlinx.android.synthetic.main.fragment_book_shelf.*
 
 
 class BookListFragment : Fragment() {
@@ -26,7 +26,6 @@ class BookListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         realm = Realm.getInstance(RealmConfigObject.bookListConfig)
     }
 
@@ -34,13 +33,13 @@ class BookListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_book_list, container, false)
+        return inflater.inflate(R.layout.fragment_book_shelf, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val bookList = realm.where(BookListObject::class.java).findAll()
-        val adapter = BookListAdapter(view.context, bookList, true)
+        val bookList = realm.where(BookObject::class.java).findAll()
+        val adapter = BookshelfAdapter(view.context, bookList, true)
 
         // 画面のサイズを取得する
         val dm = DisplayMetrics()
@@ -58,10 +57,10 @@ class BookListFragment : Fragment() {
         bookListRecyclerView.adapter = adapter
         bookListRecyclerView.setHasFixedSize(true)
 
-        adapter.setOnItemClickListener(object : BookListAdapter.OnItemClickListener {
-            override fun onItemClickListener(view: View, position: Int, clickedId: Int?) {
+        adapter.setOnItemClickListener(object : BookshelfAdapter.OnItemClickListener {
+            override fun onItemClickListener(view: View, position: Int, clickedId: String?) {
                 val intent = Intent(view.context, DetailActivity::class.java)
-                intent.putExtra("id", clickedId)
+                intent.putExtra(DetailActivity.BOOK_ID, clickedId)
                 startActivity(intent)
             }
         })

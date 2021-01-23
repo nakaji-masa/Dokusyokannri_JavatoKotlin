@@ -1,7 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
 import android.Manifest
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,7 +8,6 @@ import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
@@ -17,7 +15,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.views.PortraitActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookListObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
@@ -47,27 +45,14 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
     private lateinit var bookListRealm: Realm
     private lateinit var graphRealm: Realm
-    private lateinit var menuSaveButton: Button
-    private var id: Int = -1
-    private var title = ""
-    private var authors = ""
-    private var thumbnail = ""
+    private  var menuSaveButton: Button? = null
+    private var id: String? = null
     private var imagePath = R.drawable.ic_book_default_image.toString()
-    private val runnable = Runnable {
-        registerBookTitleInput.setText(title)
-        if (authors != "") {
-            authors = authors.substring(2, authors.length - 2)
-        }
-        registerBookAuthorInput.setText(authors)
-        Glide.with(this).load(thumbnail).into(registerBookImageInput)
-        imagePath = thumbnail
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        setTitle(R.string.registerButton)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -81,14 +66,14 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         registerBookDateInput.setText(DateHelper.getToday())
         registerBookDateInput.isEnabled = false
 
-        id = intent.getIntExtra(INTENT_ID, -1)
+        id = intent.getStringExtra(INTENT_ID)
 
-        if (id != -1) {
-            val book = bookListRealm.where<BookListObject>().equalTo("id", id).findFirst()
+        if (id != null) {
+            val book = bookListRealm.where<BookObject>().equalTo("id", id).findFirst()
             registerBookTitleInput.setText(book?.title)
             registerBookDateInput.setText(book?.date)
             registerBookActionPlanInput.setText(book?.actionPlan)
-            book?.image?.let {
+            book?.imageUrl?.let {
                 GlideHelper.viewGlide(it, registerBookImageInput)
                 imagePath = it
             }
@@ -165,12 +150,19 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                                 title = volumeInfo.getString(JSON_TITLE)
 
                                 //著者を取得する
-                                authors = volumeInfo.getString(JSON_AUTHORS)
+                                val authors = volumeInfo.getString(JSON_AUTHORS)
 
                                 //imageLinksを取得する
                                 val imageLinks = volumeInfo.getJSONObject(JSON_IMAGE_LINKS)
 
-                                thumbnail = imageLinks.getString(JSON_THUMBNAIL)
+                                val thumbnail = imageLinks.getString(JSON_THUMBNAIL)
+
+                                val runnable = Runnable {
+                                    registerBookTitleInput.setText(title)
+                                    registerBookAuthorInput.setText(authors)
+                                    Glide.with(this@RegisterActivity).load(thumbnail).into(registerBookImageInput)
+                                    imagePath = thumbnail
+                                }
 
                                 handler.post(runnable)
                             }
@@ -230,21 +222,22 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         }
     }
 
-    private fun saveBookData(id: Int) {
-        if (id == -1) {
+    private fun saveBookData(id: String?) {
+        if (id == null) {
             val title = registerBookTitleInput.text.toString()
             val date = registerBookDateInput.text.toString()
+            val author = registerBookAuthorInput.text.toString()
             val actionPlan = registerBookActionPlanInput.text.toString()
 
             bookListRealm.executeTransaction {
-                val maxId = bookListRealm.where<BookListObject>().max("id")
+                val maxId = bookListRealm.where<BookObject>().max("id")
                 val nextId = (maxId?.toInt() ?: 0) + 1
-                val book = bookListRealm.createObject<BookListObject>(nextId)
+                val book = bookListRealm.createObject<BookObject>(nextId)
                 //ドキュメントのidを取得。realmと連動した形にする。
                 book.title = title
                 book.date = date
                 book.actionPlan = actionPlan
-                book.image = imagePath
+                book.imageUrl = imagePath
             }
 
             graphRealm.executeTransaction {
@@ -278,7 +271,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 DateHelper.getToday(),
                 title,
                 actionPlan,
-                authors,
+                author,
                 imagePath,
                 AuthHelper.getUid(),
                 mutableListOf(),
@@ -298,11 +291,11 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
         } else {
             bookListRealm.executeTransaction {
-                val book = bookListRealm.where<BookListObject>().equalTo("id", id).findFirst()
+                val book = bookListRealm.where<BookObject>().equalTo("id", id).findFirst()
                 book?.title = registerBookTitleInput.text.toString()
                 book?.date = registerBookDateInput.text.toString()
                 book?.actionPlan = registerBookActionPlanInput.text.toString()
-                book?.image = imagePath
+                book?.imageUrl = imagePath
             }
             AlertDialog.Builder(this)
                 .setMessage("変更しました")
@@ -327,14 +320,12 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.register_menu, menu)
+        menuInflater.inflate(R.menu.book_register_menu, menu)
         val saveItem = menu?.findItem(R.id.saveItem)
         val barcodeItem = menu?.findItem(R.id.barcodeItem)
-        saveItem?.actionView?.findViewById<Button>(R.id.saveButton)?.let {
-            menuSaveButton = it
-        }
+        menuSaveButton = saveItem?.actionView?.findViewById(R.id.saveButton)
         val menuBarcodeImage = barcodeItem?.actionView?.findViewById<ImageView>(R.id.barcodeImage)
-        menuSaveButton.setOnClickListener {
+        menuSaveButton?.setOnClickListener {
             saveBookData(id)
         }
         menuBarcodeImage?.setOnClickListener {
@@ -367,7 +358,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     }
 
     private fun watchAllInput() {
-        menuSaveButton.isEnabled =
+        menuSaveButton?.isEnabled =
             !(registerBookTitleInput.text.isNullOrBlank() || registerBookActionPlanInput.text.isNullOrBlank())
     }
 

@@ -40,7 +40,7 @@
             <TextView
                 android:id="@+id/registerBookDate"
                 style="@style/BasicTextView"
-                android:text="@string/Book_deadline_input"
+                android:text="@string/book_deadline_input"
                 app:layout_constraintBottom_toTopOf="@id/registerBookDateInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
             <TextView
                 android:id="@+id/registerBookTitle"
                 style="@style/BasicTextView"
-                android:text="@string/Book_name_input"
+                android:text="@string/book_name_input"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookTitleInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +93,7 @@
             <TextView
                 android:id="@+id/registerBookActionPlan"
                 style="@style/BasicTextView"
-                android:text="@string/Book_actionPlan_input"
+                android:text="@string/book_actionPlan_input"
                 app:layout_constraintBottom_toTopOf="@+id/registerBookActionPlanInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

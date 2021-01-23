@@ -119,6 +119,9 @@ class GraphFragment : Fragment() {
         return view
     }
 
+    /**
+     * グラフの設定をするメソッド
+     */
     private fun setUpChart(chart: BarChart) {
 
         //グラフのタイトル設定
@@ -160,6 +163,9 @@ class GraphFragment : Fragment() {
 
     }
 
+    /**
+     * 1月から12月までの値を格納するメソッド
+     */
     private fun setBookCount(record: GraphObject?, values: ArrayList<BarEntry>) {
         for (i in 1..12) {
             val month = record?.graphList?.get(i - 1)
@@ -172,7 +178,9 @@ class GraphFragment : Fragment() {
     }
 
 
-    //y軸に単位を入れてあげる。
+    /**
+     * y軸のラベルを設定するクラスです
+     */
     class MyYAxisValueFormatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
             return value.toInt().toString() + "冊"
@@ -180,7 +188,9 @@ class GraphFragment : Fragment() {
 
     }
 
-    //中のラベル表示をする。
+    /**
+     * グラフ内のラベルを設定するメソッドです
+     */
     class InsideValueFormatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
             return value.toInt().toString()

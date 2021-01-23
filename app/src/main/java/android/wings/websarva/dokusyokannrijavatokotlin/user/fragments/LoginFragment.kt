@@ -57,6 +57,10 @@ class LoginFragment : BaseAuthFragment() {
 
     }
 
+    /**
+     * Googleにサインインするメソッド
+     * @param idToken
+     */
     private fun signInAccountWithGoogle(idToken: String) {
         showProgressBar()
         val credential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
@@ -72,11 +76,17 @@ class LoginFragment : BaseAuthFragment() {
             }
     }
 
+    /**
+     * サインインするGoogleアカウントを表示するメソッド
+     */
     private fun googleSignIn() {
         val googleSignInIntent = googleSignInClient.signInIntent
         startActivityForResult(googleSignInIntent, RC_GOOGLE_SIGN_IN)
     }
 
+    /**
+     * twitterでサインインするためのメソッド
+     */
     private fun twitterSignIn() {
         showProgressBar()
         val provider = OAuthProvider.newBuilder("twitter.com")
@@ -107,6 +117,9 @@ class LoginFragment : BaseAuthFragment() {
         }
     }
 
+    /**
+     * メールアドレスで登録・ログインするフラグメントへ遷移するメソッド
+     */
     private fun moveToUserEmailFragment(type: String) {
         val transaction = activity?.supportFragmentManager?.beginTransaction()
         transaction?.replace(R.id.userContainer, UserEmailFragment.newInstance(type))
