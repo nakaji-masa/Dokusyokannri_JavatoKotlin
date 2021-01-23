@@ -45,7 +45,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
     private lateinit var bookListRealm: Realm
     private lateinit var graphRealm: Realm
-    private  var menuSaveButton: Button? = null
+    private var menuSaveButton: Button? = null
     private var id: String? = null
     private var imagePath = R.drawable.ic_book_default_image.toString()
 
@@ -95,6 +95,45 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.book_register_menu, menu)
+        val saveItem = menu?.findItem(R.id.saveItem)
+        val barcodeItem = menu?.findItem(R.id.barcodeItem)
+        menuSaveButton = saveItem?.actionView?.findViewById(R.id.saveButton)
+        val menuBarcodeImage = barcodeItem?.actionView?.findViewById<ImageView>(R.id.barcodeImage)
+        menuSaveButton?.setOnClickListener {
+            saveBookData(id)
+        }
+        menuBarcodeImage?.setOnClickListener {
+            searchBook()
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    //戻るボタンを押したときの処理
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        watchAllInput()
+    }
+
+    override fun afterTextChanged(s: Editable?) {
+    }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //バーコードから来た場合
@@ -126,7 +165,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
                     override fun onFailure(call: Call, e: IOException) {
                         //失敗したときのログを出力
-                       e.printStackTrace()
+                        e.printStackTrace()
                     }
 
                     override fun onResponse(call: Call, response: Response) {
@@ -160,7 +199,8 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                                 val runnable = Runnable {
                                     registerBookTitleInput.setText(title)
                                     registerBookAuthorInput.setText(authors)
-                                    Glide.with(this@RegisterActivity).load(thumbnail).into(registerBookImageInput)
+                                    Glide.with(this@RegisterActivity).load(thumbnail)
+                                        .into(registerBookImageInput)
                                     imagePath = thumbnail
                                 }
 
@@ -331,44 +371,6 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.book_register_menu, menu)
-        val saveItem = menu?.findItem(R.id.saveItem)
-        val barcodeItem = menu?.findItem(R.id.barcodeItem)
-        menuSaveButton = saveItem?.actionView?.findViewById(R.id.saveButton)
-        val menuBarcodeImage = barcodeItem?.actionView?.findViewById<ImageView>(R.id.barcodeImage)
-        menuSaveButton?.setOnClickListener {
-            saveBookData(id)
-        }
-        menuBarcodeImage?.setOnClickListener {
-            searchBook()
-        }
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    //戻るボタンを押したときの処理
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        watchAllInput()
-    }
-
-    override fun afterTextChanged(s: Editable?) {
-    }
 
     /**
      * 本のタイトルとアクションプランが入力されていれば、保存ボタンを活性化するメソッド
