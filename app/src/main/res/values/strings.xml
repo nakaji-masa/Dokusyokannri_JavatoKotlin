@@ -11,13 +11,9 @@
     <string name="book_notice_view">気づいたこと・学んだこと</string>
     <string name="book_actionPlan_view">アクションプラン</string>
     <string name="barcode_button">バーコード検索</string>
-    <string name="read_book">本棚</string>
-    <string name="graph">グラフ</string>
-    <string name="settings">設定</string>
     <string name="date">日付</string>
     <string name="next_action_view">次に実行する行動</string>
-    <string name="users_book">皆が読んだ本</string>
-    <string name="book_author">著:</string>
+    <string name="author_column">著者</string>
     <string name="userName">ユーザーネーム(必須)</string>
     <string name="password">パスワード(英数字8文字以上)</string>
     <string name="new_register">新規登録</string>
@@ -48,8 +44,19 @@
     <string name="action_could_not_hint">課題・改善点を入力</string>
     <string name="action_next">Next Action Plan</string>
     <string name="action_next_hint">次のアクションプランを入力</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_first">最初のアクションプラン</string>
 
+    <!--BottomNavigationViewのタイトル-->
+    <string name="title_bookshelf">本棚</string>
+    <string name="title_graph">グラフ</string>
+    <string name="title_post">投稿</string>
+    <string name="title_settings">設定</string>
+
+    <!--AlertDialogのテキスト-->
+    <string name="dialog_positive">OK</string>
+    <string name="dialog_negative">キャンセル</string>
+    <string name="dialog_register_message">登録に成功しました。</string>
+    <string name="dialog_delete_message">削除しますか？</string>
+    <string name="dialog_update_message">変更しました</string>
 
 </resources>

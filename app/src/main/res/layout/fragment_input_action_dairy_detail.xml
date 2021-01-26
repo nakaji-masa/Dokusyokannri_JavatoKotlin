@@ -8,7 +8,7 @@
     tools:context=".detail.fragments.InputActionDairyDetailFragment">
 
     <TextView
-        style="@style/BasicInputActionTextView"
+        style="@style/BasicTextView"
         android:id="@+id/actionTitleColumn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
     
     <androidx.appcompat.widget.AppCompatEditText
-        style="@style/BasicInputActionEditText"
+        style="@style/BasicEditText"
         android:id="@+id/actionTitleInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/actionTitleColumn" />
 
     <TextView
-        style="@style/BasicInputActionTextView"
+        style="@style/BasicTextView"
         android:id="@+id/actionWhatColumn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionTitleInput"/>
 
     <androidx.appcompat.widget.AppCompatEditText
-        style="@style/BasicInputActionMultiLineEditText"
+        style="@style/BasicMultiLineEditText"
         android:id="@+id/actionWhatInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionWhatColumn"/>
     
     <TextView
-        style="@style/BasicInputActionTextView"
+        style="@style/BasicTextView"
         android:id="@+id/actionCouldColumn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionWhatInput"/>
 
     <androidx.appcompat.widget.AppCompatEditText
-        style="@style/BasicInputActionMultiLineEditText"
+        style="@style/BasicMultiLineEditText"
         android:id="@+id/actionCouldInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionCouldColumn"/>
 
     <TextView
-        style="@style/BasicInputActionTextView"
+        style="@style/BasicTextView"
         android:id="@+id/actionCouldNotColumn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionCouldInput"/>
 
     <androidx.appcompat.widget.AppCompatEditText
-        style="@style/BasicInputActionMultiLineEditText"
+        style="@style/BasicMultiLineEditText"
         android:id="@+id/actionCouldNotInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionCouldNotColumn"/>
 
     <TextView
-        style="@style/BasicInputActionTextView"
+        style="@style/BasicTextView"
         android:id="@+id/actionNextColumn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionCouldNotInput"/>
 
     <androidx.appcompat.widget.AppCompatEditText
-        style="@style/BasicInputActionMultiLineEditText"
+        style="@style/BasicMultiLineEditText"
         android:id="@+id/actionNextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

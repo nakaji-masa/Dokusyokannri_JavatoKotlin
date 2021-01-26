@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/actionDetailTitleColumn"
-            style="@style/BasicInputActionTextView"
+            style="@style/BasicTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/action_title"
@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/actionDetailDateColumn"
-            style="@style/BasicInputActionTextView"
+            style="@style/BasicTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/date"
@@ -86,7 +86,7 @@
 
         <TextView
             android:id="@+id/actionDetailWhatColumn"
-            style="@style/BasicInputActionTextView"
+            style="@style/BasicTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/action_what"
@@ -108,7 +108,7 @@
 
         <TextView
             android:id="@+id/actionDetailCouldColumn"
-            style="@style/BasicInputActionTextView"
+            style="@style/BasicTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/action_could"
@@ -130,7 +130,7 @@
 
         <TextView
             android:id="@+id/actionDetailCouldNotColumn"
-            style="@style/BasicInputActionTextView"
+            style="@style/BasicTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/action_could_not"
@@ -152,7 +152,7 @@
 
         <TextView
             android:id="@+id/actionDetailNextColumn"
-            style="@style/BasicInputActionTextView"
+            style="@style/BasicTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/action_next"
