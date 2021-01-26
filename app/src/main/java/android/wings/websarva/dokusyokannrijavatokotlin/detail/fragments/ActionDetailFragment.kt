@@ -1,20 +1,25 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import io.realm.Realm
+import io.realm.Sort
+import kotlinx.android.synthetic.main.fragment_action_detail.*
+import kotlinx.android.synthetic.main.fragment_action_detail.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class ActionDetailFragment : Fragment() {
-
     private lateinit var realm: Realm
     private lateinit var bookId: String
     private lateinit var actionId: String
@@ -51,6 +56,54 @@ class ActionDetailFragment : Fragment() {
         could.text = obj?.could
         couldNot.text = obj?.couldNot
         next.text = obj?.nextAction
+
+        // 最初のアクションプランは編集・削除不可にする
+        if (obj?.title == getString(R.string.action_first)) {
+            actionUpdateButton.visibility = View.INVISIBLE
+            actionDeleteButton.visibility = View.INVISIBLE
+        } else {
+            view.actionUpdateButton.setOnClickListener {
+                moveToInputActionPlanFragment()
+            }
+
+            view.actionDeleteButton.setOnClickListener {
+                AlertDialog.Builder(activity, R.style.BasicDialogTheme)
+                    .setMessage(R.string.dialog_delete_message)
+                    .setPositiveButton(R.string.dialog_positive) { dialog, which ->
+                        deleteData(obj)
+                        dialog.dismiss()
+                        activity?.supportFragmentManager?.popBackStack()
+                    }
+                    .setNegativeButton(R.string.dialog_negative) { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+        }
+    }
+
+    /**
+     * アクションプランの入力画面に遷移するメソッド
+     */
+    private fun moveToInputActionPlanFragment() {
+        val transaction = activity?.supportFragmentManager?.beginTransaction()
+        transaction?.replace(R.id.detailContainer, InputActionDairyDetailFragment.newInstance(bookId, actionId))
+        transaction?.addToBackStack(null)
+        transaction?.commit()
+    }
+
+    /**
+     * アクションプランを削除するメソッド
+     */
+    private fun deleteData(obj: ActionPlanObject?) {
+        realm.executeTransaction {
+            obj?.deleteFromRealm()
+            val newestObj = it.where(ActionPlanObject::class.java).findAll().sort("date", Sort.DESCENDING).first()
+            val bookObject = it.where(BookObject::class.java).equalTo("id", bookId).findFirst()
+            newestObj?.nextAction?.let { text ->
+                bookObject?.actionPlan = text
+            }
+        }
     }
 
     /**
@@ -83,7 +136,5 @@ class ActionDetailFragment : Fragment() {
             }
 
     }
-
-
 }
 

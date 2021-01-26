@@ -1,6 +1,7 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.utils
 
 
+import android.util.Log
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -10,6 +11,7 @@ import kotlinx.coroutines.tasks.await
 object FireStoreHelper {
     private const val COLLECTION_USER_PATH = "user"
     private const val COLLECTION_POST_PATH = "post"
+    private const val TAG = "FireStore"
     private val fireStore = FirebaseFirestore.getInstance()
     private val userCollection = fireStore.collection(COLLECTION_USER_PATH)
     private val postCollection = fireStore.collection(COLLECTION_POST_PATH)
@@ -59,6 +61,15 @@ object FireStoreHelper {
                     .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
             )
             .build()
+    }
+
+    /**
+     * 指定されたドキュメントを削除するメソッドです
+     * @param docId ドキュメントのid
+     */
+    suspend fun deleteDocument(docId: String) {
+        postCollection.document(docId).delete().await()
+        Log.d(TAG, "削除成功")
     }
 
 }

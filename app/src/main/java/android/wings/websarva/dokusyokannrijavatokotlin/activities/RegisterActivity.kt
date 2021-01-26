@@ -10,11 +10,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.views.PortraitActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
@@ -68,6 +70,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
         id = intent.getStringExtra(INTENT_ID)
 
+        // idがnullでなければ、EditTextに文字列を入れる
         if (id != null) {
             val book = bookListRealm.where<BookObject>().equalTo("id", id).findFirst()
             registerBookTitleInput.setText(book?.title)
@@ -76,6 +79,13 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             book?.imageUrl?.let {
                 GlideHelper.viewGlide(it, registerBookImageInput)
                 imagePath = it
+            }
+
+            // アクションプランが2以上登録されていれば、アクションプランを入力しないようにする
+            println(book?.actionPlanDairy?.size)
+            if (book?.actionPlanDairy?.size != 1) {
+                registerBookActionPlan.visibility = View.INVISIBLE
+                registerBookActionPlanInput.visibility = View.INVISIBLE
             }
         }
 
@@ -186,24 +196,22 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                                 val volumeInfo = item.getJSONObject(JSON_VOLUME_INFO)
 
                                 //タイトルを取得する
-                                title = volumeInfo.getString(JSON_TITLE)
+                                val title = volumeInfo.getString(JSON_TITLE)
 
                                 //著者を取得する
                                 val authors = volumeInfo.getString(JSON_AUTHORS)
 
-                                //imageLinksを取得する
+                                // 画像を取得する
                                 val imageLinks = volumeInfo.getJSONObject(JSON_IMAGE_LINKS)
-
                                 val thumbnail = imageLinks.getString(JSON_THUMBNAIL)
 
                                 val runnable = Runnable {
                                     registerBookTitleInput.setText(title)
-                                    registerBookAuthorInput.setText(authors)
+                                    registerBookAuthorInput.setText(authors.substring(2..authors.length - 3))
                                     Glide.with(this@RegisterActivity).load(thumbnail)
                                         .into(registerBookImageInput)
                                     imagePath = thumbnail
                                 }
-
                                 handler.post(runnable)
                             }
                         } catch (e: JSONException) {
@@ -214,6 +222,21 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        //バーコードリクエストコードを持っていたらバーコードを起動する。
+        if (requestCode == BARCODE_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                takeBarCode()
+            }
         }
     }
 
@@ -251,22 +274,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         )
 
 
-    //パーミッションを得たときにカメラの起動する関数。
-    //取得の確認をするメソッド。
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        //バーコードリクエストコードを持っていたらバーコードを起動する。
-        if (requestCode == BARCODE_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) {
-                takeBarCode()
-            }
-        }
-    }
+
 
     /**
      * 本のデータを保存または更新するメソッド
@@ -274,20 +282,23 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
      */
     private fun saveBookData(id: String?) {
         if (id == null) {
+            val bookId = UUID.randomUUID().toString()
             val title = registerBookTitleInput.text.toString()
             val date = registerBookDateInput.text.toString()
             val author = registerBookAuthorInput.text.toString()
             val actionPlan = registerBookActionPlanInput.text.toString()
 
             bookListRealm.executeTransaction {
-                val maxId = bookListRealm.where<BookObject>().max("id")
-                val nextId = (maxId?.toInt() ?: 0) + 1
-                val book = bookListRealm.createObject<BookObject>(nextId)
-                //ドキュメントのidを取得。realmと連動した形にする。
+                val book = it.createObject<BookObject>(bookId)
                 book.title = title
                 book.date = date
+                book.author = author
                 book.actionPlan = actionPlan
                 book.imageUrl = imagePath
+                val actionObj = it.createObject<ActionPlanObject>(UUID.randomUUID().toString())
+                actionObj.title = getString(R.string.action_first)
+                actionObj.nextAction = actionPlan
+                book.actionPlanDairy.add(actionObj)
             }
 
             graphRealm.executeTransaction {
@@ -313,11 +324,8 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 }
             }
 
-            val docId = UUID.randomUUID().toString()
-
-
             val book = BookHelper(
-                docId,
+                bookId,
                 DateHelper.getToday(),
                 title,
                 actionPlan,
@@ -326,14 +334,16 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 AuthHelper.getUid(),
                 mutableListOf(),
                 mutableListOf(),
+                Date(),
                 Date()
             )
 
             FireStoreHelper.savePostData(book)
 
             AlertDialog.Builder(this)
-                .setMessage("追加しました")
-                .setPositiveButton("OK") { dialog, which ->
+                .setMessage(getString(R.string.dialog_register_message))
+                .setPositiveButton(getString(R.string.dialog_positive)) { dialog, which ->
+                    dialog.dismiss()
                     finish()
                 }
                 .show()
@@ -344,12 +354,12 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 val book = bookListRealm.where<BookObject>().equalTo("id", id).findFirst()
                 book?.title = registerBookTitleInput.text.toString()
                 book?.date = registerBookDateInput.text.toString()
-                book?.actionPlan = registerBookActionPlanInput.text.toString()
                 book?.imageUrl = imagePath
             }
             AlertDialog.Builder(this)
-                .setMessage("変更しました")
-                .setPositiveButton("OK") { dialog, which ->
+                .setMessage(getString(R.string.dialog_positive))
+                .setPositiveButton(getString(R.string.dialog_positive)) { dialog, which ->
+                    dialog.dismiss()
                     finish()
                 }
                 .show()

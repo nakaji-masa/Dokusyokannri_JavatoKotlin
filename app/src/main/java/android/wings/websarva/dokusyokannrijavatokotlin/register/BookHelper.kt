@@ -12,5 +12,6 @@ data class BookHelper(
     val uid: String = "",
     val likedUserList: MutableList<String> = mutableListOf(),
     val commentList: MutableList<BookCommentHelper> = mutableListOf(),
-    val createdAt: Date = Date()
+    val createdAt: Date = Date(),
+    val updateAt: Date = Date()
 )
