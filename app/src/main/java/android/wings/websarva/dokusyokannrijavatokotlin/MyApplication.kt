@@ -30,7 +30,11 @@ class MyApplication : Application() {
 
     companion object {
         private lateinit var context: Context
-        //コンテキストを取得
+
+        /**
+         * contextを返すメソッド
+         * @return Context
+         */
         fun getAppContext() : Context {
             return context
         }

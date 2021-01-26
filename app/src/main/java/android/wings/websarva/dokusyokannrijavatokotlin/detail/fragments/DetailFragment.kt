@@ -8,25 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivity
-import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
 import io.realm.Realm
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_detail.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DetailFragment : Fragment() {
-    private var id: String? = null
+    private lateinit var bookId: String
     private lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            id = it.getString(DetailActivity.BOOK_ID, "")
+            bookId = it.getString(DetailActivity.BOOK_ID, "")
         }
     }
 
@@ -41,7 +43,7 @@ class DetailFragment : Fragment() {
 
         realm = Realm.getInstance(RealmConfigObject.bookListConfig)
 
-        val book = realm.where<BookObject>().equalTo("id", id).findFirst()
+        val book = realm.where<BookObject>().equalTo("id", bookId).findFirst()
 
         view.detailBookTitle.text = book?.title
         view.detailBookAuthor.text = getString(R.string.author, book?.author)
@@ -51,21 +53,30 @@ class DetailFragment : Fragment() {
 
         //本の内容を削除する
         deleteButton.setOnClickListener {
-            realm.executeTransaction {
-                realm.where<BookObject>().equalTo("id", id).findFirst()?.deleteFromRealm()
-            }
 
             AlertDialog.Builder(view.context)
-                .setMessage("削除しました。")
-                .setPositiveButton("OK") { dialog, which ->
-                    activity?.supportFragmentManager?.popBackStack()
+                .setMessage(getString(R.string.dialog_delete_message))
+                .setNegativeButton(getString(R.string.dialog_negative)) { dialog, which ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(getString(R.string.dialog_positive)) { dialog, which ->
+                    realm.executeTransaction {
+                        realm.where<BookObject>().equalTo("id", bookId).findFirst()?.deleteFromRealm()
+                    }
+
+                    GlobalScope.launch {
+                        FireStoreHelper.deleteDocument(bookId)
+                    }
+
+                    dialog.dismiss()
+                    activity?.finish()
                 }.show()
         }
 
         //本の内容を変更する
         updateButton.setOnClickListener {
             val intent = Intent(activity, RegisterActivity::class.java)
-            intent.putExtra(RegisterActivity.INTENT_ID, id)
+            intent.putExtra(RegisterActivity.INTENT_ID, bookId)
             startActivity(intent)
         }
     }

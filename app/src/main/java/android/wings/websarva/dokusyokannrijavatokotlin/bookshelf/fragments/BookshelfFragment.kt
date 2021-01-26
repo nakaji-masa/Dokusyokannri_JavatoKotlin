@@ -20,7 +20,7 @@ import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_book_shelf.*
 
 
-class BookListFragment : Fragment() {
+class BookShelfFragment : Fragment() {
 
     private lateinit var realm: Realm
 
@@ -79,7 +79,7 @@ class BookListFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() =
-            BookListFragment().apply {
+            BookShelfFragment().apply {
                 arguments = Bundle().apply {
 
                 }

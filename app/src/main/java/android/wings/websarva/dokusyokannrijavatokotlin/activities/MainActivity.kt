@@ -1,7 +1,7 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.activities
 
 import android.os.Bundle
-import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.BookListFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.BookShelfFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.graph.fragments.GraphFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
@@ -16,11 +16,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fragment = BookListFragment()
+        supportActionBar?.title = getString(R.string.title_bookshelf)
 
         val transaction = supportFragmentManager.beginTransaction()
 
-        transaction.replace(R.id.detailContainer, fragment)
+        transaction.replace(R.id.detailContainer, BookShelfFragment.newInstance())
 
         transaction.commit()
 
@@ -28,29 +28,34 @@ class MainActivity : AppCompatActivity() {
 
             when(item.itemId){
                 R.id.book_read_item -> {
+                    supportActionBar?.title = getString(R.string.title_bookshelf)
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.detailContainer, BookListFragment())
+                        .replace(R.id.detailContainer, BookShelfFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.graph_item -> {
+                    supportActionBar?.title = getString(R.string.title_graph)
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.detailContainer, GraphFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
-                R.id.settings_item -> {
+                R.id.library_item -> {
+                    supportActionBar?.title = getString(R.string.title_post)
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.detailContainer, SettingsFragment())
+                        .replace(R.id.detailContainer, LibraryFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }
 
-                R.id.library_item -> {
+
+                R.id.settings_item -> {
+                    supportActionBar?.title = getString(R.string.title_settings)
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.detailContainer, LibraryFragment())
+                        .replace(R.id.detailContainer, SettingsFragment())
                         .commit()
                     return@setOnNavigationItemSelectedListener true
                 }

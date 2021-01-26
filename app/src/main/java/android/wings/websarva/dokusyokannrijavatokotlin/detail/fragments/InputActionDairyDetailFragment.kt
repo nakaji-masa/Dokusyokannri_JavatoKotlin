@@ -22,20 +22,30 @@ import java.util.*
 class InputActionDairyDetailFragment : Fragment(), TextWatcher {
 
     private lateinit var realm: Realm
-    private lateinit var id: String
-    private lateinit var menuSaveButton: Button
+    private lateinit var bookId: String
+    private lateinit var actionId: String
     private lateinit var titleEditText: EditText
     private lateinit var whatEditText: EditText
     private lateinit var couldEditText: EditText
     private lateinit var couldNotEditText: EditText
     private lateinit var actionNextEditText: EditText
+    private var menuSaveButton: Button? = null
+    private var bookObj: BookObject? = null
+    private var actionObj: ActionPlanObject? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            id = it.getString(DetailActivity.BOOK_ID, "")
+            bookId = it.getString(DetailActivity.BOOK_ID, "")
+            actionId = it.getString(DetailActivity.ACTION_PLAN_ID, "")
         }
         realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+
+        bookObj = realm.where(BookObject::class.java).equalTo("id", bookId).findAll().last()
+        if (actionId != "") {
+            actionObj =
+               bookObj?.actionPlanDairy?.last { it.id == actionId }
+        }
     }
 
     override fun onCreateView(
@@ -47,7 +57,6 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
-
         titleEditText = view.findViewById(R.id.actionTitleInput)
         whatEditText = view.findViewById(R.id.actionWhatInput)
         couldEditText = view.findViewById(R.id.actionCouldInput)
@@ -59,14 +68,27 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
         couldEditText.addTextChangedListener(this)
         couldNotEditText.addTextChangedListener(this)
         actionNextEditText.addTextChangedListener(this)
+
+        if (actionId != "") {
+            setEditTexts()
+        }
     }
 
+    /**
+     * EditTextにテキストをセットするメソッド
+     */
+    private fun setEditTexts() {
+        titleEditText.setText(actionObj?.title)
+        whatEditText.setText(actionObj?.what)
+        couldEditText.setText(actionObj?.could)
+        couldNotEditText.setText(actionObj?.couldNot)
+        actionNextEditText.setText(actionObj?.nextAction)
+    }
 
     /**
-     * BookObjectのactionPlanDiaryをrealmに保存する
+     * BookObjectのactionPlanDiaryをrealmに保存するメソッド
      */
     private fun saveData() {
-        val book = realm.where(BookObject::class.java).equalTo("id", id).findFirst()
         realm.executeTransaction {
             val obj = it.createObject(ActionPlanObject::class.java, UUID.randomUUID().toString())
             obj.title = titleEditText.text.toString()
@@ -74,7 +96,22 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
             obj.could = couldEditText.text.toString()
             obj.couldNot = couldNotEditText.text.toString()
             obj.nextAction = actionNextEditText.text.toString()
-            book?.actionPlanDairy?.add(obj)
+            bookObj?.actionPlanDairy?.add(obj)
+            bookObj?.actionPlan = actionNextEditText.text.toString()
+            bookObj?.actionPlan = actionNextEditText.text.toString()
+        }
+    }
+
+    /**
+     * actionPlanDiaryをrealmに保存するメソッド
+     */
+    private fun updateData() {
+        realm.executeTransaction {
+            actionObj?.title = titleEditText.text.toString()
+            actionObj?.what = whatEditText.text.toString()
+            actionObj?.could = couldEditText.text.toString()
+            actionObj?.couldNot = couldNotEditText.text.toString()
+            actionObj?.nextAction = actionNextEditText.text.toString()
         }
     }
 
@@ -89,20 +126,27 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.action_register_menu, menu)
         val saveItem = menu.findItem(R.id.actionSaveItem)
+        println("onCreateOptionsMenu")
         menuSaveButton = saveItem.actionView.findViewById(R.id.saveButton)
-        menuSaveButton.setOnClickListener {
-            // 入力した情報を保存
-            saveData()
+        menuSaveButton?.isEnabled = isInput()
+        menuSaveButton?.setOnClickListener {
+            // データの登録または更新
+            if (actionId == "") {
+                saveData()
+            } else {
+                updateData()
+            }
 
             // キーボードの非表示
             val inputManager =
                 activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
-            // 登録に成功したら、Alertを表示
+            // 登録または更新に成功したらダイアログを表示する
             AlertDialog.Builder(it.context, R.style.BasicDialogTheme)
-                .setMessage("登録に成功しました。")
-                .setPositiveButton("OK") { dialog, which ->
+                .setMessage(R.string.dialog_register_message)
+                .setPositiveButton(R.string.dialog_positive) { dialog, which ->
+                    dialog.dismiss()
                     activity?.supportFragmentManager?.popBackStack()
                 }.show()
         }
@@ -112,7 +156,7 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        menuSaveButton.isEnabled = isInput()
+        menuSaveButton?.isEnabled = isInput()
     }
 
     override fun afterTextChanged(s: Editable?) {
@@ -131,6 +175,16 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
                     putString(DetailActivity.BOOK_ID, bookId)
                 }
             }
+
+        @JvmStatic
+        fun newInstance(bookId: String, actionId: String) =
+            InputActionDairyDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putString(DetailActivity.BOOK_ID, bookId)
+                    putString(DetailActivity.ACTION_PLAN_ID, actionId)
+                }
+            }
+
     }
 }
 
