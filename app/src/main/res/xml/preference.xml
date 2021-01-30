@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
-        android:key="app_version"
+        android:key="user_info_update"
+        android:title="プロフィール変更" />
+
+    <Preference
+        android:key="version"
         android:summary="バージョン1.0.0"
         android:title="バージョン情報" />
 
     <Preference
-        android:key="app_term"
+        android:key="term"
         android:title="利用規約"/>
 
     <Preference

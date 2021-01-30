@@ -31,7 +31,7 @@ class ActionDairyFragment : Fragment() {
         arguments?.let {
             bookId = it.getString(DetailActivity.BOOK_ID, "")
         }
-        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        realm = Realm.getInstance(RealmConfigObject.bookConfig)
     }
 
     override fun onCreateView(

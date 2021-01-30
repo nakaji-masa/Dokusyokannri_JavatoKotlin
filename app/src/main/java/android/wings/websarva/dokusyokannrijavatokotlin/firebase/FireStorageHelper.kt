@@ -1,7 +1,6 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.utils
+package android.wings.websarva.dokusyokannrijavatokotlin.firebase
 
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 
 object FireStorageHelper {

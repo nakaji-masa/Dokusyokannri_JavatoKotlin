@@ -58,5 +58,7 @@
     <string name="dialog_register_message">登録に成功しました。</string>
     <string name="dialog_delete_message">削除しますか？</string>
     <string name="dialog_update_message">変更しました</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

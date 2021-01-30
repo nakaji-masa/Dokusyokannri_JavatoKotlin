@@ -97,7 +97,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:indeterminate="true"
         android:indeterminateTintMode="src_in"
         android:indeterminateTint="@color/colorPrimary"

@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.utils
+package android.wings.websarva.dokusyokannrijavatokotlin.firebase
 
 import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R

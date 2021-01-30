@@ -3,11 +3,15 @@ package android.wings.websarva.dokusyokannrijavatokotlin.realm.config
 import io.realm.RealmConfiguration
 
 object RealmConfigObject {
-    val bookListConfig: RealmConfiguration = RealmConfiguration.Builder()
-        .name("bookList")
+    val bookConfig: RealmConfiguration = RealmConfiguration.Builder()
+        .name("book")
         .build()
 
     val graphConfig: RealmConfiguration = RealmConfiguration.Builder()
-        .name("graphData")
+        .name("graph")
+        .build()
+
+    val userConfig: RealmConfiguration = RealmConfiguration.Builder()
+        .name("userInfo")
         .build()
 }

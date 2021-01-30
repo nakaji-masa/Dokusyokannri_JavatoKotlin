@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.user.UserActivity
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
 import java.lang.Runnable

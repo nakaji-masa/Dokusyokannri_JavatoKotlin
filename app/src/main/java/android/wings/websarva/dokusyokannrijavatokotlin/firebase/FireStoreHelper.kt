@@ -1,7 +1,6 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.utils
+package android.wings.websarva.dokusyokannrijavatokotlin.firebase
 
 
-import android.util.Log
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -69,7 +68,21 @@ object FireStoreHelper {
      */
     suspend fun deleteDocument(docId: String) {
         postCollection.document(docId).delete().await()
-        Log.d(TAG, "削除成功")
+    }
+
+    /**
+     * ユーザーの情報を保存するメソッドです
+     * @param userInfo ユーザーのプロフィール
+     * @return Boolean　保存が成功したかどうかの判定
+     */
+    suspend fun hasSavedUserInfo(userInfo: UserInfo): Boolean {
+        return try {
+            userCollection.document(AuthHelper.getUid()).set(userInfo).await()
+            true
+        } catch (e: FirebaseFirestoreException) {
+            e.printStackTrace()
+            false
+        }
     }
 
 }

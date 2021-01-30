@@ -32,7 +32,7 @@ class BookshelfAdapter(
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book: BookObject = book[position] ?: return
 
-        GlideHelper.viewGlide(book.imageUrl, holder.imageView)
+        GlideHelper.viewBookImage(book.imageUrl, holder.imageView)
 
         holder.itemView.setOnClickListener {
             println("adapter:" + book.id)

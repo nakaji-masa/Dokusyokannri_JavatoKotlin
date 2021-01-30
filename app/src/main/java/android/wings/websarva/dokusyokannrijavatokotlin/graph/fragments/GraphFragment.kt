@@ -31,7 +31,6 @@ class GraphFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
-
         realm = Realm.getInstance(RealmConfigObject.graphConfig)
     }
 

@@ -9,13 +9,16 @@ import com.bumptech.glide.request.RequestOptions
 
 object GlideHelper {
 
+    // 初期状態のURL
+    const val defaultImageUrl = "default_image"
+
     /**
      * 本の画像を表示するメソッド
-     * @param imagePlace url
+     * @param imageUrl url
      * @param imageView ImageView
      */
-    fun viewGlide(imagePlace: String, imageView: ImageView) {
-        if (imagePlace.isEmpty()) {
+    fun viewBookImage(imageUrl: String, imageView: ImageView) {
+        if (imageUrl == defaultImageUrl) {
             Glide.with(imageView.context).load(
                 ContextCompat.getDrawable(
                     imageView.context,
@@ -23,7 +26,7 @@ object GlideHelper {
                 )
             ).into(imageView)
         } else {
-            Glide.with(imageView.context).load(imagePlace).into(imageView)
+            Glide.with(imageView.context).load(imageUrl).into(imageView)
         }
     }
 
@@ -32,7 +35,7 @@ object GlideHelper {
      * @param url 画像のURL
      * @param imageView ImageView
      */
-    fun viewUserImage(url: String, imageView: ImageView) {
+    fun viewUserImage(url: String?, imageView: ImageView) {
         val requestOptions = RequestOptions
             .circleCropTransform()
             .error(R.drawable.ic_account)

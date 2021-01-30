@@ -1,48 +1,65 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.library.activities
-
+package android.wings.websarva.dokusyokannrijavatokotlin.library.fragments
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.library.CommentAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookCommentHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_post_detail.*
+import kotlinx.android.synthetic.main.fragment_post_detail.*
 import kotlinx.android.synthetic.main.library_cell.*
 
+class PostDetailFragment : Fragment() {
 
-class PostDetailActivity : AppCompatActivity(), TextWatcher {
+    private lateinit var userJson: String
+    private lateinit var bookJson: String
+    private var supportActionBar: ActionBar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_post_detail)
+        arguments?.let {
+            userJson = it.getString(USER_DATA_KEY, "")
+            bookJson = it.getString(BOOK_DATA_KEY, "")
+        }
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setHasOptionsMenu(true)
+        return inflater.inflate(R.layout.fragment_post_detail, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // アクションバーの設定
+        supportActionBar = (activity as AppCompatActivity).supportActionBar
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        commentEdit.addTextChangedListener(this)
 
-        // 選択した投稿・ユーザーのデータを取得
-        val bookJson = intent.extras?.getString(BOOK_DATA_KEY)
-        val userJson = intent.extras?.getString(USER_DATA_KEY)
-        val bookData = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
         val userData = Gson().fromJson<UserInfo>(userJson, UserInfo::class.java)
+        val bookData = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
 
         // 選択した投稿のデータを表示
         userReadDate.text = bookData.date
         userActionPlan.text = bookData.action
-        Glide.with(this).load(bookData.imageUrl).into(userBookImage)
+        Glide.with(requireContext()).load(bookData.imageUrl).into(userBookImage)
         userBookTitle.text = bookData.title
         userAuthorName.text = bookData.author
         userName.text = userData.userName
@@ -67,17 +84,18 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
             )
             commentEdit.text?.clear()
             commentEdit.clearFocus()
-            val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
             showRecyclerView(bookData.commentList)
             FireStoreHelper.savePostData(bookData)
         }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                activity?.supportFragmentManager?.popBackStack()
                 true
             }
             else -> {
@@ -86,18 +104,10 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
         }
     }
 
-    override fun onBackPressed() {
-        finish()
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        postButton.isEnabled = commentEdit.text?.isNotEmpty()!!
-    }
-
-    override fun afterTextChanged(s: Editable?) {
+    override fun onDestroy() {
+        super.onDestroy()
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
     }
 
     /**
@@ -107,9 +117,9 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
     private fun showPostFavorite(likedUserList: List<String>) {
         favoriteImage.setImageDrawable(
             if (likedUserList.contains(AuthHelper.getUid())) {
-                ContextCompat.getDrawable(this, R.drawable.ic_like)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_like)
             } else {
-                ContextCompat.getDrawable(this, R.drawable.ic_no_like)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_no_like)
             }
         )
         favoriteCount.text = likedUserList.size.toString()
@@ -122,9 +132,9 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
     private fun showPostComment(commentList: List<BookCommentHelper>) {
         commentImage.setImageDrawable(
             if (commentList.any { it.userUid == AuthHelper.getUid() }) {
-                ContextCompat.getDrawable(this, R.drawable.ic_comment)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_comment)
             } else {
-                ContextCompat.getDrawable(this, R.drawable.ic_no_comment)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_no_comment)
             }
         )
         commentCount.text = commentList.size.toString()
@@ -135,14 +145,22 @@ class PostDetailActivity : AppCompatActivity(), TextWatcher {
      * @param commentList コメントのリスト
      */
     private fun showRecyclerView(commentList: List<BookCommentHelper>) {
-        commentRecyclerView.layoutManager = LinearLayoutManager(this)
+        commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         commentRecyclerView.setHasFixedSize(true)
         commentRecyclerView.adapter = CommentAdapter(commentList)
     }
 
     companion object {
-        const val BOOK_DATA_KEY = "BookHelper"
-        const val USER_DATA_KEY = "userInfo"
-    }
+        private const val USER_DATA_KEY = "user_data_key"
+        private const val BOOK_DATA_KEY = "book_data_key"
 
+        @JvmStatic
+        fun newInstance(userJson: String, bookJson: String) =
+            PostDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putString(USER_DATA_KEY, userJson)
+                    putString(BOOK_DATA_KEY, bookJson)
+                }
+            }
+    }
 }

@@ -9,9 +9,8 @@ import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.UserProfileFragment
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
-import androidx.appcompat.app.AppCompatActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -57,7 +56,7 @@ open class BaseAuthFragment : Fragment() {
      */
     fun moveToUserProfileRegisterFragment() {
         val transaction = activity?.supportFragmentManager?.beginTransaction()
-        transaction?.replace(R.id.userContainer, UserProfileFragment.newInstance())
+        transaction?.replace(R.id.userContainer, UserProfileFragment.newInstance(UserProfileFragment.NEW_MODE))
         transaction?.commit()
         hideProgressBar()
     }

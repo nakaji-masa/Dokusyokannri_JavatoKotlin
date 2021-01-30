@@ -11,7 +11,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivit
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
 import io.realm.Realm
@@ -41,7 +41,7 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        realm = Realm.getInstance(RealmConfigObject.bookConfig)
 
         val book = realm.where<BookObject>().equalTo("id", bookId).findFirst()
 
@@ -49,7 +49,7 @@ class DetailFragment : Fragment() {
         view.detailBookAuthor.text = getString(R.string.author, book?.author)
         view.detailBookDate.text = book?.date
         view.detailBookActionPlan.text = book?.actionPlan
-        GlideHelper.viewGlide(book?.imageUrl!!, view.detailBookImage)
+        GlideHelper.viewBookImage(book?.imageUrl!!, view.detailBookImage)
 
         //本の内容を削除する
         deleteButton.setOnClickListener {

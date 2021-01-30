@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookCommentHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

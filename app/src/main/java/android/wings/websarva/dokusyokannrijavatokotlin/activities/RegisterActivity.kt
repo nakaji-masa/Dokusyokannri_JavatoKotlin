@@ -22,8 +22,8 @@ import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMont
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
@@ -49,7 +49,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     private lateinit var graphRealm: Realm
     private var menuSaveButton: Button? = null
     private var id: String? = null
-    private var imagePath = R.drawable.ic_book_default_image.toString()
+    private var imagePath = GlideHelper.defaultImageUrl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +58,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        bookListRealm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        bookListRealm = Realm.getInstance(RealmConfigObject.bookConfig)
         graphRealm = Realm.getInstance(RealmConfigObject.graphConfig)
 
         registerBookTitleInput.addTextChangedListener(this)
@@ -77,7 +77,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             registerBookDateInput.setText(book?.date)
             registerBookActionPlanInput.setText(book?.actionPlan)
             book?.imageUrl?.let {
-                GlideHelper.viewGlide(it, registerBookImageInput)
+                GlideHelper.viewBookImage(it, registerBookImageInput)
                 imagePath = it
             }
 

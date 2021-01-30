@@ -1,7 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -30,7 +29,7 @@ class ActionDetailFragment : Fragment() {
             bookId = it.getString(DetailActivity.BOOK_ID, "")
             actionId = it.getString(DetailActivity.ACTION_PLAN_ID, "")
         }
-        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        realm = Realm.getInstance(RealmConfigObject.bookConfig)
     }
 
     override fun onCreateView(

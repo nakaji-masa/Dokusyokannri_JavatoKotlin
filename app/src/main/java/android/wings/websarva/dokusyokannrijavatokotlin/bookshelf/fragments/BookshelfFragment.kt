@@ -26,7 +26,7 @@ class BookShelfFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        realm = Realm.getInstance(RealmConfigObject.bookConfig)
     }
 
     override fun onCreateView(

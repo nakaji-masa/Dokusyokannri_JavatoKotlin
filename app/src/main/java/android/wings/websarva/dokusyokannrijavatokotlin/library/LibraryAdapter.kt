@@ -11,12 +11,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.library.activities.PostDetailActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.gson.Gson
@@ -25,6 +25,8 @@ import kotlinx.coroutines.launch
 
 class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
     FirestoreRecyclerAdapter<BookHelper, LibraryAdapter.ViewHolder>(options) {
+
+    lateinit var listener: OnCommentClickListener
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userImage: ImageView = view.findViewById(R.id.userImage)
@@ -60,10 +62,9 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
                     holder.userName.text = userInfo.userName
                     GlideHelper.viewUserImage(userInfo.userImageUrl, holder.userImage)
                     holder.commentImage.setOnClickListener {
-                        val intent = Intent(context, PostDetailActivity::class.java)
-                        intent.putExtra(PostDetailActivity.BOOK_DATA_KEY, Gson().toJson(model))
-                        intent.putExtra(PostDetailActivity.USER_DATA_KEY, Gson().toJson(userInfo))
-                        context.startActivity(intent)
+                        val userJson = Gson().toJson(userInfo)
+                        val bookJson = Gson().toJson(model)
+                        listener.onCommentClickListener(userJson, bookJson)
                     }
                 }
                 handler.post(runnable)
@@ -80,7 +81,7 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
 
         holder.date.text = model.date
         holder.actionPlan.text = model.action
-        Glide.with(context).load(model.imageUrl).into(holder.bookImage)
+        GlideHelper.viewBookImage(model.imageUrl, holder.bookImage)
         holder.bookTitle.text = model.title
         holder.bookAuthor.text = model.author
         holder.favoriteImage.setImageDrawable(favoriteDrawable)
@@ -132,6 +133,18 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
         } else {
             ContextCompat.getDrawable(context, R.drawable.ic_no_comment)
         }
+    }
+
+    interface OnCommentClickListener {
+        fun onCommentClickListener(userJson: String, bookJson: String)
+    }
+
+    /**
+     * フィールドのlistenerをセットする
+     * @param listener OnItemClickListener型のインタフェース
+     */
+    fun setItemClickListener(listener: OnCommentClickListener) {
+        this.listener = listener
     }
 
 }

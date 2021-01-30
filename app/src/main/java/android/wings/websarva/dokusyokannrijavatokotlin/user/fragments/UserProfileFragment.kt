@@ -1,108 +1,140 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.user.fragments
 
+
 import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
+import android.view.*
 import android.widget.Toast
-import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.UserInfoObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
 import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.FireStorageHelper
-import androidx.core.graphics.drawable.RoundedBitmapDrawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.BitmapImageViewTarget
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStorageHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
+import androidx.appcompat.app.AppCompatActivity
+import io.realm.Realm
+import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.fragment_user_profile.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
-class
-UserProfileFragment : BaseAuthFragment(), TextWatcher {
+class UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
-    private lateinit var profileUserName: EditText
-    private lateinit var profileIntroduction: EditText
-    private lateinit var profileImage: ImageView
-    private lateinit var saveButton: Button
+    private lateinit var realm: Realm
     private var imageUri: Uri = getDefaultUri()
+    private var editMode = false
+    private var supportActionBar: androidx.appcompat.app.ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            editMode = it.getBoolean(MODE_KEY)
         }
+        realm = Realm.getInstance(RealmConfigObject.userConfig)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_user_profile, container, false)
-        profileUserName = view.userNameInput
-        profileIntroduction = view.userIntroductionInput
-        profileImage = view.userImage
-        saveButton = view.userInfoSaveButton
-        Glide.with(context).load(imageUri).into(profileImage)
-        return view
+        return inflater.inflate(R.layout.fragment_user_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        profileUserName.addTextChangedListener(this)
+        // デフォルトの画像を表示する
+        GlideHelper.viewUserImage(imageUri.toString(), userImage)
 
-        saveButton.setOnClickListener {
-            view.userInfoProgressBar.visibility = View.VISIBLE
-            val bitmap = (profileImage.drawable as BitmapDrawable).bitmap
+        if (editMode) {
+            // 戻るボタンの表示
+            supportActionBar = (activity as AppCompatActivity).supportActionBar
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            // realm編集する場合、登録されている情報を表示する
+            val userInfo =
+                realm.where(UserInfoObject::class.java).equalTo("uid", AuthHelper.getUid())
+                    .findFirst()
+            userNameInput.setText(userInfo?.userName)
+            userIntroductionInput.setText(userInfo?.introduction)
+            GlideHelper.viewUserImage(userInfo?.imageUrl, userImage)
+
+            // 保存ボタンの活性化
+            userInfoSaveButton.isEnabled = true
+        }
+
+        userNameInput.addTextChangedListener(this)
+
+        userInfoSaveButton.setOnClickListener {
+            // progressBarの表示
+            userInfoProgressBar.visibility = View.VISIBLE
+
+            // FireStorageに保存するためにbyte[]型にキャストする
+            val bitmap = (userImage.drawable as BitmapDrawable).bitmap
             val baos = ByteArrayOutputStream()
             bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
 
+            // メインスレッドでインスタンスを作成する
+            val handler = Handler()
+
+
             GlobalScope.launch {
+                // FireStorageに登録
                 FireStorageHelper.saveImage(data)
+
+                // ユーザー情報
                 val userInfo =
                     UserInfo(
-                        profileUserName.text.toString(),
-                        profileIntroduction.text.toString(),
+                        userNameInput.text.toString(),
+                        userIntroductionInput.text.toString(),
                         FireStorageHelper.getDownloadUrl()
                     )
-                userCollection.document(AuthHelper.getUid()).set(userInfo).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        moveToMainActivity()
+
+                // realmはメインスレッドでないと処理ができない
+                val runnable = Runnable {
+                    // realmに編集か登録する
+                    if (editMode) {
+                        updateDataToRealm(userInfo)
                     } else {
-                        Toast.makeText(activity, "登録に失敗しました", Toast.LENGTH_SHORT).show()
+                        createDataToRealm(userInfo)
                     }
-                    view.userInfoProgressBar.visibility = View.INVISIBLE
                 }
+                handler.post(runnable)
+
+                // FireStoreに保存が成功したら次の画面に遷移する
+                if (FireStoreHelper.hasSavedUserInfo(userInfo)) {
+                    moveNextView()
+                } else {
+                    Toast.makeText(activity, "登録に失敗しました", Toast.LENGTH_SHORT).show()
+                }
+
+                // progressBarの非表示
+                userInfoProgressBar.visibility = View.INVISIBLE
             }
         }
 
         view.userImage.setOnClickListener {
             selectImage()
         }
-
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        if (profileUserName.text.isNotBlank()) {
-            saveButton.isEnabled = true
-        }
+        userInfoSaveButton.isEnabled = userNameInput.text?.isNotBlank()!!
     }
 
     override fun afterTextChanged(s: Editable?) {
@@ -114,25 +146,34 @@ UserProfileFragment : BaseAuthFragment(), TextWatcher {
                 data?.data?.let {
                     imageUri = it
                 }
-                val options = RequestOptions()
-                    .fitCenter()
-                    .placeholder(R.drawable.user_image_background)
-                Glide.with(context).asBitmap().apply(options).load(imageUri)
-                    .into(object : BitmapImageViewTarget(profileImage) {
-                        override fun setResource(resource: Bitmap?) {
-                            val circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(
-                                    MyApplication.getAppContext().resources,
-                                    resource
-                                )
-                            circularBitmapDrawable.isCircular = true
-                            profileImage.setImageDrawable(circularBitmapDrawable)
-                        }
-                    })
-
             } catch (e: Exception) {
                 Toast.makeText(context, "エラーが発生しました。", Toast.LENGTH_LONG).show()
             }
+            GlideHelper.viewUserImage(imageUri.toString(), userImage)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFragmentManager?.popBackStack()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(false)
+            it.setDisplayShowHomeEnabled(false)
         }
     }
 
@@ -151,17 +192,65 @@ UserProfileFragment : BaseAuthFragment(), TextWatcher {
      * @return Uri
      */
     private fun getDefaultUri(): Uri {
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-                "android.wings.websarva.dokusyokannrijavatokotlin" + "/drawable" + "/ic_account")
+        return Uri.parse(
+            ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                    "android.wings.websarva.dokusyokannrijavatokotlin" + "/drawable" + "/ic_account"
+        )
+    }
+
+    /**
+     * realmにデータを登録するメソッドです
+     * @param userInfo ユーザ情報
+     */
+    private fun createDataToRealm(userInfo: UserInfo) {
+        realm.executeTransaction {
+            val userInfoObj = it.createObject(UserInfoObject::class.java, AuthHelper.getUid())
+            userInfoObj.userName = userInfo.userName
+            userInfoObj.introduction = userInfo.introduction
+            userInfoObj.imageUrl = userInfo.userImageUrl
+        }
+    }
+
+    /**
+     * realmのデータを更新するメソッドです
+     * @param userInfo ユーザー情報
+     */
+    private fun updateDataToRealm(userInfo: UserInfo) {
+        realm.executeTransaction {
+            val userInfoObj =
+                it.where(UserInfoObject::class.java).equalTo("uid", AuthHelper.getUid()).findFirst()
+            userInfoObj?.userName = userInfo.userName
+            userInfoObj?.introduction = userInfo.introduction
+            userInfoObj?.imageUrl = userInfo.userImageUrl
+        }
+    }
+
+    /**
+     * 次の画面に遷移するメソッドです
+     */
+    private fun moveNextView() {
+        if (editMode) {
+            activity?.supportFragmentManager?.popBackStack()
+        } else {
+            moveToMainActivity()
+        }
     }
 
     companion object {
         private const val READ_RC = 1
+        private const val MODE_KEY = "mode_key"
+        const val NEW_MODE = "new_mode"
+        const val EDIT_MODE = "edit_mode"
 
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(mode: String) =
             UserProfileFragment().apply {
                 arguments = Bundle().apply {
+                    if (mode == EDIT_MODE) {
+                        putBoolean(MODE_KEY, true)
+                    } else {
+                        putBoolean(MODE_KEY, false)
+                    }
                 }
             }
     }

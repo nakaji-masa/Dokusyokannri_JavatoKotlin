@@ -39,7 +39,7 @@ class InputActionDairyDetailFragment : Fragment(), TextWatcher {
             bookId = it.getString(DetailActivity.BOOK_ID, "")
             actionId = it.getString(DetailActivity.ACTION_PLAN_ID, "")
         }
-        realm = Realm.getInstance(RealmConfigObject.bookListConfig)
+        realm = Realm.getInstance(RealmConfigObject.bookConfig)
 
         bookObj = realm.where(BookObject::class.java).equalTo("id", bookId).findAll().last()
         if (actionId != "") {
