@@ -20,6 +20,8 @@ open class BookObject : RealmObject() {
 
     var author : String = ""
 
+    var uid : String = ""
+
     var createdAt : Date = Date()
 
     var actionPlanDairy : RealmList<ActionPlanObject> = RealmList()

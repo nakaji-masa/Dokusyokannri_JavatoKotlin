@@ -24,7 +24,7 @@
         </activity>
         <activity android:name=".user.UserActivity" />
         <activity android:name=".views.PortraitActivity" />
-        <activity android:name=".activities.DetailActivity" />
+        <activity android:name=".detail.activities.DetailActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.MainActivity" />
         <meta-data

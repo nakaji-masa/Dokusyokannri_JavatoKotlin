@@ -17,7 +17,7 @@ object GlideHelper {
      * @param imageUrl url
      * @param imageView ImageView
      */
-    fun viewBookImage(imageUrl: String, imageView: ImageView) {
+    fun viewBookImage(imageUrl: String?, imageView: ImageView) {
         if (imageUrl == defaultImageUrl) {
             Glide.with(imageView.context).load(
                 ContextCompat.getDrawable(

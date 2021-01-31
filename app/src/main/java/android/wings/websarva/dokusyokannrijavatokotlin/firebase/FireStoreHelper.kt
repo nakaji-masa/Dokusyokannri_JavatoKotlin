@@ -1,8 +1,8 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.firebase
 
 
-import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.tasks.await
@@ -10,7 +10,6 @@ import kotlinx.coroutines.tasks.await
 object FireStoreHelper {
     private const val COLLECTION_USER_PATH = "user"
     private const val COLLECTION_POST_PATH = "post"
-    private const val TAG = "FireStore"
     private val fireStore = FirebaseFirestore.getInstance()
     private val userCollection = fireStore.collection(COLLECTION_USER_PATH)
     private val postCollection = fireStore.collection(COLLECTION_POST_PATH)
@@ -32,11 +31,11 @@ object FireStoreHelper {
 
     /**
      * Userコレクションからユーザー情報を取得する
-     * @return UserInfo ユーザー情報
+     * @return UserInfoHelper ユーザー情報
      */
-    suspend fun getUserData(uid: String): UserInfo? {
+    suspend fun getUserData(uid: String): UserInfoHelper? {
         val snapshot = userCollection.document(uid).get().await()
-        return snapshot?.toObject(UserInfo::class.java)
+        return snapshot?.toObject(UserInfoHelper::class.java)
     }
 
     /**
@@ -72,17 +71,26 @@ object FireStoreHelper {
 
     /**
      * ユーザーの情報を保存するメソッドです
-     * @param userInfo ユーザーのプロフィール
+     * @param userInfoHelper ユーザーのプロフィール
      * @return Boolean　保存が成功したかどうかの判定
      */
-    suspend fun hasSavedUserInfo(userInfo: UserInfo): Boolean {
+    suspend fun hasSavedUserInfo(userInfoHelper: UserInfoHelper): Boolean {
         return try {
-            userCollection.document(AuthHelper.getUid()).set(userInfo).await()
+            userCollection.document(AuthHelper.getUid()).set(userInfoHelper).await()
             true
         } catch (e: FirebaseFirestoreException) {
             e.printStackTrace()
             false
         }
+    }
+
+    /**
+     * 本の情報を取得するメソッドです
+     * @param docId ドキュメントID
+     * @return 本の情報
+     */
+    suspend fun getBookData(docId: String): BookHelper? {
+        return postCollection.document(docId).get().await().toObject(BookHelper::class.java)
     }
 
 }

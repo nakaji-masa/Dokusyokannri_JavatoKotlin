@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.activities
+package android.wings.websarva.dokusyokannrijavatokotlin.detail.activities
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -12,6 +12,7 @@ import io.realm.Realm
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var realm: Realm
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)

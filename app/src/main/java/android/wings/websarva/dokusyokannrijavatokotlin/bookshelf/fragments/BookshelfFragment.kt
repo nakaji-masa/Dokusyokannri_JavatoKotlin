@@ -8,9 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.RegisterActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.BookshelfAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import androidx.fragment.app.Fragment
@@ -38,7 +39,7 @@ class BookShelfFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val bookList = realm.where(BookObject::class.java).findAll()
+        val bookList = realm.where(BookObject::class.java).equalTo("uid", AuthHelper.getUid()).findAll()
         val adapter = BookshelfAdapter(view.context, bookList, true)
 
         // 画面のサイズを取得する

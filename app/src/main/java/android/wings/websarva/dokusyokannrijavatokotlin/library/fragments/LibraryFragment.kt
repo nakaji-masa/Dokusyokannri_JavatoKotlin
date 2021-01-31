@@ -39,7 +39,7 @@ class LibraryFragment : Fragment() {
             override fun onCommentClickListener(userJson: String, bookJson: String) {
                 val transaction = activity?.supportFragmentManager?.beginTransaction()
                 transaction?.addToBackStack(null)
-                transaction?.replace(R.id.mainContainer, PostDetailFragment.newInstance(userJson, bookJson))
+                transaction?.replace(R.id.mainContainer, CommentFragment.newInstance(userJson, bookJson))
                 transaction?.commit()
             }
         })

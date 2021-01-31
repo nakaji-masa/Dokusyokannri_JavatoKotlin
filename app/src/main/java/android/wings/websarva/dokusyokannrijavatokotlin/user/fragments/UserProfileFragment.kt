@@ -15,7 +15,7 @@ import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.UserInfoObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
-import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStorageHelper
@@ -96,7 +96,7 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
                 // ユーザー情報
                 val userInfo =
-                    UserInfo(
+                    UserInfoHelper(
                         userNameInput.text.toString(),
                         userIntroductionInput.text.toString(),
                         FireStorageHelper.getDownloadUrl()
@@ -200,28 +200,28 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
     /**
      * realmにデータを登録するメソッドです
-     * @param userInfo ユーザ情報
+     * @param userInfoHelper ユーザ情報
      */
-    private fun createDataToRealm(userInfo: UserInfo) {
+    private fun createDataToRealm(userInfoHelper: UserInfoHelper) {
         realm.executeTransaction {
             val userInfoObj = it.createObject(UserInfoObject::class.java, AuthHelper.getUid())
-            userInfoObj.userName = userInfo.userName
-            userInfoObj.introduction = userInfo.introduction
-            userInfoObj.imageUrl = userInfo.userImageUrl
+            userInfoObj.userName = userInfoHelper.userName
+            userInfoObj.introduction = userInfoHelper.introduction
+            userInfoObj.imageUrl = userInfoHelper.userImageUrl
         }
     }
 
     /**
      * realmのデータを更新するメソッドです
-     * @param userInfo ユーザー情報
+     * @param userInfoHelper ユーザー情報
      */
-    private fun updateDataToRealm(userInfo: UserInfo) {
+    private fun updateDataToRealm(userInfoHelper: UserInfoHelper) {
         realm.executeTransaction {
             val userInfoObj =
                 it.where(UserInfoObject::class.java).equalTo("uid", AuthHelper.getUid()).findFirst()
-            userInfoObj?.userName = userInfo.userName
-            userInfoObj?.introduction = userInfo.introduction
-            userInfoObj?.imageUrl = userInfo.userImageUrl
+            userInfoObj?.userName = userInfoHelper.userName
+            userInfoObj?.introduction = userInfoHelper.introduction
+            userInfoObj?.imageUrl = userInfoHelper.userImageUrl
         }
     }
 

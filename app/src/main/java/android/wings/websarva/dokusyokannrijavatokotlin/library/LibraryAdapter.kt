@@ -2,7 +2,6 @@ package android.wings.websarva.dokusyokannrijavatokotlin.library
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.LayoutInflater
@@ -13,7 +12,7 @@ import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView

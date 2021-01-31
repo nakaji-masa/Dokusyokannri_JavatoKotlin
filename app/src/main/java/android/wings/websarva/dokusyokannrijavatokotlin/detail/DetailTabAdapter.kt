@@ -3,6 +3,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin.detail
 import android.content.Context
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.ActionDairyFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailPostFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.OnActionDairyFragmentListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -10,7 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : String?) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val titleList = listOf("本の詳細", "アクションプランの記録")
+    private val titleList = listOf("本の詳細", "アクションプラン", "本の投稿")
     var onDetailPagerAdapterListener: OnDetailPagerAdapterListener? = null
 
     override fun getCount(): Int {
@@ -25,7 +26,7 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Str
                 DetailFragment.newInstance(id)
             }
 
-            else -> {
+            1 -> {
                 val fragment = ActionDairyFragment.newInstance(id)
                 fragment.onActionDairyFragmentListener =
                     object : OnActionDairyFragmentListener {
@@ -39,6 +40,9 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Str
                     }
                 fragment
             }
+            else ->  {
+                DetailPostFragment.newInstance(id)
+            }
         }
     }
 
@@ -46,6 +50,10 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Str
         //タブの文字を決める
         return when(position) {
             0 -> {
+                titleList[position]
+            }
+
+            1 -> {
                 titleList[position]
             }
 

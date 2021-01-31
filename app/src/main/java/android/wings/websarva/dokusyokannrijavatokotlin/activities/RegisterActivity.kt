@@ -21,7 +21,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObjec
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
-import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
@@ -174,8 +174,11 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 okHttpClient.newCall(request).enqueue(object : Callback {
 
                     override fun onFailure(call: Call, e: IOException) {
-                        //失敗したときのログを出力
+                        // 失敗したときのログを出力
                         e.printStackTrace()
+
+                        // トーストの表示
+                        Toast.makeText(this@RegisterActivity, "情報取得に失敗しました", Toast.LENGTH_LONG).show()
                     }
 
                     override fun onResponse(call: Call, response: Response) {
@@ -295,6 +298,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 book.author = author
                 book.actionPlan = actionPlan
                 book.imageUrl = imagePath
+                book.uid = AuthHelper.getUid()
                 val actionObj = it.createObject<ActionPlanObject>(UUID.randomUUID().toString())
                 actionObj.title = getString(R.string.action_first)
                 actionObj.nextAction = actionPlan

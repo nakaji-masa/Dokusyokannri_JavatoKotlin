@@ -2,6 +2,8 @@ package android.wings.websarva.dokusyokannrijavatokotlin.library.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -12,9 +14,9 @@ import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.library.CommentAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.register.BookCommentHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.register.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.register.UserInfo
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookCommentHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -22,10 +24,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_post_detail.*
+import kotlinx.android.synthetic.main.fragment_comment.*
 import kotlinx.android.synthetic.main.library_cell.*
 
-class PostDetailFragment : Fragment() {
+class CommentFragment : Fragment() {
 
     private lateinit var userJson: String
     private lateinit var bookJson: String
@@ -44,7 +46,7 @@ class PostDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_post_detail, container, false)
+        return inflater.inflate(R.layout.fragment_comment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +55,7 @@ class PostDetailFragment : Fragment() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val userData = Gson().fromJson<UserInfo>(userJson, UserInfo::class.java)
+        val userData = Gson().fromJson<UserInfoHelper>(userJson, UserInfoHelper::class.java)
         val bookData = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
 
         // 選択した投稿のデータを表示
@@ -73,6 +75,21 @@ class PostDetailFragment : Fragment() {
 
         // リサイクラービューを表示する
         showRecyclerView(bookData.commentList)
+
+        // テキストの監視
+        commentEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                postButton.isEnabled = commentEdit.text?.isNotBlank()!!
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
 
         // postButtonの設定
         postButton.setOnClickListener {
@@ -156,7 +173,7 @@ class PostDetailFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(userJson: String, bookJson: String) =
-            PostDetailFragment().apply {
+            CommentFragment().apply {
                 arguments = Bundle().apply {
                     putString(USER_DATA_KEY, userJson)
                     putString(BOOK_DATA_KEY, bookJson)

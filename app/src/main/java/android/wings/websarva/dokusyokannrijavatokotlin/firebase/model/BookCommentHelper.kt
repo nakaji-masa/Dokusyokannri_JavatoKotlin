@@ -1,4 +1,4 @@
-package android.wings.websarva.dokusyokannrijavatokotlin.register
+package android.wings.websarva.dokusyokannrijavatokotlin.firebase.model
 
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.activities.DetailActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailTabAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.OnDetailPagerAdapterListener
 import kotlinx.android.synthetic.main.fragment_detail_select.*
