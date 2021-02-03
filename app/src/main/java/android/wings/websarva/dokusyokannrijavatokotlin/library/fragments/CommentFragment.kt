@@ -11,12 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.library.CommentAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookCommentHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -164,7 +166,13 @@ class CommentFragment : Fragment() {
     private fun showRecyclerView(commentList: List<BookCommentHelper>) {
         commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         commentRecyclerView.setHasFixedSize(true)
-        commentRecyclerView.adapter = CommentAdapter(commentList)
+        val adapter = CommentAdapter(commentList)
+        commentRecyclerView.adapter = adapter
+        adapter.setUserImageClickListener(object : OnUserImageClickListener {
+            override fun onUserImageClickListener(uid: String, userJson: String) {
+                AnotherUserActivity.moveToAnotherUserActivity(activity, uid, userJson)
+            }
+        })
     }
 
     companion object {

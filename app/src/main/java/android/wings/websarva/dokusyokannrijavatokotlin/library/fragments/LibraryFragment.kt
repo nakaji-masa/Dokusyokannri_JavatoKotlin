@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.library.LibraryAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnCommentClickListener
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -35,12 +38,17 @@ class LibraryFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         adapter = LibraryAdapter(FireStoreHelper.getRecyclerOptions())
         recyclerView.adapter = adapter
-        adapter.setItemClickListener(object: LibraryAdapter.OnCommentClickListener {
+        adapter.setCommentClickListener(object: OnCommentClickListener {
             override fun onCommentClickListener(userJson: String, bookJson: String) {
                 val transaction = activity?.supportFragmentManager?.beginTransaction()
                 transaction?.addToBackStack(null)
                 transaction?.replace(R.id.mainContainer, CommentFragment.newInstance(userJson, bookJson))
                 transaction?.commit()
+            }
+        })
+        adapter.setUserImageClickListener(object: OnUserImageClickListener {
+            override fun onUserImageClickListener(uid: String, userJson: String) {
+                AnotherUserActivity.moveToAnotherUserActivity(activity, uid, userJson)
             }
         })
     }

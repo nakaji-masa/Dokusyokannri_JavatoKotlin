@@ -13,10 +13,15 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.os.Handler
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
+import com.google.gson.Gson
 
 class CommentAdapter(private val commentList: List<BookCommentHelper>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+
+    private lateinit var listener: OnUserImageClickListener
+
     class CommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userImage: ImageView = view.findViewById(R.id.commentUserImage)
         val userName: TextView = view.findViewById(R.id.commentUserName)
@@ -32,11 +37,17 @@ class CommentAdapter(private val commentList: List<BookCommentHelper>) :
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val handler = Handler()
         GlobalScope.launch {
-            val userInfo = FireStoreHelper.getUserData(commentList[position].userUid)
+            val uid = commentList[position].userUid
+            val userInfo = FireStoreHelper.getUserData(uid)
+
             if (userInfo != null) {
                 handler.post {
                     holder.userName.text = userInfo.userName
                     GlideHelper.viewUserImage(userInfo.userImageUrl, holder.userImage)
+                    holder.userImage.setOnClickListener {
+                        val userJson = Gson().toJson(userInfo)
+                        listener.onUserImageClickListener(uid, userJson)
+                    }
                     holder.comment.text = commentList[position].comment
                     holder.date.text = commentList[position].date
                 }
@@ -46,5 +57,9 @@ class CommentAdapter(private val commentList: List<BookCommentHelper>) :
 
     override fun getItemCount(): Int {
         return commentList.size
+    }
+
+    fun setUserImageClickListener(listener: OnUserImageClickListener) {
+        this.listener = listener
     }
 }

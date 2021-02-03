@@ -1,20 +1,19 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.library
 
 
-import android.content.Context
-import android.graphics.drawable.Drawable
+
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnCommentClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.*
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -25,7 +24,8 @@ import kotlinx.coroutines.launch
 class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
     FirestoreRecyclerAdapter<BookHelper, LibraryAdapter.ViewHolder>(options) {
 
-    lateinit var listener: OnCommentClickListener
+    private lateinit var commentListener: OnCommentClickListener
+    private lateinit var userImageListener: OnUserImageClickListener
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userImage: ImageView = view.findViewById(R.id.userImage)
@@ -60,23 +60,28 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
                 val runnable = Runnable {
                     holder.userName.text = userInfo.userName
                     GlideHelper.viewUserImage(userInfo.userImageUrl, holder.userImage)
-                    holder.commentImage.setOnClickListener {
-                        val userJson = Gson().toJson(userInfo)
-                        val bookJson = Gson().toJson(model)
-                        listener.onCommentClickListener(userJson, bookJson)
+
+                    val userJson = Gson().toJson(userInfo)
+                    holder.userImage.setOnClickListener {
+                        userImageListener.onUserImageClickListener(model.uid, userJson)
                     }
+                    holder.commentImage.setOnClickListener {
+                        val bookJson = Gson().toJson(model)
+                        commentListener.onCommentClickListener(userJson, bookJson)
+                    }
+
                 }
                 handler.post(runnable)
             }
         }
 
         // ユーザーが「いいね」と「コメント」をしているか？
-        val liked = model.likedUserList.contains(AuthHelper.getUid())
-        val commented = model.commentList.any { it.userUid == AuthHelper.getUid() }
+        val liked = PostHelper.hasLiked(model.likedUserList)
+        val commented = PostHelper.hasCommented(model.commentList)
 
         // likedの結果によって、表示する画像を決める。
-        val favoriteDrawable = getFabDrawable(context, liked)
-        val commentDrawable = getCommentDrawable(context, commented)
+        val favoriteDrawable = PostHelper.getFabDrawable(context, liked)
+        val commentDrawable = PostHelper.getCommentDrawable(context, commented)
 
         holder.date.text = model.date
         holder.actionPlan.text = model.action
@@ -86,64 +91,26 @@ class LibraryAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
         holder.favoriteImage.setImageDrawable(favoriteDrawable)
         holder.favoriteCount.text = model.likedUserList.size.toString()
         holder.favoriteImage.setOnClickListener {
-            pushFavorite(liked, model)
+            PostHelper.pushFavorite(liked, model)
         }
         holder.commentImage.setImageDrawable(commentDrawable)
         holder.commentCount.text = model.commentList.size.toString()
     }
 
     /**
-     * いいねの数を保存するメソッド
-     * @param liked ユーザーが既にいいねを押しているか
-     * @param　firestoreに保存するためのデータ
+     * フィールドのcommentListenerをセットする
+     * @param listener OnCommentClickListener型のインタフェース
      */
-    private fun pushFavorite(liked: Boolean, model: BookHelper) {
-        if (liked) {
-            model.likedUserList.remove(AuthHelper.getUid())
-        } else {
-            model.likedUserList.add(AuthHelper.getUid())
-        }
-        FireStoreHelper.savePostData(model)
+    fun setCommentClickListener(listener: OnCommentClickListener) {
+        this.commentListener = listener
     }
 
     /**
-     * ユーザーがいいねをしているかで、戻り値のdrawableを決める
-     * @param context
-     * @param liked
-     * @return Drawable
+     * フィールドのuserImageListenerをセットする
+     * @param listener OnUserImageClickListener型のインターフェース
      */
-    private fun getFabDrawable(context: Context, liked: Boolean): Drawable? {
-        return if (liked) {
-            ContextCompat.getDrawable(context, R.drawable.ic_like)
-        } else {
-            ContextCompat.getDrawable(context, R.drawable.ic_no_like)
-        }
-    }
-
-    /**
-     * ユーザー投稿に対してコメントをしているかで、戻り値のDrawableを変える
-     * @param context
-     * @param commented
-     * @return Drawable
-     */
-    private fun getCommentDrawable(context: Context, commented: Boolean): Drawable? {
-        return if (commented) {
-            ContextCompat.getDrawable(context, R.drawable.ic_comment)
-        } else {
-            ContextCompat.getDrawable(context, R.drawable.ic_no_comment)
-        }
-    }
-
-    interface OnCommentClickListener {
-        fun onCommentClickListener(userJson: String, bookJson: String)
-    }
-
-    /**
-     * フィールドのlistenerをセットする
-     * @param listener OnItemClickListener型のインタフェース
-     */
-    fun setItemClickListener(listener: OnCommentClickListener) {
-        this.listener = listener
+    fun setUserImageClickListener(listener: OnUserImageClickListener) {
+        this.userImageListener = listener
     }
 
 }

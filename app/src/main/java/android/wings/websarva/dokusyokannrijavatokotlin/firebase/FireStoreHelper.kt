@@ -62,6 +62,20 @@ object FireStoreHelper {
     }
 
     /**
+     * 指定したユーザーのほんの情報を取得するメソッド
+     * @param uid ユーザーID
+     * @return FirestoreRecyclerOptions
+     */
+    fun getUserOfRecyclerOptions(uid: String): FirestoreRecyclerOptions<BookHelper> {
+        return FirestoreRecyclerOptions.Builder<BookHelper>()
+            .setQuery(
+                fireStore.collection(COLLECTION_POST_PATH)
+                    .whereEqualTo("uid", uid), BookHelper::class.java
+            )
+            .build()
+    }
+
+    /**
      * 指定されたドキュメントを削除するメソッドです
      * @param docId ドキュメントのid
      */

@@ -49,7 +49,7 @@ class ActionDiaryAdapter(
         val context = holder.itemView.context
 
         // drawable
-        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_calendar)
+        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_calendar)?.mutate()
         drawable?.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(context, colorId), PorterDuff.Mode.SRC_IN)
 
         // UI実装

@@ -1,5 +1,6 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
+
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
@@ -8,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.library.CommentAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.UserInfoObject
@@ -69,25 +72,38 @@ class DetailPostFragment : Fragment() {
             // firestoreから取得する
             val bookData = FireStoreHelper.getBookData(bookId)
 
-            val runnable = Runnable {
-                // いいねとコメントの取得
-                favoriteImage.setImageDrawable(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.ic_like))
-                favoriteCount.text = bookData?.likedUserList?.size.toString()
-                commentImage.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        MyApplication.getAppContext(),
-                        R.drawable.ic_comment
+            // データが取得できればUI実装
+            if (bookData != null) {
+                val runnable = Runnable {
+                    // いいねとコメントの取得
+                    favoriteImage.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            MyApplication.getAppContext(),
+                            R.drawable.ic_like
+                        )
                     )
-                )
-                commentCount.text = bookData?.commentList?.size.toString()
+                    favoriteCount.text = bookData.likedUserList.size.toString()
+                    commentImage.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            MyApplication.getAppContext(),
+                            R.drawable.ic_comment
+                        )
+                    )
+                    commentCount.text = bookData.commentList.size.toString()
 
-                // リサイクラービューの実装
-                detailCommentRecyclerView.setHasFixedSize(true)
-                detailCommentRecyclerView.adapter = CommentAdapter(bookData?.commentList!!)
-                detailCommentRecyclerView.layoutManager = LinearLayoutManager(activity)
+                    // リサイクラービューの実装
+                    detailCommentRecyclerView.setHasFixedSize(true)
+                    val adapter = CommentAdapter(bookData.commentList)
+                    adapter.setUserImageClickListener(object : OnUserImageClickListener {
+                        override fun onUserImageClickListener(uid: String, userJson: String) {
+                            AnotherUserActivity.moveToAnotherUserActivity(activity, uid, userJson)
+                        }
+                    })
+                    detailCommentRecyclerView.adapter = adapter
+                    detailCommentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                }
+                handler.post(runnable)
             }
-            // UI実装
-            handler.post(runnable)
         }
     }
 
