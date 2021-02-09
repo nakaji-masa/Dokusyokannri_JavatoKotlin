@@ -7,9 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
 class AnotherTabAdapter(
-    fm: FragmentManager,
-    private val uid: String,
-    private val userJson: String
+    fm: FragmentManager
 ) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val titleList = listOf("本棚", "投稿")
@@ -33,11 +31,11 @@ class AnotherTabAdapter(
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                BookshelfContentFragment.newInstance(uid)
+                BookshelfContentFragment.newInstance()
             }
 
             else -> {
-                PostContentFragment.newInstance(uid, userJson)
+                PostContentFragment.newInstance()
             }
         }
     }

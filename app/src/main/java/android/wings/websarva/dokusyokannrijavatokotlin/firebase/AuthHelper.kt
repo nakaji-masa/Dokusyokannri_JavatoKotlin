@@ -58,8 +58,4 @@ object AuthHelper {
     fun isLogin() :Boolean {
         return mAuth.currentUser != null
     }
-
-
-
-
 }

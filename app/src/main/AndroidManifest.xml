@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".another.activities.AnotherUserActivity"></activity>
+        <activity android:name=".book.activities.PostForBookActivity" />
+        <activity android:name=".another.activities.AnotherUserActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,9 +30,6 @@
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.MainActivity" />
 
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

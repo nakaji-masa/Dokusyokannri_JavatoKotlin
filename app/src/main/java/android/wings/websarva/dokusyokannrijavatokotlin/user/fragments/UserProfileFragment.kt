@@ -28,14 +28,14 @@ import kotlinx.android.synthetic.main.fragment_user_profile.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-
+import androidx.appcompat.app.ActionBar
 
 class UserProfileFragment : BaseAuthFragment(), TextWatcher {
 
     private lateinit var realm: Realm
     private var imageUri: Uri = getDefaultUri()
     private var editMode = false
-    private var supportActionBar: androidx.appcompat.app.ActionBar? = null
+    private var supportActionBar: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +53,7 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         // デフォルトの画像を表示する
         GlideHelper.viewUserImage(imageUri.toString(), userImage)
 
@@ -61,6 +62,7 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
             supportActionBar = (activity as AppCompatActivity).supportActionBar
             supportActionBar?.setDisplayShowHomeEnabled(true)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.show()
 
             // realm編集する場合、登録されている情報を表示する
             val userInfo =
@@ -97,6 +99,7 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
                 // ユーザー情報
                 val userInfo =
                     UserInfoHelper(
+                        AuthHelper.getUid(),
                         userNameInput.text.toString(),
                         userIntroductionInput.text.toString(),
                         FireStorageHelper.getDownloadUrl()
@@ -174,6 +177,7 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(false)
             it.setDisplayShowHomeEnabled(false)
+            it.hide()
         }
     }
 

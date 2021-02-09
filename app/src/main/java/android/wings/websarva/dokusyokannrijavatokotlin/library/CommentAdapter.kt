@@ -46,7 +46,7 @@ class CommentAdapter(private val commentList: List<BookCommentHelper>) :
                     GlideHelper.viewUserImage(userInfo.userImageUrl, holder.userImage)
                     holder.userImage.setOnClickListener {
                         val userJson = Gson().toJson(userInfo)
-                        listener.onUserImageClickListener(uid, userJson)
+                        listener.onUserImageClickListener(userJson)
                     }
                     holder.comment.text = commentList[position].comment
                     holder.date.text = commentList[position].date

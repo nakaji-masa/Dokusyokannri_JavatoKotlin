@@ -13,6 +13,7 @@
     <color name="colorGrey">#bdbdbd</color>
     <color name="twitterColor">#00aced </color>
     <color name="white">#FFFFFF</color>
+    <color name="postTitleColor">#62efff</color>
 
     <color name="colorJanuary">#C7000B</color>
     <color name="colorFebruary">#D28300</color>

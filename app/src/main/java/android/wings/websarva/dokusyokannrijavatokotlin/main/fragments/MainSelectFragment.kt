@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.main.MainFragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.fragment_main_select.*
@@ -40,18 +41,20 @@ class MainSelectFragment : Fragment() {
                 bottomNavigationView.menu.getItem(position).isChecked = true
                 when (position) {
                     0 -> {
+                        LibraryFragment.initializeActionBar(activity)
                         activity?.setTitle(R.string.title_bookshelf)
                     }
 
                     1 -> {
+                        LibraryFragment.initializeActionBar(activity)
                         activity?.setTitle(R.string.title_graph)
                     }
 
                     2 -> {
-                        activity?.setTitle(R.string.title_post)
                     }
 
                     else -> {
+                        LibraryFragment.initializeActionBar(activity)
                         activity?.setTitle(R.string.title_settings)
                     }
                 }
@@ -69,22 +72,24 @@ class MainSelectFragment : Fragment() {
                 R.id.book_read_item -> {
                     mainViewPager.currentItem = 0
                     activity?.setTitle(R.string.title_bookshelf)
+                    LibraryFragment.initializeActionBar(activity)
                 }
 
                 R.id.graph_item -> {
                     mainViewPager.currentItem = 1
                     activity?.setTitle(R.string.title_graph)
+                    LibraryFragment.initializeActionBar(activity)
                 }
 
                 R.id.library_item -> {
                     mainViewPager.currentItem = 2
-                    activity?.setTitle(R.string.title_post)
                 }
 
 
                 R.id.settings_item -> {
                     mainViewPager.currentItem = 3
                     activity?.setTitle(R.string.title_settings)
+                    LibraryFragment.initializeActionBar(activity)
                 }
 
             }

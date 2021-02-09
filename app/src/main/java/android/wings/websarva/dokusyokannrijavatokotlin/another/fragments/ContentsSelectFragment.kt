@@ -13,14 +13,9 @@ import kotlinx.android.synthetic.main.fragment_contents_select.*
 
 class ContentsSelectFragment : Fragment() {
 
-    private lateinit var uid: String
-    private lateinit var userJson: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            uid = it.getString(AnotherUserActivity.ANOTHER_UID_KEY, "")
-            userJson = it.getString(AnotherUserActivity.ANOTHER_USER_KEY, "")
         }
     }
 
@@ -32,17 +27,15 @@ class ContentsSelectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        userContentsViewPager.adapter = AnotherTabAdapter(childFragmentManager, uid, userJson)
+        userContentsViewPager.adapter = AnotherTabAdapter(childFragmentManager)
         userContentsTabLayout.setupWithViewPager(userContentsViewPager)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(uid: String?, userJson: String?) =
+        fun newInstance() =
             ContentsSelectFragment().apply {
                 arguments = Bundle().apply {
-                    putString(AnotherUserActivity.ANOTHER_UID_KEY, uid)
-                    putString(AnotherUserActivity.ANOTHER_USER_KEY, userJson)
                 }
             }
     }

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".another.activities.AnotherUserActivity">
+    tools:context=".book.activities.PostForBookActivity">
 
     <FrameLayout
-        android:id="@+id/anotherUserContainer"
+        android:id="@+id/postForBookContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

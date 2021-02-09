@@ -107,9 +107,10 @@
                 android:layout_marginTop="8dp"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/userAuthor"
                 app:layout_constraintStart_toEndOf="@+id/userBookImage"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/userAuthor"/>
 
             <TextView
                 android:id="@+id/userAuthor"

@@ -2,29 +2,25 @@ package android.wings.websarva.dokusyokannrijavatokotlin.another.fragments
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.another.ContentBookShelfAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.another.fragments.base.BaseAnotherUserFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.GridItemDecoration
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_bookshelf_content.*
 
 
-class BookshelfContentFragment : Fragment() {
+class BookshelfContentFragment : BaseAnotherUserFragment() {
 
-    private lateinit var uid: String
     private lateinit var adapter: ContentBookShelfAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            uid = it.getString(AnotherUserActivity.ANOTHER_UID_KEY, "")
         }
     }
 
@@ -46,9 +42,10 @@ class BookshelfContentFragment : Fragment() {
             GridLayoutManager.VERTICAL,
             false
         )
+
         contentBookShelfRecyclerView.addItemDecoration(GridItemDecoration(width, 3))
         contentBookShelfRecyclerView.setHasFixedSize(true)
-        adapter = ContentBookShelfAdapter(FireStoreHelper.getUserOfRecyclerOptions(uid))
+        adapter = ContentBookShelfAdapter(FireStoreHelper.getRecyclerOptionsFromUid())
         contentBookShelfRecyclerView.adapter = adapter
     }
 
@@ -64,10 +61,9 @@ class BookshelfContentFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(uid: String?) =
+        fun newInstance() =
             BookshelfContentFragment().apply {
                 arguments = Bundle().apply {
-                    putString(AnotherUserActivity.ANOTHER_UID_KEY, uid)
                 }
             }
     }

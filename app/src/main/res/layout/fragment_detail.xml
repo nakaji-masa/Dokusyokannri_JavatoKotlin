@@ -113,7 +113,7 @@
             <TextView
                 android:id="@+id/detailBookActionPlanColumn"
                 style="@style/DetailColumnTextView"
-                android:text="@string/book_actionPlan_input"
+                android:text="@string/register_action_plan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dividerLayout2" />
 

@@ -1,33 +1,26 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.another.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.another.ContentPostAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.another.fragments.base.BaseAnotherUserFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnCommentClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.CommentFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_post_content.*
 
 
-class PostContentFragment : Fragment() {
+class PostContentFragment :BaseAnotherUserFragment() {
 
-    private lateinit var uid: String
-    private lateinit var userJson: String
     private lateinit var adapter: ContentPostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            uid = it.getString(AnotherUserActivity.ANOTHER_UID_KEY, "")
-            userJson = it.getString(AnotherUserActivity.ANOTHER_USER_KEY, "")
         }
     }
 
@@ -39,8 +32,7 @@ class PostContentFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val userInfo = Gson().fromJson<UserInfoHelper>(userJson, UserInfoHelper::class.java)
-        val options = FireStoreHelper.getUserOfRecyclerOptions(uid)
+        val options = FireStoreHelper.getRecyclerOptionsFromUid()
         adapter = ContentPostAdapter(userInfo, options)
         adapter.setCommentClickListener(object: OnCommentClickListener {
             override fun onCommentClickListener(userJson: String, bookJson: String) {
@@ -67,11 +59,9 @@ class PostContentFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(uid: String?, userJson: String) =
+        fun newInstance() =
             PostContentFragment().apply {
                 arguments = Bundle().apply {
-                    putString(AnotherUserActivity.ANOTHER_UID_KEY, uid)
-                    putString(AnotherUserActivity.ANOTHER_USER_KEY, userJson)
                 }
             }
     }

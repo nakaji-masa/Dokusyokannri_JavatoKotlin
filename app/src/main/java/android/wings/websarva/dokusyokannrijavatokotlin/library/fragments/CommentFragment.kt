@@ -33,14 +33,17 @@ class CommentFragment : Fragment() {
 
     private lateinit var userJson: String
     private lateinit var bookJson: String
+    private var activityName: String? = null
     private var supportActionBar: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activityName = activity?.localClassName
         arguments?.let {
             userJson = it.getString(USER_DATA_KEY, "")
             bookJson = it.getString(BOOK_DATA_KEY, "")
         }
+
     }
 
     override fun onCreateView(
@@ -53,9 +56,12 @@ class CommentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // アクションバーの設定
-        supportActionBar = (activity as AppCompatActivity).supportActionBar
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if (activityName != getString(R.string.another_user_activity)) {
+            supportActionBar = (activity as AppCompatActivity).supportActionBar
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.show()
+        }
 
         val userData = Gson().fromJson<UserInfoHelper>(userJson, UserInfoHelper::class.java)
         val bookData = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
@@ -127,6 +133,9 @@ class CommentFragment : Fragment() {
         super.onDestroy()
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(false)
+        if (activityName == getString(R.string.main_activity)) {
+            supportActionBar?.hide()
+        }
     }
 
     /**
@@ -169,8 +178,8 @@ class CommentFragment : Fragment() {
         val adapter = CommentAdapter(commentList)
         commentRecyclerView.adapter = adapter
         adapter.setUserImageClickListener(object : OnUserImageClickListener {
-            override fun onUserImageClickListener(uid: String, userJson: String) {
-                AnotherUserActivity.moveToAnotherUserActivity(activity, uid, userJson)
+            override fun onUserImageClickListener(userJson: String) {
+                AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
             }
         })
     }

@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/saveItem"
-        android:title="@string/book_save_button"
+        android:title="@string/save"
         app:showAsAction="ifRoom"
         app:actionLayout="@layout/action_button_layout"/>
 

@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar?.hide()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.mainContainer, MainSelectFragment.newInstance())
         transaction.commit()

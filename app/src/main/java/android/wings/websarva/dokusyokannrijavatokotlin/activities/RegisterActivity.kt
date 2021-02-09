@@ -57,6 +57,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setTitle(getString(R.string.register_title))
 
         bookListRealm = Realm.getInstance(RealmConfigObject.bookConfig)
         graphRealm = Realm.getInstance(RealmConfigObject.graphConfig)

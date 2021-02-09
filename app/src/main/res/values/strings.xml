@@ -1,37 +1,35 @@
 <resources>
     <string name="app_name">Book Action</string>
-    <string name="register_button">読んだ本を登録</string>
-    <string name="book_name_input">読んだ本のタイトル</string>
-    <string name="book_deadline_input">読んだ日付</string>
-    <string name="book_actionPlan_input">アクションプラン</string>
-    <string name="book_image">本の表紙</string>
-    <string name="book_save_button">保存</string>
-    <string name="book_name_view">本の名前</string>
-    <string name="book_deadline_view">読み終わった日付</string>
-    <string name="book_notice_view">気づいたこと・学んだこと</string>
-    <string name="book_actionPlan_view">アクションプラン</string>
-    <string name="barcode_button">バーコード検索</string>
-    <string name="date">日付</string>
-    <string name="next_action_view">次に実行する行動</string>
-    <string name="author_column">著者</string>
+
+    <string name="save">保存</string>
+
+    <!--プロフィール関係-->
     <string name="userName">ユーザーネーム(必須)</string>
-    <string name="password">パスワード(英数字8文字以上)</string>
-    <string name="new_register">新規登録</string>
-    <string name="login">ログイン</string>
-    <string name="image_select">画像を選択</string>
-    <string name="mail_address">メールアドレス</string>
+    <string name="user_introduction">自己紹介文(150文字以内)</string>
+    <string name="no_user_name">取得できませんでした</string>
+    
+    <!--本の登録関係-->
+    <string name="register_title">本を登録</string>
+    <string name="register_book_name">本のタイトル</string>
+    <string name="register_action_plan">アクションプラン</string>
+    <string name="read_date">読んだ日付</string>
+    <string name="author_column">著者</string>
+
+    <!--認証関係の文字列-->
     <string name="welcome_app">Book Actionへようこそ</string>
     <string name="google_register_text">Googleで登録・ログイン</string>
     <string name="twitter_register_text">Twitterで登録・ログイン</string>
     <string name="mail_register_text">メールアドレスで登録</string>
     <string name="mail_login_text">メールアドレスでログイン</string>
-    <string name="user_introduction">自己紹介文(150文字以内)</string>
-    <string name="save_text">保存</string>
-    <string name="no_user_name">取得できませんでした</string>
+    <string name="mail_address">メールアドレス</string>
+    <string name="password">パスワード(英数字8文字以上)</string>
+    <string name="new_register">新規登録</string>
+    <string name="login">ログイン</string>
+
+    <!--投稿関係の文字列-->
     <string name="author">著者:%1$s</string>
     <string name="post_text">投稿する</string>
     <string name="comment_input">コメントを記入</string>
-    <string name="read_date">読んだ日付</string>
 
     <!--アクションプラン用の文字列-->
     <string name="action_title">タイトル</string>
@@ -45,6 +43,8 @@
     <string name="action_next">Next Action Plan</string>
     <string name="action_next_hint">次のアクションプランを入力</string>
     <string name="action_first">最初のアクションプラン</string>
+    <string name="date">日付</string>
+    <string name="next_action_view">次に実行する行動</string>
 
     <!--BottomNavigationViewのタイトル-->
     <string name="title_bookshelf">本棚</string>
@@ -58,7 +58,20 @@
     <string name="dialog_register_message">登録に成功しました。</string>
     <string name="dialog_delete_message">削除しますか？</string>
     <string name="dialog_update_message">変更しました</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--検索用のテキスト-->
+    <string name="search_text">本の検索（本のタイトルを入力）</string>
+
+    <!--グラフ用-->
+    <string name="graph_last_month">先月</string>
+    <string name="graph_this_month">今月</string>
+    <string name="graph_last_year">昨年</string>
+    <string name="graph_this_year">今年</string>
+    <string name="graph_book_count">冊</string>
+
+    <!--アクティビティー名-->
+    <string name="another_user_activity">another.activities.AnotherUserActivity</string>
+    <string name="main_activity">activities.MainActivity</string>
+    <string name="barcode_button">バーコード検索</string>
 
 </resources>

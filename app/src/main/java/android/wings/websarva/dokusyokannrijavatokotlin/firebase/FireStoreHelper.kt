@@ -39,6 +39,15 @@ object FireStoreHelper {
     }
 
     /**
+     * 本の情報を取得するメソッドです
+     * @param docId ドキュメントID
+     * @return 本の情報
+     */
+    suspend fun getBookData(docId: String): BookHelper? {
+        return postCollection.document(docId).get().await().toObject(BookHelper::class.java)
+    }
+
+    /**
      * FireStoreに本の情報を保存する
      * @param data 保存するデータ
      */
@@ -50,12 +59,10 @@ object FireStoreHelper {
      * RecyclerOptionsを取得するメソッド
      * @return FirestoreRecyclerOptions
      */
-    fun getRecyclerOptions(): FirestoreRecyclerOptions<BookHelper> {
+    fun getAllRecyclerOptions(): FirestoreRecyclerOptions<BookHelper> {
         return FirestoreRecyclerOptions.Builder<BookHelper>()
             .setQuery(
                 fireStore.collection(COLLECTION_POST_PATH)
-                    .whereNotEqualTo("uid", AuthHelper.getUid())
-                    .orderBy("uid")
                     .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
             )
             .build()
@@ -63,16 +70,53 @@ object FireStoreHelper {
 
     /**
      * 指定したユーザーのほんの情報を取得するメソッド
-     * @param uid ユーザーID
      * @return FirestoreRecyclerOptions
      */
-    fun getUserOfRecyclerOptions(uid: String): FirestoreRecyclerOptions<BookHelper> {
+    fun getRecyclerOptionsFromUid(): FirestoreRecyclerOptions<BookHelper> {
         return FirestoreRecyclerOptions.Builder<BookHelper>()
             .setQuery(
                 fireStore.collection(COLLECTION_POST_PATH)
-                    .whereEqualTo("uid", uid), BookHelper::class.java
+                    .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
             )
             .build()
+    }
+
+    /**
+     * 本のタイトルから情報を取得するメソッド
+     * @param title 本のタイトル
+     * @return FirestoreRecyclerOptions
+     */
+    fun getRecyclerOptionsFromTitle(title: String): FirestoreRecyclerOptions<BookHelper> {
+        return FirestoreRecyclerOptions.Builder<BookHelper>()
+            .setQuery(
+                fireStore.collection(COLLECTION_POST_PATH)
+                    .whereEqualTo("title", title)
+                    .orderBy("title")
+                    .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
+
+            )
+            .build()
+
+    }
+
+    /**
+     * 本のタイトルから情報を取得するメソッド(部分一致)
+     * @param text 検索用文字列
+     * @return FirestoreRecyclerOptions
+     */
+    fun getRecyclerOptionsFromSearchText(text: String): FirestoreRecyclerOptions<BookHelper> {
+        val options = FirestoreRecyclerOptions.Builder<BookHelper>()
+            .setQuery(
+                fireStore.collection(COLLECTION_POST_PATH)
+                    .orderBy("title")
+                    .startAt(text)
+                    .endAt("$text\uf8ff")
+                , BookHelper::class.java
+            )
+            .build()
+        options.snapshots.sortByDescending { it.createdAt }
+        return options
+
     }
 
     /**
@@ -97,14 +141,4 @@ object FireStoreHelper {
             false
         }
     }
-
-    /**
-     * 本の情報を取得するメソッドです
-     * @param docId ドキュメントID
-     * @return 本の情報
-     */
-    suspend fun getBookData(docId: String): BookHelper? {
-        return postCollection.document(docId).get().await().toObject(BookHelper::class.java)
-    }
-
 }

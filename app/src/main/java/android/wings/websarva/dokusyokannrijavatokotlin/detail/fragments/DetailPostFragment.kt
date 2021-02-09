@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.book.activities.PostForBookActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
@@ -21,6 +22,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfig
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_detail_post.*
 import kotlinx.android.synthetic.main.library_cell.*
@@ -53,7 +55,8 @@ class DetailPostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // realmからユーザー情報と本の情報を取得
         val userObj =
-            userRealm.where(UserInfoObject::class.java).equalTo("uid", AuthHelper.getUid()).findFirst()
+            userRealm.where(UserInfoObject::class.java).equalTo("uid", AuthHelper.getUid())
+                .findFirst()
         val bookObj = bookRealm.where(BookObject::class.java).equalTo("id", bookId).findFirst()
 
         // UI実装
@@ -64,45 +67,49 @@ class DetailPostFragment : Fragment() {
         GlideHelper.viewBookImage(bookObj?.imageUrl, userBookImage)
         userBookTitle.text = bookObj?.title
         userAuthorName.text = bookObj?.author
+        favoriteImage.setImageDrawable(
+            ContextCompat.getDrawable(
+                MyApplication.getAppContext(),
+                R.drawable.ic_like
+            )
+        )
+        commentImage.setImageDrawable(
+            ContextCompat.getDrawable(
+                MyApplication.getAppContext(),
+                R.drawable.ic_comment
+            )
+        )
 
         // handler
         val handler = Handler()
 
         GlobalScope.launch {
-            // firestoreから取得する
-            val bookData = FireStoreHelper.getBookData(bookId)
 
-            // データが取得できればUI実装
+            // 本の情報
+            val bookData = FireStoreHelper.getBookData(bookId)
             if (bookData != null) {
-                val runnable = Runnable {
-                    // いいねとコメントの取得
-                    favoriteImage.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            MyApplication.getAppContext(),
-                            R.drawable.ic_like
-                        )
-                    )
+                handler.post {
+                    // コメント・いいねの数を表示
                     favoriteCount.text = bookData.likedUserList.size.toString()
-                    commentImage.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            MyApplication.getAppContext(),
-                            R.drawable.ic_comment
-                        )
-                    )
                     commentCount.text = bookData.commentList.size.toString()
+
+                    // 本のリスナーをセット
+                    bookLayout.setOnClickListener {
+                        val bookJson = Gson().toJson(bookData)
+                        PostForBookActivity.moveToPostForBookActivity(activity, bookJson)
+                    }
 
                     // リサイクラービューの実装
                     detailCommentRecyclerView.setHasFixedSize(true)
                     val adapter = CommentAdapter(bookData.commentList)
                     adapter.setUserImageClickListener(object : OnUserImageClickListener {
-                        override fun onUserImageClickListener(uid: String, userJson: String) {
-                            AnotherUserActivity.moveToAnotherUserActivity(activity, uid, userJson)
+                        override fun onUserImageClickListener(userJson: String) {
+                            AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
                         }
                     })
                     detailCommentRecyclerView.adapter = adapter
                     detailCommentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 }
-                handler.post(runnable)
             }
         }
     }
