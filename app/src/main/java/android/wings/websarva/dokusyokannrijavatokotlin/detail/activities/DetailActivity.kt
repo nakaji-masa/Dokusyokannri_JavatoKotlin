@@ -5,7 +5,7 @@ import android.view.MenuItem
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailSelectFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
 import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
 
@@ -17,7 +17,7 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        realm = Realm.getInstance(RealmConfigObject.bookConfig)
+        realm = RealmManager.getBookRealmInstance()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
@@ -51,14 +51,8 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
-    }
-
     companion object {
         const val BOOK_ID = "book_id"
-        const val ACTION_PLAN_ID = "action_id"
     }
 
 }

@@ -1,15 +1,18 @@
 <resources>
     <string name="app_name">Book Action</string>
 
-    <string name="save">保存</string>
+    <!--Menuのテキスト-->
+    <string name="save_button_text">保存</string>
+    <string name="update_button_text">変更</string>
 
     <!--プロフィール関係-->
     <string name="userName">ユーザーネーム(必須)</string>
     <string name="user_introduction">自己紹介文(150文字以内)</string>
     <string name="no_user_name">取得できませんでした</string>
-    
+
     <!--本の登録関係-->
     <string name="register_title">本を登録</string>
+    <string name="update_title">本の編集</string>
     <string name="register_book_name">本のタイトル</string>
     <string name="register_action_plan">アクションプラン</string>
     <string name="read_date">読んだ日付</string>
@@ -68,10 +71,29 @@
     <string name="graph_last_year">昨年</string>
     <string name="graph_this_year">今年</string>
     <string name="graph_book_count">冊</string>
+    <string name="graph_current_year">%1$s年</string>
+    <string name="graph_back_year_button">＜</string>
+    <string name="graph_next_year_button">＞</string>
+    <string name="graph_input">読書数</string>
+    <string name="graph_output">行動数</string>
+    <string name="graph_reviews">件</string>
 
     <!--アクティビティー名-->
     <string name="another_user_activity">another.activities.AnotherUserActivity</string>
     <string name="main_activity">activities.MainActivity</string>
     <string name="barcode_button">バーコード検索</string>
+
+
+    <!--spinner用のテキスト-->
+    <string-array name="spinner_text_array">
+        <item>登録日が早い順</item>
+        <item>登録日が遅い順</item>
+    </string-array>
+
+    <!--通知用のテキスト-->
+    <string name="notification_text">通知</string>
+    <!--&lt;でHTMLタグを書く-->
+    <string name="notification_user_text">&lt;b>%1$s&lt;/b>さんがあなたの投稿に%2$sをしました。</string>
+
 
 </resources>

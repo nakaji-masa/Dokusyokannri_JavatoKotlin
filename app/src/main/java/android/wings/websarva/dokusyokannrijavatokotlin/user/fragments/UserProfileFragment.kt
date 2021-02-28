@@ -14,12 +14,12 @@ import android.view.*
 import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.UserInfoObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.base.BaseAuthFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStorageHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
@@ -42,7 +42,7 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
         arguments?.let {
             editMode = it.getBoolean(MODE_KEY)
         }
-        realm = Realm.getInstance(RealmConfigObject.userConfig)
+        realm = RealmManager.getUserRealmInstance()
     }
 
     override fun onCreateView(
@@ -172,13 +172,12 @@ class UserProfileFragment : BaseAuthFragment(), TextWatcher {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(false)
             it.setDisplayShowHomeEnabled(false)
             it.hide()
         }
+        super.onDestroy()
     }
 
     /**

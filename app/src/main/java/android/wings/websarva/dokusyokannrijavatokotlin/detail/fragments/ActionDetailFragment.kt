@@ -3,14 +3,10 @@ package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
-import io.realm.Realm
 import io.realm.Sort
 import kotlinx.android.synthetic.main.fragment_action_detail.*
 import kotlinx.android.synthetic.main.fragment_action_detail.view.*
@@ -18,18 +14,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ActionDetailFragment : Fragment() {
-    private lateinit var realm: Realm
-    private lateinit var bookId: String
+class ActionDetailFragment : BaseDetailFragment() {
+
     private lateinit var actionId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            bookId = it.getString(DetailActivity.BOOK_ID, "")
-            actionId = it.getString(DetailActivity.ACTION_PLAN_ID, "")
+            actionId = it.getString(ActionListFragment.ACTION_ID, "")
         }
-        realm = Realm.getInstance(RealmConfigObject.bookConfig)
     }
 
     override fun onCreateView(
@@ -40,24 +33,18 @@ class ActionDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val title: TextView = view.findViewById(R.id.actionDetailTitle)
-        val date: TextView = view.findViewById(R.id.actionDetailDate)
-        val what: TextView = view.findViewById(R.id.actionDetailWhat)
-        val could: TextView = view.findViewById(R.id.actionDetailCould)
-        val couldNot: TextView = view.findViewById(R.id.actionDetailCouldNot)
-        val next: TextView = view.findViewById(R.id.actionDetailNext)
-
-        val book = realm.where(BookObject::class.java).equalTo("id", bookId).findFirst()
-        val obj = book?.actionPlanDairy?.last { it.id == actionId }
-        title.text = obj?.title
-        date.text = convertDateToString(obj?.date)
-        what.text = obj?.what
-        could.text = obj?.could
-        couldNot.text = obj?.couldNot
-        next.text = obj?.nextAction
+        
+        // 行動の情報を取得し表示させる
+        val actionObj = bookObj?.actionPlanDairy?.last { it.id == actionId }
+        actionDetailTitle.text = actionObj?.title
+        actionDetailDate.text = convertDateToString(actionObj?.date)
+        actionDetailWhat.text = actionObj?.what
+        actionDetailCould.text = actionObj?.could
+        actionDetailCouldNot.text = actionObj?.couldNot
+        actionDetailNext.text = actionObj?.nextAction
 
         // 最初のアクションプランは編集・削除不可にする
-        if (obj?.title == getString(R.string.action_first)) {
+        if (actionObj?.title == getString(R.string.action_first)) {
             actionUpdateButton.visibility = View.INVISIBLE
             actionDeleteButton.visibility = View.INVISIBLE
         } else {
@@ -65,15 +52,15 @@ class ActionDetailFragment : Fragment() {
                 moveToInputActionPlanFragment()
             }
 
-            view.actionDeleteButton.setOnClickListener {
-                AlertDialog.Builder(activity, R.style.BasicDialogTheme)
+            actionDeleteButton.setOnClickListener {
+                AlertDialog.Builder(requireContext())
                     .setMessage(R.string.dialog_delete_message)
-                    .setPositiveButton(R.string.dialog_positive) { dialog, which ->
-                        deleteData(obj)
+                    .setPositiveButton(R.string.dialog_positive) { dialog, _ ->
+                        deleteData(actionObj)
                         dialog.dismiss()
                         activity?.supportFragmentManager?.popBackStack()
                     }
-                    .setNegativeButton(R.string.dialog_negative) { dialog, which ->
+                    .setNegativeButton(R.string.dialog_negative) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()
@@ -86,7 +73,7 @@ class ActionDetailFragment : Fragment() {
      */
     private fun moveToInputActionPlanFragment() {
         val transaction = activity?.supportFragmentManager?.beginTransaction()
-        transaction?.replace(R.id.detailContainer, InputActionDairyDetailFragment.newInstance(bookId, actionId))
+        transaction?.replace(R.id.detailContainer, InputActionFragment.newInstance(actionId))
         transaction?.addToBackStack(null)
         transaction?.commit()
     }
@@ -97,7 +84,9 @@ class ActionDetailFragment : Fragment() {
     private fun deleteData(obj: ActionPlanObject?) {
         realm.executeTransaction {
             obj?.deleteFromRealm()
-            val newestObj = it.where(ActionPlanObject::class.java).findAll().sort("date", Sort.DESCENDING).first()
+            val newestObj =
+                it.where(ActionPlanObject::class.java).findAll().sort("date", Sort.DESCENDING)
+                    .first()
             val bookObject = it.where(BookObject::class.java).equalTo("id", bookId).findFirst()
             newestObj?.nextAction?.let { text ->
                 bookObject?.actionPlan = text
@@ -110,7 +99,7 @@ class ActionDetailFragment : Fragment() {
      * @param date 日付
      * @return String "yyyy年MM月dd"の文字列
      */
-    private fun convertDateToString(date: Date?) : String {
+    private fun convertDateToString(date: Date?): String {
         return if (date == null) {
             ""
         } else {
@@ -119,18 +108,12 @@ class ActionDetailFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
-    }
-
     companion object {
         @JvmStatic
-        fun newInstance(bookId: String, actionId: String) =
+        fun newInstance(id: String) =
             ActionDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(DetailActivity.BOOK_ID, bookId)
-                    putString(DetailActivity.ACTION_PLAN_ID, actionId)
+                    putString(ActionListFragment.ACTION_ID, id)
                 }
             }
 

@@ -3,6 +3,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin.firebase
 
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.notification.Notification
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.tasks.await
@@ -29,11 +30,12 @@ object FireStoreHelper {
         }
     }
 
+
     /**
      * Userコレクションからユーザー情報を取得する
      * @return UserInfoHelper ユーザー情報
      */
-    suspend fun getUserData(uid: String): UserInfoHelper? {
+    suspend fun getUserInfoFromUid(uid: String): UserInfoHelper? {
         val snapshot = userCollection.document(uid).get().await()
         return snapshot?.toObject(UserInfoHelper::class.java)
     }
@@ -43,8 +45,32 @@ object FireStoreHelper {
      * @param docId ドキュメントID
      * @return 本の情報
      */
-    suspend fun getBookData(docId: String): BookHelper? {
+    suspend fun getBookDataFromDocId(docId: String): BookHelper? {
         return postCollection.document(docId).get().await().toObject(BookHelper::class.java)
+    }
+
+    /**
+     * いいねをされている投稿を取得する
+     * @return List<BookHelper> 投稿のリスト
+     */
+    suspend fun getBookDataListOnlyLiked(): List<BookHelper> {
+        return postCollection
+            .whereEqualTo("uid", AuthHelper.getUid())
+            .whereNotEqualTo("likedCount", 0)
+            .orderBy("likedCount")
+            .get().await().toObjects(BookHelper::class.java)
+    }
+
+    /**
+     * コメントをされている投稿を取得する
+     * @return List<BookHelper> 投稿のリスト
+     */
+    suspend fun getBookDataListOnlyCommented(): List<BookHelper> {
+        return postCollection
+            .whereEqualTo("uid", AuthHelper.getUid())
+            .whereNotEqualTo("commentedCount", 0)
+            .orderBy("commentedCount")
+            .get().await().toObjects(BookHelper::class.java)
     }
 
     /**
@@ -72,10 +98,11 @@ object FireStoreHelper {
      * 指定したユーザーのほんの情報を取得するメソッド
      * @return FirestoreRecyclerOptions
      */
-    fun getRecyclerOptionsFromUid(): FirestoreRecyclerOptions<BookHelper> {
+    fun getRecyclerOptionsFromUid(uid: String): FirestoreRecyclerOptions<BookHelper> {
         return FirestoreRecyclerOptions.Builder<BookHelper>()
             .setQuery(
                 fireStore.collection(COLLECTION_POST_PATH)
+                    .whereEqualTo("uid", uid)
                     .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
             )
             .build()
@@ -91,7 +118,6 @@ object FireStoreHelper {
             .setQuery(
                 fireStore.collection(COLLECTION_POST_PATH)
                     .whereEqualTo("title", title)
-                    .orderBy("title")
                     .orderBy("createdAt", Query.Direction.DESCENDING), BookHelper::class.java
 
             )
@@ -110,14 +136,14 @@ object FireStoreHelper {
                 fireStore.collection(COLLECTION_POST_PATH)
                     .orderBy("title")
                     .startAt(text)
-                    .endAt("$text\uf8ff")
-                , BookHelper::class.java
+                    .endAt("$text\uf8ff"), BookHelper::class.java
             )
             .build()
         options.snapshots.sortByDescending { it.createdAt }
         return options
 
     }
+
 
     /**
      * 指定されたドキュメントを削除するメソッドです
@@ -141,4 +167,23 @@ object FireStoreHelper {
             false
         }
     }
+
+    /**
+     * いいねの通知を確認したことを更新するメソッド
+     * @param notification
+     */
+    fun updateLikedNotification(notification: Notification) {
+        notification.bookHelper.likedList.last { it.id == notification.id }.checked = true
+        savePostData(notification.bookHelper)
+    }
+
+    /**
+     * コメントの通知を確認したことを更新するメソッド
+     * @param notification
+     */
+    fun updateCommentedNotification(notification: Notification) {
+        notification.bookHelper.commentedList.last { it.id == notification.id }.checked = true
+        savePostData(notification.bookHelper)
+    }
+
 }

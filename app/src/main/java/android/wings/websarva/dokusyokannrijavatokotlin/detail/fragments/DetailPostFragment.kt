@@ -15,34 +15,33 @@ import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.Detail
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
-import android.wings.websarva.dokusyokannrijavatokotlin.library.CommentAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.post.CommentAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.UserInfoObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_detail_post.*
-import kotlinx.android.synthetic.main.library_cell.*
+import kotlinx.android.synthetic.main.post_cell.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 class DetailPostFragment : Fragment() {
 
-    private lateinit var bookId: String
     private lateinit var bookRealm: Realm
     private lateinit var userRealm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            bookId = it.getString(DetailActivity.BOOK_ID, "")
         }
-        bookRealm = Realm.getInstance(RealmConfigObject.bookConfig)
-        userRealm = Realm.getInstance(RealmConfigObject.userConfig)
+        bookRealm = RealmManager.getBookRealmInstance()
+        userRealm = RealmManager.getUserRealmInstance()
     }
 
     override fun onCreateView(
@@ -57,6 +56,7 @@ class DetailPostFragment : Fragment() {
         val userObj =
             userRealm.where(UserInfoObject::class.java).equalTo("uid", AuthHelper.getUid())
                 .findFirst()
+        val bookId = requireActivity().intent.getStringExtra(DetailActivity.BOOK_ID)
         val bookObj = bookRealm.where(BookObject::class.java).equalTo("id", bookId).findFirst()
 
         // UI実装
@@ -84,14 +84,13 @@ class DetailPostFragment : Fragment() {
         val handler = Handler()
 
         GlobalScope.launch {
-
             // 本の情報
-            val bookData = FireStoreHelper.getBookData(bookId)
+            val bookData = FireStoreHelper.getBookDataFromDocId(bookId)
             if (bookData != null) {
                 handler.post {
                     // コメント・いいねの数を表示
-                    favoriteCount.text = bookData.likedUserList.size.toString()
-                    commentCount.text = bookData.commentList.size.toString()
+                    favoriteCount.text = bookData.likedList.size.toString()
+                    commentCount.text = bookData.commentedList.size.toString()
 
                     // 本のリスナーをセット
                     bookLayout.setOnClickListener {
@@ -101,31 +100,25 @@ class DetailPostFragment : Fragment() {
 
                     // リサイクラービューの実装
                     detailCommentRecyclerView.setHasFixedSize(true)
-                    val adapter = CommentAdapter(bookData.commentList)
+                    detailCommentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    detailCommentRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
+                    val adapter = CommentAdapter(bookData.commentedList)
                     adapter.setUserImageClickListener(object : OnUserImageClickListener {
                         override fun onUserImageClickListener(userJson: String) {
                             AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
                         }
                     })
                     detailCommentRecyclerView.adapter = adapter
-                    detailCommentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 }
             }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        bookRealm.close()
-        userRealm.close()
-    }
-
     companion object {
         @JvmStatic
-        fun newInstance(id: String?) =
+        fun newInstance() =
             DetailPostFragment().apply {
                 arguments = Bundle().apply {
-                    putString(DetailActivity.BOOK_ID, id)
                 }
             }
     }

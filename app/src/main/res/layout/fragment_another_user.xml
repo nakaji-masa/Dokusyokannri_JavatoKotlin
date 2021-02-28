@@ -6,62 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".another.fragments.AnotherUserFragment">
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/userLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ImageView
+            android:id="@+id/anotherUserImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintBottom_toTopOf="@+id/anotherUserIntroduction"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_account" />
+
+        <TextView
+            android:id="@+id/anotherUserName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/anotherUserIntroduction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/anotherUserImage"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/anotherUserIntroduction"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/anotherUserImage" />
 
-            <ImageView
-                android:id="@+id/anotherUserImage"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_margin="8dp"
-                android:contentDescription="@string/app_name"
-                app:srcCompat="@drawable/ic_account"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/anotherUserIntroduction"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/anotherUserName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="なかなかっか閣下"
-                android:textSize="20sp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintStart_toEndOf="@+id/anotherUserImage"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/anotherUserIntroduction"/>
-
-            <TextView
-                android:id="@+id/anotherUserIntroduction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="私テストスイートテストスイートテストスイートテストスイート"
-                android:textSize="15sp"
-                android:layout_margin="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/anotherUserImage"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:id="@+id/userContentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/userLayout"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

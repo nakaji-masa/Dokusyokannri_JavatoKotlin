@@ -5,9 +5,12 @@ import android.graphics.drawable.Drawable
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookCommentHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.CommentHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.LikeHelper
 import androidx.core.content.ContextCompat
+import java.util.*
+import kotlin.collections.HashMap
 
 object PostHelper {
     /**
@@ -17,11 +20,14 @@ object PostHelper {
      */
     fun pushFavorite(liked: Boolean, model: BookHelper) {
         if (liked) {
-            model.likedUserList.remove(AuthHelper.getUid())
+            model.likedList.removeAll { it.likedUserUid == AuthHelper.getUid() }
+            model.likedCount = model.likedList.size
         } else {
-            model.likedUserList.add(AuthHelper.getUid())
+            model.likedList.add(LikeHelper())
+            model.likedCount = model.likedList.size
         }
         FireStoreHelper.savePostData(model)
+
     }
 
     /**
@@ -54,11 +60,11 @@ object PostHelper {
 
     /**
      * ユーザーが投稿に対して、いいねをしたか判定するメソッド
-     * @param likedUserList いいねをしたユーザーのリスト
+     * @param likedList いいねをしたユーザーのリスト
      * @return いいねをしているかの判定結果
      */
-    fun hasLiked(likedUserList: List<String>): Boolean {
-        return likedUserList.contains(AuthHelper.getUid())
+    fun hasLiked(likedList: List<LikeHelper>): Boolean {
+        return likedList.any { it.likedUserUid == AuthHelper.getUid() }
     }
 
     /**
@@ -66,8 +72,8 @@ object PostHelper {
      * @param commentedList コメントしたユーザーのリスト
      * @return 判定結果
      */
-    fun hasCommented(commentedList: List<BookCommentHelper>): Boolean {
-        return commentedList.any { it.userUid == AuthHelper.getUid() }
+    fun hasCommented(commentedList: List<CommentHelper>): Boolean {
+        return commentedList.any { it.commentedUserUid == AuthHelper.getUid() }
     }
 
 }

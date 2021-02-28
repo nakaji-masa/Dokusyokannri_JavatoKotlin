@@ -14,13 +14,13 @@ class SettingsContentFragment: PreferenceFragmentCompat() {
         // プロフィール変更
         val userInfoPref = findPreference<Preference>(USER_INFO_KEY)
         userInfoPref?.setOnPreferenceClickListener {
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.addToBackStack(null)
-            transaction?.replace(
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.addToBackStack(null)
+            transaction.replace(
                 R.id.mainContainer,
                 UserProfileFragment.newInstance(UserProfileFragment.EDIT_MODE)
             )
-            transaction?.commit()
+            transaction.commit()
             true
         }
 
@@ -28,7 +28,7 @@ class SettingsContentFragment: PreferenceFragmentCompat() {
         val logoutPref = findPreference<Preference>(LOGOUT_KEY)
         logoutPref?.setOnPreferenceClickListener {
             AuthHelper.signOut()
-            activity?.finish()
+            requireActivity().finish()
             true
         }
     }

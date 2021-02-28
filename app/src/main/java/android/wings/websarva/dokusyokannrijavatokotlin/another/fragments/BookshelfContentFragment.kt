@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.another.ContentBookShelfAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.another.AnotherUserContentBookShelfAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.another.fragments.base.BaseAnotherUserFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.GridItemDecoration
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.fragment_bookshelf_content.*
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.fragment_another_user_bookshelf_content.*
 
 
 class BookshelfContentFragment : BaseAnotherUserFragment() {
 
-    private lateinit var adapter: ContentBookShelfAdapter
+    private lateinit var adapterAnotherUser: AnotherUserContentBookShelfAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +31,7 @@ class BookshelfContentFragment : BaseAnotherUserFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_bookshelf_content, container, false)
+        return inflater.inflate(R.layout.fragment_another_user_bookshelf_content, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,18 +48,21 @@ class BookshelfContentFragment : BaseAnotherUserFragment() {
 
         contentBookShelfRecyclerView.addItemDecoration(GridItemDecoration(width, 3))
         contentBookShelfRecyclerView.setHasFixedSize(true)
-        adapter = ContentBookShelfAdapter(FireStoreHelper.getRecyclerOptionsFromUid())
-        contentBookShelfRecyclerView.adapter = adapter
+
+        val userJson = activity?.intent?.extras?.getString(AnotherUserActivity.ANOTHER_USER_KEY)
+        val userInfo = Gson().fromJson<UserInfoHelper>(userJson, UserInfoHelper::class.java)
+        adapterAnotherUser = AnotherUserContentBookShelfAdapter(FireStoreHelper.getRecyclerOptionsFromUid(userInfo.uid))
+        contentBookShelfRecyclerView.adapter = adapterAnotherUser
     }
 
     override fun onStart() {
         super.onStart()
-        adapter.startListening()
+        adapterAnotherUser.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        adapter.stopListening()
+        adapterAnotherUser.stopListening()
     }
 
     companion object {

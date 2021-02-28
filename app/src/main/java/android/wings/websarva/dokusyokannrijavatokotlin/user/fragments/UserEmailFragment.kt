@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.base.BaseAuthFragment
 import kotlinx.android.synthetic.main.fragment_user_email.view.*
 import kotlinx.android.synthetic.main.fragment_user_email.view.loginProgressBar
 import java.util.regex.Pattern

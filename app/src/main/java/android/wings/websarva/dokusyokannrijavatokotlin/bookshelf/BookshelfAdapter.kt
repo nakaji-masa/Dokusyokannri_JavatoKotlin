@@ -14,7 +14,7 @@ import io.realm.RealmRecyclerViewAdapter
 
 class BookshelfAdapter(
     private val context: Context,
-    private var book: OrderedRealmCollection<BookObject>,
+    private val book: OrderedRealmCollection<BookObject>,
     autoUpdate: Boolean
 ) : RealmRecyclerViewAdapter<BookObject, BookshelfAdapter.BookViewHolder>(book, autoUpdate) {
 
@@ -25,7 +25,7 @@ class BookshelfAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val v = LayoutInflater.from(context).inflate(R.layout.recycle_cell_main, parent, false)
+        val v = LayoutInflater.from(context).inflate(R.layout.bookshelf_cell, parent, false)
         return BookViewHolder(v)
     }
 
@@ -35,7 +35,6 @@ class BookshelfAdapter(
         GlideHelper.viewBookImage(book.imageUrl, holder.imageView)
 
         holder.itemView.setOnClickListener {
-            println("adapter:" + book.id)
             listener.onItemClickListener(it, position, book.id)
         }
 

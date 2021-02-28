@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    tools:context=".library.fragments.LibraryFragment">
+    tools:context=".post.fragments.PostFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/libraryBar"
@@ -15,7 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/usersBookList"
+        app:layout_constraintBottom_toTopOf="@+id/postList"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -31,7 +30,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/usersBookList"
+        android:id="@+id/postList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.Base.BaseAuthFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.base.BaseAuthFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient

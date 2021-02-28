@@ -26,9 +26,9 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val transaction = activity?.supportFragmentManager?.beginTransaction()
-        transaction?.add(R.id.settingsContainer, SettingsContentFragment.newInstance())
-        transaction?.commit()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.add(R.id.settingsContainer, SettingsContentFragment.newInstance())
+        transaction.commit()
     }
 
     companion object {

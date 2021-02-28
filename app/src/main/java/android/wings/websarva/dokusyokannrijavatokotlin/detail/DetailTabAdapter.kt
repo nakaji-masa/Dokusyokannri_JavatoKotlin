@@ -1,18 +1,16 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail
 
-import android.content.Context
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.ActionDairyFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.ActionListFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailPostFragment
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.OnActionDairyFragmentListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 
-class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : String?) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class DetailTabAdapter(fm: FragmentManager) :
+    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val titleList = listOf("本の詳細", "アクションプラン", "本の投稿")
-    var onDetailPagerAdapterListener: OnDetailPagerAdapterListener? = null
+    private val titleList = listOf("詳細", "投稿", "行動")
 
     override fun getCount(): Int {
         //タブの数を返す
@@ -20,35 +18,23 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Str
     }
 
     override fun getItem(position: Int): Fragment {
-       //押しているタブによって返すフラグメントを変える
-        return when(position) {
+        //押しているタブによって返すフラグメントを変える
+        return when (position) {
             0 -> {
-                DetailFragment.newInstance(id)
+                DetailFragment.newInstance()
             }
-
             1 -> {
-                val fragment = ActionDairyFragment.newInstance(id)
-                fragment.onActionDairyFragmentListener =
-                    object : OnActionDairyFragmentListener {
-                        override fun onAddButtonClicked(id: String) {
-                           onDetailPagerAdapterListener?.onAddButtonClicked(id)
-                        }
-
-                        override fun onItemClicked(bookId: String, actionId: String) {
-                            onDetailPagerAdapterListener?.onActionItemClicked(bookId, actionId)
-                        }
-                    }
-                fragment
+                DetailPostFragment.newInstance()
             }
-            else ->  {
-                DetailPostFragment.newInstance(id)
+            else -> {
+                ActionListFragment.newInstance()
             }
         }
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
         //タブの文字を決める
-        return when(position) {
+        return when (position) {
             0 -> {
                 titleList[position]
             }
@@ -62,9 +48,4 @@ class DetailTabAdapter(fm : FragmentManager, val context : Context, val id : Str
             }
         }
     }
-}
-
-interface OnDetailPagerAdapterListener {
-    fun onActionItemClicked(bookId: String, actionId: String)
-    fun onAddButtonClicked(bookId: String)
 }

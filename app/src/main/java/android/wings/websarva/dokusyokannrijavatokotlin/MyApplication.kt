@@ -2,6 +2,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin
 
 import android.app.Application
 import android.content.Context
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -14,18 +15,10 @@ class MyApplication : Application() {
         //Realmの初期化
         Realm.init(this)
 
-        val bookListConfig = RealmConfiguration.Builder()
-            .name("bookList")
-            .build()
-
-        val graphConfig = RealmConfiguration.Builder()
-            .name("graphData")
-            .build()
-
         //設定をセット
-        Realm.setDefaultConfiguration(bookListConfig)
-
-        Realm.setDefaultConfiguration(graphConfig)
+        Realm.setDefaultConfiguration(RealmManager.bookConfig)
+        Realm.setDefaultConfiguration(RealmManager.graphConfig)
+        Realm.setDefaultConfiguration(RealmManager.userConfig)
     }
 
     companion object {

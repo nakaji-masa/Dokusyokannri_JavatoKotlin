@@ -13,8 +13,9 @@ import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelpe
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnBookClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnCommentClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
-import android.wings.websarva.dokusyokannrijavatokotlin.library.PostAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.CommentFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.post.PostAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.post.fragments.CommentFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -62,9 +63,12 @@ class PostForBookFragment : Fragment() {
             override fun onBookClickListener(bookJson: String) {
             }
         })
-        bookPostRecyclerView.adapter = adapter
+
+        // リサイクラービューの設定
+        bookPostRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
         bookPostRecyclerView.setHasFixedSize(true)
         bookPostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        bookPostRecyclerView.adapter = adapter
 
         GlideHelper.viewBookImage(book.imageUrl, postForBookImage)
         postForBookTitle.text = book.title

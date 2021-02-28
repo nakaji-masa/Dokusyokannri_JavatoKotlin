@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.another.AnotherTabAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.another.AnotherUserTabAdapter
 import kotlinx.android.synthetic.main.fragment_contents_select.*
 
 
@@ -27,7 +26,7 @@ class ContentsSelectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        userContentsViewPager.adapter = AnotherTabAdapter(childFragmentManager)
+        userContentsViewPager.adapter = AnotherUserTabAdapter(childFragmentManager)
         userContentsTabLayout.setupWithViewPager(userContentsViewPager)
     }
 

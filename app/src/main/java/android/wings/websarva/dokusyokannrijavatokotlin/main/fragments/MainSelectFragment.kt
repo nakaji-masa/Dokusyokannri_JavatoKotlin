@@ -1,15 +1,18 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.main.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.library.fragments.LibraryFragment
-import android.wings.websarva.dokusyokannrijavatokotlin.main.MainFragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
+import android.wings.websarva.dokusyokannrijavatokotlin.notification.NotificationHelper
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.fragment_main_select.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class MainSelectFragment : Fragment() {
@@ -28,74 +31,27 @@ class MainSelectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity?.setTitle(R.string.title_bookshelf)
-        mainViewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
+        val handler = Handler()
+        GlobalScope.launch {
 
-            override fun onPageSelected(position: Int) {
-                bottomNavigationView.menu.getItem(position).isChecked = true
-                when (position) {
-                    0 -> {
-                        LibraryFragment.initializeActionBar(activity)
-                        activity?.setTitle(R.string.title_bookshelf)
-                    }
+            // notificationListを作成
+            NotificationHelper.createNotificationList()
 
-                    1 -> {
-                        LibraryFragment.initializeActionBar(activity)
-                        activity?.setTitle(R.string.title_graph)
-                    }
-
-                    2 -> {
-                    }
-
-                    else -> {
-                        LibraryFragment.initializeActionBar(activity)
-                        activity?.setTitle(R.string.title_settings)
+            handler.post {
+                bottomNavigationView.menu.getItem(3).itemId.let {
+                    bottomNavigationView.getOrCreateBadge(it).apply {
+                        number = NotificationHelper.getNotCheckedNotificationCount()
+                        if (number == 0) {
+                            isVisible = false
+                        }
                     }
                 }
             }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-
-        })
-        mainViewPager.adapter = MainFragmentPagerAdapter(childFragmentManager)
-        bottomNavigationView.selectedItemId = R.id.book_read_item
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.book_read_item -> {
-                    mainViewPager.currentItem = 0
-                    activity?.setTitle(R.string.title_bookshelf)
-                    LibraryFragment.initializeActionBar(activity)
-                }
-
-                R.id.graph_item -> {
-                    mainViewPager.currentItem = 1
-                    activity?.setTitle(R.string.title_graph)
-                    LibraryFragment.initializeActionBar(activity)
-                }
-
-                R.id.library_item -> {
-                    mainViewPager.currentItem = 2
-                }
-
-
-                R.id.settings_item -> {
-                    mainViewPager.currentItem = 3
-                    activity?.setTitle(R.string.title_settings)
-                    LibraryFragment.initializeActionBar(activity)
-                }
-
-            }
-            return@setOnNavigationItemSelectedListener true
         }
+        bottomNavigationView.setupWithNavController(requireActivity().findNavController(R.id.navFragment))
     }
+
+
 
     companion object {
         @JvmStatic

@@ -10,8 +10,9 @@
     <color name="colorAmberLight">#ffff81</color>
     <color name="colorBackground">#DFD9D7</color>
 
+    <color name="colorNotChecked">#eceff1</color>
     <color name="colorGrey">#bdbdbd</color>
-    <color name="twitterColor">#00aced </color>
+    <color name="twitterColor">#00aced</color>
     <color name="white">#FFFFFF</color>
     <color name="postTitleColor">#62efff</color>
 

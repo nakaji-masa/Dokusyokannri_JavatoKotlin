@@ -8,20 +8,11 @@ import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailTabAdapter
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.OnDetailPagerAdapterListener
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
 import kotlinx.android.synthetic.main.fragment_detail_select.*
 
 
-class DetailSelectFragment : Fragment() {
-
-    private lateinit var bookId: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            bookId = it.getString(DetailActivity.BOOK_ID, "")
-        }
-    }
+class DetailSelectFragment : BaseDetailFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +23,7 @@ class DetailSelectFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val adapter = DetailTabAdapter(childFragmentManager, requireContext(), bookId)
+        val adapter = DetailTabAdapter(childFragmentManager)
 
         //アダプターのセット
         detailPager.adapter = adapter
@@ -40,29 +31,10 @@ class DetailSelectFragment : Fragment() {
         //タブにpagerの情報をセット
         detailTabLayout.setupWithViewPager(detailPager)
 
-
-        adapter.onDetailPagerAdapterListener =
-            object : OnDetailPagerAdapterListener {
-                override fun onActionItemClicked(bookId: String, actionId: String) {
-                    val transaction = activity?.supportFragmentManager?.beginTransaction()
-                    transaction?.addToBackStack(null)
-                    transaction?.replace(
-                        R.id.detailContainer,
-                        ActionDetailFragment.newInstance(bookId, actionId)
-                    )
-                    transaction?.commit()
-                }
-
-                override fun onAddButtonClicked(bookId: String) {
-                    val transaction = activity?.supportFragmentManager?.beginTransaction()
-                    transaction?.addToBackStack(null)
-                    transaction?.replace(
-                        R.id.detailContainer,
-                        InputActionDairyDetailFragment.newInstance(bookId)
-                    )
-                    transaction?.commit()
-                }
-            }
+        // 通知から画面遷移したときの場合
+        if (requireActivity().intent.getBooleanExtra(TAB_POST_START, false)) {
+            detailPager.currentItem = 2
+        }
     }
 
     companion object {
@@ -73,5 +45,7 @@ class DetailSelectFragment : Fragment() {
                     putString(DetailActivity.BOOK_ID, id)
                 }
             }
+
+        const val TAB_POST_START = "tab_post_start"
     }
 }

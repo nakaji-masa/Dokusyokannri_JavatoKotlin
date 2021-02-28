@@ -20,10 +20,11 @@ import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPla
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
-import android.wings.websarva.dokusyokannrijavatokotlin.realm.config.RealmConfigObject
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.main.navigator.MainNavigator
+import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
@@ -34,7 +35,6 @@ import com.bumptech.glide.Glide
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.Realm
 import io.realm.kotlin.createObject
-import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_register.*
 import okhttp3.*
 import org.json.JSONException
@@ -45,55 +45,57 @@ import java.util.Calendar.*
 
 class RegisterActivity : AppCompatActivity(), TextWatcher {
 
-    private lateinit var bookListRealm: Realm
+    private lateinit var bookRealm: Realm
     private lateinit var graphRealm: Realm
-    private var menuSaveButton: Button? = null
-    private var id: String? = null
+    private var bookObj: BookObject? = null
+    private var saveMenu: Button? = null
     private var imagePath = GlideHelper.defaultImageUrl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        // バーの設定
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setTitle(getString(R.string.register_title))
+        title = getString(R.string.register_title)
 
-        bookListRealm = Realm.getInstance(RealmConfigObject.bookConfig)
-        graphRealm = Realm.getInstance(RealmConfigObject.graphConfig)
+        // realm
+        bookRealm = RealmManager.getBookRealmInstance()
+        graphRealm = RealmManager.getGraphRealmInstance()
 
+        // EditTextを監視
         registerBookTitleInput.addTextChangedListener(this)
+        registerBookAuthorInput.addTextChangedListener(this)
         registerBookActionPlanInput.addTextChangedListener(this)
 
-        //日付の入力不可
-        registerBookDateInput.setText(DateHelper.getToday())
-        registerBookDateInput.isEnabled = false
+        // 別アクティビティーから値を取得
+        intent.getStringExtra(INTENT_BOOK_OBJECT_ID)?.let {
+            bookObj = bookRealm.where(BookObject::class.java).equalTo("id", it).findAll().last()
+        }
 
-        id = intent.getStringExtra(INTENT_ID)
-
-        // idがnullでなければ、EditTextに文字列を入れる
-        if (id != null) {
-            val book = bookListRealm.where<BookObject>().equalTo("id", id).findFirst()
-            registerBookTitleInput.setText(book?.title)
-            registerBookDateInput.setText(book?.date)
-            registerBookActionPlanInput.setText(book?.actionPlan)
-            book?.imageUrl?.let {
-                GlideHelper.viewBookImage(it, registerBookImageInput)
-                imagePath = it
-            }
+        bookObj?.let {
+            // 更新なので入力欄を埋める
+            title = getString(R.string.update_title)
+            registerBookTitleInput.setText(it.title)
+            registerBookAuthorInput.setText(it.author)
+            registerBookActionPlanInput.setText(it.actionPlan)
+            GlideHelper.viewBookImage(it.imageUrl, registerBookImageInput)
+            imagePath = it.imageUrl
 
             // アクションプランが2以上登録されていれば、アクションプランを入力しないようにする
-            println(book?.actionPlanDairy?.size)
-            if (book?.actionPlanDairy?.size != 1) {
+            if (it.actionPlanDairy.size != 1) {
                 registerBookActionPlan.visibility = View.INVISIBLE
                 registerBookActionPlanInput.visibility = View.INVISIBLE
             }
         }
 
         registerBookImageInput.setOnClickListener {
-            //ユーザーの端末にカメラ機能があるかどうかの確認
-            //Intentに入っている機能を使いたい。(MediaStore.ACTION_IMAGE_CAPTURE)
-            //resolveActivityで確認する
+           /*
+            *ユーザーの端末にカメラ機能があるかどうかの確認
+            * Intentに入っている機能を使いたい。(MediaStore.ACTION_IMAGE_CAPTURE)
+            * resolveActivityで確認する
+            **/
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
                 //nullが返されなければ、カメラを起動かパーミッションチェックを行う。
                 if (checkCameraPermission()) {
@@ -103,21 +105,33 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                 }
             } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.book_register_menu, menu)
-        val saveItem = menu?.findItem(R.id.saveItem)
-        val barcodeItem = menu?.findItem(R.id.barcodeItem)
-        menuSaveButton = saveItem?.actionView?.findViewById(R.id.saveButton)
-        val menuBarcodeImage = barcodeItem?.actionView?.findViewById<ImageView>(R.id.barcodeImage)
-        menuSaveButton?.setOnClickListener {
-            saveBookData(id)
+
+        // 保存ボタンの設定
+        saveMenu = menu?.findItem(R.id.saveItem)?.actionView?.findViewById(R.id.saveButton)
+        saveMenu?.apply {
+            if (bookObj == null) {
+                text = getString(R.string.save_button_text)
+                setOnClickListener {
+                    saveBookData()
+                }
+            } else {
+                text = getString(R.string.update_button_text)
+                isEnabled = true
+                setOnClickListener {
+                    update()
+                }
+            }
         }
-        menuBarcodeImage?.setOnClickListener {
-            searchBook()
-        }
+
+        // バーコードメニューの設定
+        menu?.findItem(R.id.barcodeItem)?.actionView?.findViewById<ImageView>(R.id.barcodeImage)
+            ?.setOnClickListener {
+                searchBook()
+            }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -138,7 +152,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        watchAllInput()
+        isAllInput()
     }
 
     override fun afterTextChanged(s: Editable?) {
@@ -153,9 +167,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
         if (resultBarcode != null) {
             //nullだった場合。トーストの表示
-            if (resultBarcode.contents == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-            } else {
+            if (resultBarcode.contents != null) {
                 //バーコードスキャナーで受け取った値を代入する。ボタンのリスナー処理に戻る
                 val isbn = resultBarcode.contents
 
@@ -179,18 +191,18 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                         e.printStackTrace()
 
                         // トーストの表示
-                        Toast.makeText(this@RegisterActivity, "情報取得に失敗しました", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@RegisterActivity, "情報取得に失敗しました", Toast.LENGTH_LONG)
+                            .show()
                     }
 
                     override fun onResponse(call: Call, response: Response) {
                         //成功したときの命令
                         try {
                             //jsonデータの全体取得
-                            val rootJson = JSONObject(response.body?.string())
+                            val rootJson = JSONObject(response.body?.string()!!)
 
                             //"items"タグのデータを取得。配列でないといけない。
                             val items = rootJson.getJSONArray(JSON_ITEMS)
-                            println(items)
 
                             //取得したitemを取得する
                             for (i in 0 until items.length()) {
@@ -209,6 +221,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
                                 val imageLinks = volumeInfo.getJSONObject(JSON_IMAGE_LINKS)
                                 val thumbnail = imageLinks.getString(JSON_THUMBNAIL)
 
+                                // UI実行
                                 val runnable = Runnable {
                                     registerBookTitleInput.setText(title)
                                     registerBookAuthorInput.setText(authors.substring(2..authors.length - 3))
@@ -278,97 +291,108 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         )
 
 
+    /**
+     * 本のデータを保存するメソッド
+     */
+    private fun saveBookData() {
 
+        val bookId = UUID.randomUUID().toString()
+        val title = registerBookTitleInput.text.toString()
+        val date = DateHelper.getToday()
+        val author = registerBookAuthorInput.text.toString()
+        val actionPlan = registerBookActionPlanInput.text.toString()
+
+        bookRealm.executeTransaction {
+            // realmに本の情報を登録
+            val book = it.createObject<BookObject>(bookId)
+            book.title = title
+            book.date = date
+            book.author = author
+            book.actionPlan = actionPlan
+            book.imageUrl = imagePath
+            book.uid = AuthHelper.getUid()
+
+            // アクション関係の情報を登録
+            val actionObj = it.createObject<ActionPlanObject>(UUID.randomUUID().toString())
+            actionObj.title = getString(R.string.action_first)
+            actionObj.nextAction = actionPlan
+            book.actionPlanDairy.add(actionObj)
+        }
+
+        graphRealm.executeTransaction {
+            // 現在の日付を取得
+            val calendar = getInstance()
+            val year = calendar.get(YEAR)
+            val month = calendar.get(MONTH)
+            val record = graphRealm.where(GraphObject::class.java).findAll()
+
+            // 現在の年のデータが登録されていればtrue
+            if (record.any { it.year == year }) {
+                // 現在の年のレコードを取得
+                val thisYearGraphObj = record.last { it.year == year }
+
+                // 現在の月にカウント
+                thisYearGraphObj.graphList[month]?.let {
+                    it.readCount += 1
+                }
+
+            } else {
+
+                // 新しくオブジェクトを作成する。（年）
+                val graph = graphRealm.createObject(GraphObject::class.java, year)
+                for (i in 0..11) {
+                    // 新しくオブジェクトを作成する（1月~12月分）
+                    val graphMonthObj = graphRealm.createObject(GraphMonthObject::class.java)
+                    graph.graphList.add(i, graphMonthObj)
+                }
+                // 現在の月にカウントする
+                graph.graphList[month]?.let {
+                    it.readCount += 1
+                }
+
+            }
+        }
+
+        // fragment再生成のフラグを立てる
+        MainNavigator.setBookFlag()
+
+        // ダイアログの表示
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.dialog_register_message))
+            .setPositiveButton(getString(R.string.dialog_positive)) { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .show()
+
+        // fireStoreに登録
+        FireStoreHelper.savePostData(
+            BookHelper(
+                docId = bookId,
+                title = title,
+                author = author,
+                action = actionPlan,
+                imageUrl = imagePath
+            )
+        )
+    }
 
     /**
-     * 本のデータを保存または更新するメソッド
-     * @param id BookObjectのid
+     * 本の情報を更新するメソッド
      */
-    private fun saveBookData(id: String?) {
-        if (id == null) {
-            val bookId = UUID.randomUUID().toString()
-            val title = registerBookTitleInput.text.toString()
-            val date = registerBookDateInput.text.toString()
-            val author = registerBookAuthorInput.text.toString()
-            val actionPlan = registerBookActionPlanInput.text.toString()
-
-            bookListRealm.executeTransaction {
-                val book = it.createObject<BookObject>(bookId)
-                book.title = title
-                book.date = date
-                book.author = author
-                book.actionPlan = actionPlan
-                book.imageUrl = imagePath
-                book.uid = AuthHelper.getUid()
-                val actionObj = it.createObject<ActionPlanObject>(UUID.randomUUID().toString())
-                actionObj.title = getString(R.string.action_first)
-                actionObj.nextAction = actionPlan
-                book.actionPlanDairy.add(actionObj)
-            }
-
-            graphRealm.executeTransaction {
-                val calendar = getInstance()
-                val year = calendar.get(YEAR)
-                val month = calendar.get(MONTH)
-                val record = graphRealm.where(GraphObject::class.java).findAll()
-
-                if (!record.any { it.year == year }) {
-                    val graph = graphRealm.createObject(GraphObject::class.java, year)
-                    for (i in 0..11) {
-                        val graphMonthObj = graphRealm.createObject(GraphMonthObject::class.java)
-                        graph.graphList.add(i, graphMonthObj)
-                    }
-                    graph.graphList[month]?.let {
-                        it.readCount += 1
-                    }
-                } else {
-                    val thisYearGraphObj = record.last { it.year == year }
-                    thisYearGraphObj.graphList[month]?.let {
-                        it.readCount += 1
-                    }
-                }
-            }
-
-            val book = BookHelper(
-                bookId,
-                DateHelper.getToday(),
-                title,
-                actionPlan,
-                author,
-                imagePath,
-                AuthHelper.getUid(),
-                mutableListOf(),
-                mutableListOf(),
-                Date(),
-                Date()
-            )
-
-            FireStoreHelper.savePostData(book)
-
-            AlertDialog.Builder(this)
-                .setMessage(getString(R.string.dialog_register_message))
-                .setPositiveButton(getString(R.string.dialog_positive)) { dialog, which ->
-                    dialog.dismiss()
-                    finish()
-                }
-                .show()
-
-
-        } else {
-            bookListRealm.executeTransaction {
-                val book = bookListRealm.where<BookObject>().equalTo("id", id).findFirst()
-                book?.title = registerBookTitleInput.text.toString()
-                book?.date = registerBookDateInput.text.toString()
-                book?.imageUrl = imagePath
-            }
-            AlertDialog.Builder(this)
-                .setMessage(getString(R.string.dialog_positive))
-                .setPositiveButton(getString(R.string.dialog_positive)) { dialog, which ->
-                    dialog.dismiss()
-                    finish()
-                }
-                .show()
+    private fun update() {
+        bookRealm.executeTransaction {
+            bookObj?.title = registerBookTitleInput.text.toString()
+            bookObj?.author = registerBookAuthorInput.text.toString()
+            bookObj?.imageUrl = imagePath
         }
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.dialog_update_message))
+            .setPositiveButton(getString(R.string.dialog_positive)) { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .show()
     }
 
     /**
@@ -390,20 +414,15 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     /**
      * 本のタイトルとアクションプランが入力されていれば、保存ボタンを活性化するメソッド
      */
-    private fun watchAllInput() {
-        menuSaveButton?.isEnabled =
-            !(registerBookTitleInput.text.isNullOrBlank() || registerBookActionPlanInput.text.isNullOrBlank())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        bookListRealm.close()
-        graphRealm.close()
+    private fun isAllInput() {
+        saveMenu?.isEnabled =
+            !(registerBookTitleInput.text.isNullOrBlank() || registerBookActionPlanInput.text.isNullOrBlank()
+                    || registerBookAuthorInput.text.isNullOrBlank())
     }
 
     companion object {
         const val BARCODE_PERMISSION_REQUEST_CODE = 1
-        const val INTENT_ID = "id"
+        const val INTENT_BOOK_OBJECT_ID = "book_object"
         const val JSON_ITEMS = "items"
         const val JSON_VOLUME_INFO = "volumeInfo"
         const val JSON_TITLE = "title"
