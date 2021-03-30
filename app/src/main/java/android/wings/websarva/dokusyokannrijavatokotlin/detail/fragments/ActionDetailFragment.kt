@@ -4,12 +4,11 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentActionDetailBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import io.realm.Sort
-import kotlinx.android.synthetic.main.fragment_action_detail.*
-import kotlinx.android.synthetic.main.fragment_action_detail.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,6 +16,8 @@ import java.util.*
 class ActionDetailFragment : BaseDetailFragment() {
 
     private lateinit var actionId: String
+    private var _binding: FragmentActionDetailBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,31 +29,31 @@ class ActionDetailFragment : BaseDetailFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_action_detail, container, false)
+    ): View {
+        _binding = FragmentActionDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         
         // 行動の情報を取得し表示させる
         val actionObj = bookObj?.actionPlanDairy?.last { it.id == actionId }
-        actionDetailTitle.text = actionObj?.title
-        actionDetailDate.text = convertDateToString(actionObj?.date)
-        actionDetailWhat.text = actionObj?.what
-        actionDetailCould.text = actionObj?.could
-        actionDetailCouldNot.text = actionObj?.couldNot
-        actionDetailNext.text = actionObj?.nextAction
+        binding.actionDetailTitle.text = actionObj?.title
+        binding.actionDetailWhat.text = actionObj?.what
+        binding.actionDetailCould.text = actionObj?.could
+        binding.actionDetailCouldNot.text = actionObj?.couldNot
+        binding.actionDetailNext.text = actionObj?.nextAction
 
         // 最初のアクションプランは編集・削除不可にする
         if (actionObj?.title == getString(R.string.action_first)) {
-            actionUpdateButton.visibility = View.INVISIBLE
-            actionDeleteButton.visibility = View.INVISIBLE
+            binding.actionUpdateButton.visibility = View.INVISIBLE
+            binding.actionDeleteButton.visibility = View.INVISIBLE
         } else {
-            view.actionUpdateButton.setOnClickListener {
+            binding.actionUpdateButton.setOnClickListener {
                 moveToInputActionPlanFragment()
             }
 
-            actionDeleteButton.setOnClickListener {
+            binding.actionDeleteButton.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setMessage(R.string.dialog_delete_message)
                     .setPositiveButton(R.string.dialog_positive) { dialog, _ ->
@@ -94,18 +95,9 @@ class ActionDetailFragment : BaseDetailFragment() {
         }
     }
 
-    /**
-     * Date型を"yyyy年MM月dd日の書式で返すメソッドです"
-     * @param date 日付
-     * @return String "yyyy年MM月dd"の文字列
-     */
-    private fun convertDateToString(date: Date?): String {
-        return if (date == null) {
-            ""
-        } else {
-            val sdf = SimpleDateFormat("yyyy年MM月dd日", Locale.JAPAN)
-            sdf.format(date)
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

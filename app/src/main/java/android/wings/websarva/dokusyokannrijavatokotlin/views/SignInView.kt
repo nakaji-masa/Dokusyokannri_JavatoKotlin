@@ -1,17 +1,13 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.views
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.widget.ImageView
-import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.SignInLayoutBinding
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.sign_in_layout.view.*
 
 class SignInView @JvmOverloads constructor(
     context: Context,
@@ -23,7 +19,7 @@ class SignInView @JvmOverloads constructor(
     private var listener: OnClickListener? = null
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.sign_in_layout, this)
+        val binding = SignInLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
         val attrArray = context.obtainStyledAttributes(attr, R.styleable.SignInView)
 
@@ -35,9 +31,9 @@ class SignInView @JvmOverloads constructor(
             ContextCompat.getColor(context, R.color.white)
         )
 
-        val signInViewText = view.findViewById<TextView>(R.id.signInText)
-        val signInViewImage = view.findViewById<ImageView>(R.id.signInImage)
-        val layout = view.findViewById<ConstraintLayout>(R.id.signInViewLayout)
+        val signInViewText = binding.signInText
+        val signInViewImage = binding.signInImage
+        val layout = binding.signInViewLayout
 
         layout.background = background
 

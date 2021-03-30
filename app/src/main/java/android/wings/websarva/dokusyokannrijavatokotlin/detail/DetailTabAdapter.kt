@@ -32,7 +32,7 @@ class DetailTabAdapter(fm: FragmentManager) :
         }
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         //タブの文字を決める
         return when (position) {
             0 -> {

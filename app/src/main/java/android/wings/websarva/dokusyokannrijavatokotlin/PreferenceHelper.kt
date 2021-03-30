@@ -1,11 +1,11 @@
 package android.wings.websarva.dokusyokannrijavatokotlin
 
-import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 
 class PreferenceHelper {
     companion object {
-        val userNameKey = preferencesKey<String>("userName")
-        val password = preferencesKey<String>("password")
-        val loginMode = preferencesKey<Boolean>("loginMode")
+        val userNameKey = stringPreferencesKey("userName")
+        val password = stringPreferencesKey("password")
+        val loginMode = stringPreferencesKey("loginMode")
     }
 }

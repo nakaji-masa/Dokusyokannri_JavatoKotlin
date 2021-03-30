@@ -9,22 +9,13 @@ import com.google.firebase.auth.FirebaseAuth
 
 object AuthHelper {
     private val mAuth = FirebaseAuth.getInstance()
-    private var googleSignInClient: GoogleSignInClient
-
-    init {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(
-                MyApplication.getAppContext().getString(R.string.default_web_client_id)
-            ).requestEmail().build()
-        googleSignInClient = GoogleSignIn.getClient(MyApplication.getAppContext(), gso)
-    }
 
     /**
      * ログアウトをするメソッド
      */
     fun signOut() {
         mAuth.signOut()
-        googleSignInClient.signOut()
+        getGoogleSignClient().signOut()
     }
 
     /**
@@ -40,7 +31,11 @@ object AuthHelper {
      * @return GoogleSignClient
      */
     fun getGoogleSignClient(): GoogleSignInClient {
-        return googleSignInClient
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(
+                MyApplication.getAppContext().getString(R.string.default_web_client_id)
+            ).requestEmail().build()
+        return GoogleSignIn.getClient(MyApplication.getAppContext(), gso)
     }
 
     /**

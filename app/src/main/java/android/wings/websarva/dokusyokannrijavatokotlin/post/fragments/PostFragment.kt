@@ -8,24 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.user.content.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.book.activities.PostForBookActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentPostBinding
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.SearchActionBarLayoutBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.post.PostAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnBookClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnCommentClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_post.*
-import kotlinx.android.synthetic.main.search_action_bar_layout.*
 
 
 class PostFragment : Fragment() {
 
     lateinit var adapter: PostAdapter
+    private var _binding: FragmentPostBinding? = null
+    private val binding get() = _binding!!
+    private var _searchBinding: SearchActionBarLayoutBinding? = null
+    private val searchBinding get() = _searchBinding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,24 +40,25 @@ class PostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_post, container, false)
+    ): View {
+        _binding = FragmentPostBinding.inflate(inflater, container, false)
+        _searchBinding = binding.searchBarLayout
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        searchEditText.addTextChangedListener(object : TextWatcher {
+        searchBinding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (searchEditText.text.isNullOrEmpty()) {
+                if (searchBinding.searchEditText.text.isNullOrEmpty()) {
                     adapter.updateOptions(FireStoreHelper.getAllRecyclerOptions())
                 } else {
                     adapter.updateOptions(
                         FireStoreHelper.getRecyclerOptionsFromSearchText(
-                            searchEditText.text.toString()
+                            searchBinding.searchEditText.text.toString()
                         )
                     )
                 }
@@ -65,33 +70,33 @@ class PostFragment : Fragment() {
         })
 
         // リサイクラービューの設定
-        postList.addItemDecoration(DividerHelper.createDivider(requireContext()))
-        postList.layoutManager = LinearLayoutManager(requireContext())
-        postList.setHasFixedSize(true)
+        binding.postList.addItemDecoration(DividerHelper.createDivider(requireContext()))
+        binding.postList.layoutManager = LinearLayoutManager(requireContext())
+        binding.postList.setHasFixedSize(true)
         adapter = PostAdapter(FireStoreHelper.getAllRecyclerOptions())
-        postList.adapter = adapter
+        binding.postList.adapter = adapter
 
         adapter.setCommentClickListener(object : OnCommentClickListener {
-            override fun onCommentClickListener(userJson: String, bookJson: String) {
+            override fun onCommentClickListener(user: UserInfoHelper, book: BookHelper) {
                 val transaction = activity?.supportFragmentManager?.beginTransaction()
                 transaction?.addToBackStack(null)
                 transaction?.replace(
                     R.id.mainContainer,
-                    CommentFragment.newInstance(userJson, bookJson)
+                    CommentFragment.newInstance(user, book)
                 )
                 transaction?.commit()
             }
         })
 
         adapter.setUserImageClickListener(object : OnUserImageClickListener {
-            override fun onUserImageClickListener(userJson: String) {
-                AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
+            override fun onUserImageClickListener(user: UserInfoHelper) {
+                AnotherUserActivity.moveToAnotherUserActivity(activity, user)
             }
         })
 
         adapter.setBookClickListener(object : OnBookClickListener {
-            override fun onBookClickListener(bookJson: String) {
-                PostForBookActivity.moveToPostForBookActivity(activity, bookJson)
+            override fun onBookClickListener(book: BookHelper) {
+                PostForBookActivity.moveToPostForBookActivity(requireActivity(), book)
             }
         })
     }
@@ -104,6 +109,12 @@ class PostFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         adapter.stopListening()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _searchBinding = null
+        _binding = null
     }
 
     companion object {

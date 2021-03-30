@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/fragmentBookshelf"
-        android:label="@string/title_bookshelf"
-        android:name="android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.BookShelfFragment"
-        tools:layout="@layout/fragment_book_shelf" >
+        android:label="@string/title_my_page"
+        android:name="android.wings.websarva.dokusyokannrijavatokotlin.user.content.myshelf.fragments.MyUserFragment"
+        tools:layout="@layout/fragment_my_bookshelf" >
     </fragment>
 
     <fragment

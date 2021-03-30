@@ -8,17 +8,15 @@ import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.book.fragments.PostForBookFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import androidx.fragment.app.FragmentActivity
-import com.google.gson.Gson
 
 class PostForBookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_for_book)
 
-        val bookJson = intent.extras?.getString(BOOK_DATA_KEY, "")
-        val book = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
+        val book = intent.getParcelableExtra<BookHelper>(BOOK_DATA_KEY)
 
-        supportActionBar?.title = book.title
+        supportActionBar?.title = book?.title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
@@ -51,10 +49,10 @@ class PostForBookActivity : AppCompatActivity() {
     companion object {
         const val BOOK_DATA_KEY = "book_data_key"
         @JvmStatic
-        fun moveToPostForBookActivity(activity: FragmentActivity?, bookJson: String) {
+        fun moveToPostForBookActivity(activity: FragmentActivity, book: BookHelper) {
             val intent = Intent(activity, PostForBookActivity::class.java)
-            intent.putExtra(BOOK_DATA_KEY, bookJson)
-            activity?.startActivity(intent)
+            intent.putExtra(BOOK_DATA_KEY, book)
+            activity.startActivity(intent)
         }
     }
 }

@@ -2,9 +2,9 @@ package android.wings.websarva.dokusyokannrijavatokotlin.main.navigator
 
 import android.content.Context
 import android.os.Bundle
-import android.wings.websarva.dokusyokannrijavatokotlin.bookshelf.fragments.BookShelfFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.chart.fragments.ChartSelectFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments.SettingsFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.user.content.myshelf.fragments.MyUserFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavDestination
@@ -123,7 +123,7 @@ class MainNavigator(
          */
         fun isRecreatedFragment(fragment: Fragment): Boolean {
             return when (fragment) {
-                is BookShelfFragment -> {
+                is MyUserFragment -> {
                     bookshelfFlag
                 }
                 is ChartSelectFragment -> {
@@ -141,7 +141,7 @@ class MainNavigator(
          */
         fun resetFlag(fragment: Fragment) {
             when (fragment) {
-                is BookShelfFragment -> {
+                is MyUserFragment -> {
                     bookshelfFlag = false
                 }
                 is ChartSelectFragment -> {

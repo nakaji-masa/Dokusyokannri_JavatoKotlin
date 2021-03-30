@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentBarChartBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
 import androidx.core.content.ContextCompat
@@ -18,7 +19,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_bar_chart.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,6 +26,8 @@ import kotlin.collections.ArrayList
 class BarChartFragment : Fragment() {
 
     private lateinit var realm: Realm
+    private var _binding: FragmentBarChartBinding? = null
+    private val binding get() = _binding!!
     private var currentYear = Calendar.getInstance().get(Calendar.YEAR)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +40,9 @@ class BarChartFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_bar_chart, container, false)
+    ): View {
+        _binding = FragmentBarChartBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,7 +50,7 @@ class BarChartFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
-        currentYearTextView.text = year.toString()
+        binding.currentYearTextView.text = year.toString()
 
         //realmからグラフの情報を取得する。
         val record = realm.where(GraphObject::class.java).findAll()
@@ -55,46 +58,46 @@ class BarChartFragment : Fragment() {
 
         // 昨年の読書数を表示
         if (lastYearRecord == null) {
-            lastYearReadBookCount.text = "0"
+            binding.lastYearReadBookCount.text = "0"
         } else {
-            lastYearReadBookCount.text = lastYearRecord.graphList.sum("readCount").toString()
+            binding.lastYearReadBookCount.text = lastYearRecord.graphList.sum("readCount").toString()
             // 今月が1月であれば、昨年の12月の読書数を表示
             if (month == 0) {
-                lastMonthReadBookCount.text = lastYearRecord.graphList[11]?.readCount.toString()
+                binding.lastMonthReadBookCount.text = lastYearRecord.graphList[11]?.readCount.toString()
             }
         }
 
         // 今年の読書数を表示する
         val thisYearRecord = record.lastOrNull { it.year == year }
         if (thisYearRecord == null) {
-            thisYearReadBookCount.text = "0"
-            thisMonthReadBookCount.text = "0"
-            lastMonthReadBookCount.text = "0"
+            binding.thisYearReadBookCount.text = "0"
+            binding.thisMonthReadBookCount.text = "0"
+            binding.lastMonthReadBookCount.text = "0"
         } else {
-            thisYearReadBookCount.text = thisYearRecord.graphList.sum("readCount").toString()
-            thisMonthReadBookCount.text = thisYearRecord.graphList[month]?.readCount.toString()
+            binding.thisYearReadBookCount.text = thisYearRecord.graphList.sum("readCount").toString()
+            binding.thisMonthReadBookCount.text = thisYearRecord.graphList[month]?.readCount.toString()
             if (month != 0) {
-                lastMonthReadBookCount.text =
+                binding.lastMonthReadBookCount.text =
                     thisYearRecord.graphList[month - 1]?.readCount.toString()
             }
         }
 
-        setUpChart(chart, thisYearRecord)
+        setUpChart(binding.chart, thisYearRecord)
 
         // 1年戻る
-        backYearTextView.setOnClickListener {
+        binding.backYearTextView.setOnClickListener {
             currentYear -= 1
             val yearRecord = record.lastOrNull { it.year == currentYear }
-            currentYearTextView.text = getString(R.string.graph_current_year, currentYear.toString())
-            setUpChart(chart, yearRecord)
+            binding.currentYearTextView.text = getString(R.string.graph_current_year, currentYear.toString())
+            setUpChart(binding.chart, yearRecord)
         }
 
         // 1年進む
-        nextYearTextView.setOnClickListener {
+        binding.nextYearTextView.setOnClickListener {
             currentYear += 1
             val yearRecord = record.lastOrNull { it.year == currentYear }
-            currentYearTextView.text = getString(R.string.graph_current_year, currentYear.toString())
-            setUpChart(chart, yearRecord)
+            binding.currentYearTextView.text = getString(R.string.graph_current_year, currentYear.toString())
+            setUpChart(binding.chart, yearRecord)
         }
     }
 
@@ -189,6 +192,11 @@ class BarChartFragment : Fragment() {
         override fun getFormattedValue(value: Float): String {
             return value.toInt().toString()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

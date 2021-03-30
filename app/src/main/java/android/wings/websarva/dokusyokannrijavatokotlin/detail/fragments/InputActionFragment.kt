@@ -8,19 +8,22 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentInputActionBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.main.navigator.MainNavigator
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.fragment_input_action.*
 import java.util.*
 
 
 class InputActionFragment : BaseDetailFragment(), TextWatcher {
 
     private lateinit var actionId: String
-    private var menuSaveButton: Button? = null
+    private var saveMenu: Button? = null
     private var actionObj: ActionPlanObject? = null
+    private var _binding: FragmentInputActionBinding? = null
+    private val binding get() = _binding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +41,19 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_input_action, container, false)
+    ): View {
+        _binding = FragmentInputActionBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
 
-        actionTitleInput.addTextChangedListener(this)
-        actionWhatInput.addTextChangedListener(this)
-        actionCouldInput.addTextChangedListener(this)
-        actionCouldNotInput.addTextChangedListener(this)
-        actionNextInput.addTextChangedListener(this)
+        binding.actionTitleInput.addTextChangedListener(this)
+        binding.actionWhatInput.addTextChangedListener(this)
+        binding.actionCouldInput.addTextChangedListener(this)
+        binding.actionCouldNotInput.addTextChangedListener(this)
+        binding.actionNextInput.addTextChangedListener(this)
 
         if (actionId != "") {
             setEditTexts()
@@ -60,11 +64,11 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
      * EditTextにテキストをセットするメソッド
      */
     private fun setEditTexts() {
-        actionTitleInput.setText(actionObj?.title)
-        actionWhatInput.setText(actionObj?.what)
-        actionCouldInput.setText(actionObj?.could)
-        actionCouldNotInput.setText(actionObj?.couldNot)
-        actionNextInput.setText(actionObj?.nextAction)
+        binding.actionTitleInput.setText(actionObj?.title)
+        binding.actionWhatInput.setText(actionObj?.what)
+        binding.actionCouldInput.setText(actionObj?.could)
+        binding.actionCouldNotInput.setText(actionObj?.couldNot)
+        binding.actionNextInput.setText(actionObj?.nextAction)
     }
 
     /**
@@ -73,13 +77,13 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
     private fun saveData() {
         realm.executeTransaction {
             val obj = it.createObject(ActionPlanObject::class.java, UUID.randomUUID().toString())
-            obj.title = actionTitleInput.text.toString()
-            obj.what = actionWhatInput.text.toString()
-            obj.could = actionCouldInput.text.toString()
-            obj.couldNot = actionCouldNotInput.text.toString()
-            obj.nextAction = actionNextInput.text.toString()
+            obj.title = binding.actionTitleInput.text.toString()
+            obj.what = binding.actionWhatInput.text.toString()
+            obj.could = binding.actionCouldInput.text.toString()
+            obj.couldNot = binding.actionCouldNotInput.text.toString()
+            obj.nextAction = binding.actionNextInput.text.toString()
             bookObj?.actionPlanDairy?.add(obj)
-            bookObj?.actionPlan = actionNextInput.text.toString()
+            bookObj?.actionPlan = binding.actionNextInput.text.toString()
         }
         MainNavigator.setActionFlag()
     }
@@ -89,11 +93,11 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
      */
     private fun updateData() {
         realm.executeTransaction {
-            actionObj?.title = actionTitleInput.text.toString()
-            actionObj?.what = actionWhatInput.text.toString()
-            actionObj?.could = actionCouldInput.text.toString()
-            actionObj?.couldNot = actionCouldNotInput.text.toString()
-            actionObj?.nextAction = actionNextInput.text.toString()
+            actionObj?.title = binding.actionTitleInput.text.toString()
+            actionObj?.what = binding.actionWhatInput.text.toString()
+            actionObj?.could = binding.actionCouldInput.text.toString()
+            actionObj?.couldNot = binding.actionCouldNotInput.text.toString()
+            actionObj?.nextAction = binding.actionNextInput.text.toString()
         }
     }
 
@@ -102,17 +106,17 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
      * @return Boolean型を返す
      */
     private fun isInput(): Boolean {
-        return !actionTitleInput.text.isNullOrEmpty() && !actionWhatInput.text.isNullOrEmpty() && !actionCouldInput.text.isNullOrEmpty()
-                && !actionCouldNotInput.text.isNullOrEmpty() && !actionNextInput.text.isNullOrEmpty()
+        return !binding.actionTitleInput.text.isNullOrEmpty() && !binding.actionWhatInput.text.isNullOrEmpty() && !binding.actionCouldInput.text.isNullOrEmpty()
+                && !binding.actionCouldNotInput.text.isNullOrEmpty() && !binding.actionNextInput.text.isNullOrEmpty()
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.action_register_menu, menu)
         val saveItem = menu.findItem(R.id.actionSaveItem)
-        menuSaveButton = saveItem.actionView.findViewById(R.id.saveButton)
-        menuSaveButton?.isEnabled = isInput()
-        menuSaveButton?.setOnClickListener {
+        saveMenu = saveItem.actionView.findViewById(R.id.saveButton)
+        saveMenu?.isEnabled = isInput()
+        saveMenu?.setOnClickListener {
 
             // データの登録または更新
             if (actionId == "") {
@@ -123,7 +127,7 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
 
             // キーボードの非表示
             val inputManager =
-                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
             // 登録または更新に成功したらダイアログを表示する
@@ -131,6 +135,7 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
                 .setMessage(R.string.dialog_register_message)
                 .setPositiveButton(R.string.dialog_positive) { dialog, _ ->
                     dialog.dismiss()
+                    requireActivity().supportFragmentManager.popBackStack()
                 }.show()
         }
     }
@@ -139,10 +144,15 @@ class InputActionFragment : BaseDetailFragment(), TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        menuSaveButton?.isEnabled = isInput()
+        saveMenu?.isEnabled = isInput()
     }
 
     override fun afterTextChanged(s: Editable?) {
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

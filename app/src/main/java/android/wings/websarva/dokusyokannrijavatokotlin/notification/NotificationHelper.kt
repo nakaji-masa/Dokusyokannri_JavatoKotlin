@@ -5,6 +5,8 @@ import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.CommentHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.LikeHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 object NotificationHelper {
@@ -39,7 +41,9 @@ object NotificationHelper {
         setNotificationFromLiked(postList)
 
         // コメントされいる投稿を取得
-        postList = FireStoreHelper.getBookDataListOnlyCommented()
+        withContext(Dispatchers.IO) {
+            postList = FireStoreHelper.getBookDataListOnlyCommented()
+        }
 
         // notificationList格納
         setNotificationFromCommented(postList)

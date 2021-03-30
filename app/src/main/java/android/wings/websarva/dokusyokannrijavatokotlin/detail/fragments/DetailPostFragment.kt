@@ -2,18 +2,19 @@ package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
 
 import android.os.Bundle
-import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.wings.websarva.dokusyokannrijavatokotlin.MyApplication
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.user.content.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.book.activities.PostForBookActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentDetailPostBinding
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.PostCellBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.post.CommentAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
@@ -23,10 +24,8 @@ import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_detail_post.*
-import kotlinx.android.synthetic.main.post_cell.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -35,6 +34,10 @@ class DetailPostFragment : Fragment() {
 
     private lateinit var bookRealm: Realm
     private lateinit var userRealm: Realm
+    private var _binding: FragmentDetailPostBinding? = null
+    private val binding get() = _binding!!
+    private var _postBinding: PostCellBinding? = null
+    private val postBinding get() = _postBinding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +50,10 @@ class DetailPostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_detail_post, container, false)
+    ): View {
+        _binding = FragmentDetailPostBinding.inflate(inflater, container, false)
+        _postBinding = binding.detailPost
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,58 +65,58 @@ class DetailPostFragment : Fragment() {
         val bookObj = bookRealm.where(BookObject::class.java).equalTo("id", bookId).findFirst()
 
         // UI実装
-        GlideHelper.viewUserImage(userObj?.imageUrl, userImage)
-        userName.text = userObj?.userName
-        userReadDate.text = bookObj?.date
-        userActionPlan.text = bookObj?.actionPlan
-        GlideHelper.viewBookImage(bookObj?.imageUrl, userBookImage)
-        userBookTitle.text = bookObj?.title
-        userAuthorName.text = bookObj?.author
-        favoriteImage.setImageDrawable(
+        GlideHelper.viewUserImage(userObj?.imageUrl, postBinding.userImage)
+        postBinding.userName.text = userObj?.userName
+        postBinding.userReadDate.text = bookObj?.date
+        postBinding.userActionPlan.text = bookObj?.actionPlan
+        GlideHelper.viewBookImage(bookObj?.imageUrl, postBinding.userBookImage)
+        postBinding.userBookTitle.text = bookObj?.title
+        postBinding.userAuthorName.text = bookObj?.author
+        postBinding.favoriteImage.setImageDrawable(
             ContextCompat.getDrawable(
-                MyApplication.getAppContext(),
+                requireContext(),
                 R.drawable.ic_like
             )
         )
-        commentImage.setImageDrawable(
+        postBinding.commentImage.setImageDrawable(
             ContextCompat.getDrawable(
-                MyApplication.getAppContext(),
+                requireContext(),
                 R.drawable.ic_comment
             )
         )
 
-        // handler
-        val handler = Handler()
-
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main) {
             // 本の情報
             val bookData = FireStoreHelper.getBookDataFromDocId(bookId)
             if (bookData != null) {
-                handler.post {
                     // コメント・いいねの数を表示
-                    favoriteCount.text = bookData.likedList.size.toString()
-                    commentCount.text = bookData.commentedList.size.toString()
+                    postBinding.favoriteCount.text = bookData.likedList.size.toString()
+                    postBinding.commentCount.text = bookData.commentedList.size.toString()
 
                     // 本のリスナーをセット
-                    bookLayout.setOnClickListener {
-                        val bookJson = Gson().toJson(bookData)
-                        PostForBookActivity.moveToPostForBookActivity(activity, bookJson)
+                    postBinding.bookLayout.setOnClickListener {
+                        PostForBookActivity.moveToPostForBookActivity(requireActivity(), bookData)
                     }
 
                     // リサイクラービューの実装
-                    detailCommentRecyclerView.setHasFixedSize(true)
-                    detailCommentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    detailCommentRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
+                    binding.detailCommentRecyclerView.setHasFixedSize(true)
+                    binding.detailCommentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    binding.detailCommentRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
                     val adapter = CommentAdapter(bookData.commentedList)
                     adapter.setUserImageClickListener(object : OnUserImageClickListener {
-                        override fun onUserImageClickListener(userJson: String) {
-                            AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
+                        override fun onUserImageClickListener(user: UserInfoHelper) {
+                            AnotherUserActivity.moveToAnotherUserActivity(activity, user)
                         }
                     })
-                    detailCommentRecyclerView.adapter = adapter
+                    binding.detailCommentRecyclerView.adapter = adapter
                 }
-            }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        _postBinding = null
     }
 
     companion object {

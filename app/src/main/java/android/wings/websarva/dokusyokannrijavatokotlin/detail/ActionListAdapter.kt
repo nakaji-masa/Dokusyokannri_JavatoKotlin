@@ -3,16 +3,13 @@ package android.wings.websarva.dokusyokannrijavatokotlin.detail
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.ActionCellBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
-import io.realm.RealmList
 import io.realm.RealmRecyclerViewAdapter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,21 +21,12 @@ class ActionListAdapter(
 
     lateinit var listener: OnItemClickListener
 
-    init {
-        actionList.sort("date")
-    }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val calendar: ImageView = view.findViewById(R.id.calendarImage)
-        val calendarText: TextView = view.findViewById(R.id.calendarText)
-        val title: TextView = view.findViewById(R.id.actionTitle)
-        val date: TextView = view.findViewById(R.id.actionDate)
-    }
+    inner class ViewHolder(val itemBinding: ActionCellBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.action_cell, parent, false)
-        return ViewHolder(view)
+        val itemBinding = ActionCellBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(itemBinding)
     }
 
 
@@ -63,14 +51,14 @@ class ActionListAdapter(
         drawable?.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(context, colorId), PorterDuff.Mode.SRC_IN)
 
         // UI実装
-        holder.calendar.setImageDrawable(drawable)
-        holder.calendarText.text = getDay(actionObj.date)
-        holder.calendarText.setTextColor(ContextCompat.getColor(holder.itemView.context,colorId))
-        holder.title.text = actionObj.title
-        holder.date.text = getDateString(actionObj.date)
+        holder.itemBinding.calendarImage.setImageDrawable(drawable)
+        holder.itemBinding.calendarText.text = getDay(actionObj.date)
+        holder.itemBinding.calendarText.setTextColor(ContextCompat.getColor(holder.itemView.context,colorId))
+        holder.itemBinding.actionTitle.text = actionObj.title
+        holder.itemBinding.actionDate.text = getDateString(actionObj.date)
 
         // リスナーの実装
-        holder.itemView.setOnClickListener {
+        holder.itemBinding.root.setOnClickListener {
             listener.onItemClickListener(actionObj.id)
         }
     }

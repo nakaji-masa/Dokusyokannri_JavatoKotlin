@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'realm-android'
 apply plugin: 'com.google.gms.google-services'
 
@@ -42,6 +42,10 @@ android {
         jvmTarget = '1.8'
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
 }
 
 dependencies {
@@ -73,21 +77,21 @@ dependencies {
 
     //preference
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha08"
 
     //fireStore
     implementation "com.firebaseui:firebase-ui-firestore:6.2.1"
-    implementation 'com.google.firebase:firebase-firestore:22.0.1'
+    implementation 'com.google.firebase:firebase-firestore:22.1.2'
 
     //auth
-    implementation 'com.google.firebase:firebase-auth:20.0.1'
+    implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
 
     //fireStorage
-    implementation 'com.google.firebase:firebase-storage:19.2.1'
+    implementation 'com.google.firebase:firebase-storage:19.2.2'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
 
     //Coroutine
     def coroutines_version = '1.3.9'
@@ -101,10 +105,10 @@ dependencies {
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
 
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    testImplementation 'junit:junit:4.13.1'
+    // fragment
+    implementation "androidx.fragment:fragment-ktx:1.3.2"
+
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 

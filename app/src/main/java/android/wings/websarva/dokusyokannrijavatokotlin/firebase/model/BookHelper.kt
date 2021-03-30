@@ -1,20 +1,23 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.firebase.model
 
+import android.os.Parcelable
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import java.util.*
-import kotlin.collections.HashMap
 
+@Parcelize
 data class BookHelper(
     val docId: String = "",
     val uid: String = AuthHelper.getUid(),
-    val title: String = "",
-    val author: String = "",
-    val action: String = "",
-    val imageUrl: String = "",
+    var title: String = "",
+    var author: String = "",
+    var action: String = "",
+    var imageUrl: String = "",
     var likedCount: Int = 0,
-    val likedList: MutableList<LikeHelper> = mutableListOf(),
+    val likedList: @RawValue MutableList<LikeHelper> = mutableListOf(),
     var commentedCount: Int = 0,
-    val commentedList: MutableList<CommentHelper> = mutableListOf(),
+    val commentedList: @RawValue MutableList<CommentHelper> = mutableListOf(),
     val createdAt: Date = Date(),
-    val updatedAt: Date = Date()
-)
+    var updatedAt: Date = Date()
+): Parcelable

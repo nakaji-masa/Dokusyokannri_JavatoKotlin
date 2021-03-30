@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,19 +13,22 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import android.wings.websarva.dokusyokannrijavatokotlin.views.PortraitActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.ActivityRegisterBinding
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.main.navigator.MainNavigator
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.ActionPlanObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphMonthObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.GraphObject
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.main.navigator.MainNavigator
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.utils.HttpUtil
+import android.wings.websarva.dokusyokannrijavatokotlin.views.PortraitActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -35,11 +37,9 @@ import com.bumptech.glide.Glide
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.Realm
 import io.realm.kotlin.createObject
-import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.coroutines.*
 import okhttp3.*
-import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 import java.util.*
 import java.util.Calendar.*
 
@@ -47,13 +47,23 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
 
     private lateinit var bookRealm: Realm
     private lateinit var graphRealm: Realm
+    private lateinit var binding: ActivityRegisterBinding
     private var bookObj: BookObject? = null
     private var saveMenu: Button? = null
     private var imagePath = GlideHelper.defaultImageUrl
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val resultBarcode =
+            IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, it.resultCode, it.data)
+        val isbn = resultBarcode.contents
+        val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
+        showBookInfo(url)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
+            .apply { setContentView(this.root) }
 
         // バーの設定
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -65,9 +75,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         graphRealm = RealmManager.getGraphRealmInstance()
 
         // EditTextを監視
-        registerBookTitleInput.addTextChangedListener(this)
-        registerBookAuthorInput.addTextChangedListener(this)
-        registerBookActionPlanInput.addTextChangedListener(this)
+        binding.registerBookTitleInput.addTextChangedListener(this)
+        binding.registerBookAuthorInput.addTextChangedListener(this)
+        binding.registerBookActionPlanInput.addTextChangedListener(this)
 
         // 別アクティビティーから値を取得
         intent.getStringExtra(INTENT_BOOK_OBJECT_ID)?.let {
@@ -77,25 +87,25 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         bookObj?.let {
             // 更新なので入力欄を埋める
             title = getString(R.string.update_title)
-            registerBookTitleInput.setText(it.title)
-            registerBookAuthorInput.setText(it.author)
-            registerBookActionPlanInput.setText(it.actionPlan)
-            GlideHelper.viewBookImage(it.imageUrl, registerBookImageInput)
+            binding.registerBookTitleInput.setText(it.title)
+            binding.registerBookAuthorInput.setText(it.author)
+            binding.registerBookActionPlanInput.setText(it.actionPlan)
+            GlideHelper.viewBookImage(it.imageUrl, binding.registerBookImageInput)
             imagePath = it.imageUrl
 
             // アクションプランが2以上登録されていれば、アクションプランを入力しないようにする
             if (it.actionPlanDairy.size != 1) {
-                registerBookActionPlan.visibility = View.INVISIBLE
-                registerBookActionPlanInput.visibility = View.INVISIBLE
+                binding.registerBookActionPlan.visibility = View.INVISIBLE
+                binding.registerBookActionPlanInput.visibility = View.INVISIBLE
             }
         }
 
-        registerBookImageInput.setOnClickListener {
-           /*
-            *ユーザーの端末にカメラ機能があるかどうかの確認
-            * Intentに入っている機能を使いたい。(MediaStore.ACTION_IMAGE_CAPTURE)
-            * resolveActivityで確認する
-            **/
+        binding.registerBookImageInput.setOnClickListener {
+            /*
+             *ユーザーの端末にカメラ機能があるかどうかの確認
+             * Intentに入っている機能を使いたい。(MediaStore.ACTION_IMAGE_CAPTURE)
+             * resolveActivityで確認する
+             **/
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
                 //nullが返されなければ、カメラを起動かパーミッションチェックを行う。
                 if (checkCameraPermission()) {
@@ -158,95 +168,12 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     override fun afterTextChanged(s: Editable?) {
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        //バーコードから来た場合
-        val resultBarcode =
-            IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
-        if (resultBarcode != null) {
-            //nullだった場合。トーストの表示
-            if (resultBarcode.contents != null) {
-                //バーコードスキャナーで受け取った値を代入する。ボタンのリスナー処理に戻る
-                val isbn = resultBarcode.contents
-
-                //無事に取得できればGoogleBooksAPIに接続し本の画像とタイトルを取得
-                val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
-
-                //handlerを宣言
-                val handler = Handler()
-
-                //okHttpクライアントの設定
-                val okHttpClient = OkHttpClient()
-
-                //リクエストの中に情報を入れ込む
-                val request = Request.Builder().url(url).build()
-
-                //Callバックの中に情報を入れ込む。そして、非同期で実装。
-                okHttpClient.newCall(request).enqueue(object : Callback {
-
-                    override fun onFailure(call: Call, e: IOException) {
-                        // 失敗したときのログを出力
-                        e.printStackTrace()
-
-                        // トーストの表示
-                        Toast.makeText(this@RegisterActivity, "情報取得に失敗しました", Toast.LENGTH_LONG)
-                            .show()
-                    }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        //成功したときの命令
-                        try {
-                            //jsonデータの全体取得
-                            val rootJson = JSONObject(response.body?.string()!!)
-
-                            //"items"タグのデータを取得。配列でないといけない。
-                            val items = rootJson.getJSONArray(JSON_ITEMS)
-
-                            //取得したitemを取得する
-                            for (i in 0 until items.length()) {
-                                val item = items.getJSONObject(i)
-
-                                //volumeInfoを取得する
-                                val volumeInfo = item.getJSONObject(JSON_VOLUME_INFO)
-
-                                //タイトルを取得する
-                                val title = volumeInfo.getString(JSON_TITLE)
-
-                                //著者を取得する
-                                val authors = volumeInfo.getString(JSON_AUTHORS)
-
-                                // 画像を取得する
-                                val imageLinks = volumeInfo.getJSONObject(JSON_IMAGE_LINKS)
-                                val thumbnail = imageLinks.getString(JSON_THUMBNAIL)
-
-                                // UI実行
-                                val runnable = Runnable {
-                                    registerBookTitleInput.setText(title)
-                                    registerBookAuthorInput.setText(authors.substring(2..authors.length - 3))
-                                    Glide.with(this@RegisterActivity).load(thumbnail)
-                                        .into(registerBookImageInput)
-                                    imagePath = thumbnail
-                                }
-                                handler.post(runnable)
-                            }
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                    }
-                })
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         //バーコードリクエストコードを持っていたらバーコードを起動する。
         if (requestCode == BARCODE_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() &&
@@ -262,11 +189,14 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
      */
     private fun takeBarCode() {
         Toast.makeText(this, "上のバーコードを撮ってください。", Toast.LENGTH_LONG).show()
-        IntentIntegrator(this)
+
+        val intent = IntentIntegrator(this)
             .setBeepEnabled(false)
             .apply {
                 captureActivity = PortraitActivity::class.java
-            }.initiateScan()
+            }.createScanIntent()
+
+        startForResult.launch(intent)
     }
 
     /**
@@ -297,10 +227,10 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
     private fun saveBookData() {
 
         val bookId = UUID.randomUUID().toString()
-        val title = registerBookTitleInput.text.toString()
+        val title = binding.registerBookTitleInput.text.toString()
         val date = DateHelper.getToday()
-        val author = registerBookAuthorInput.text.toString()
-        val actionPlan = registerBookActionPlanInput.text.toString()
+        val author = binding.registerBookAuthorInput.text.toString()
+        val actionPlan = binding.registerBookActionPlanInput.text.toString()
 
         bookRealm.executeTransaction {
             // realmに本の情報を登録
@@ -366,7 +296,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
             .show()
 
         // fireStoreに登録
-        FireStoreHelper.savePostData(
+        FireStoreHelper.saveBook(
             BookHelper(
                 docId = bookId,
                 title = title,
@@ -381,18 +311,33 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
      * 本の情報を更新するメソッド
      */
     private fun update() {
+
         bookRealm.executeTransaction {
-            bookObj?.title = registerBookTitleInput.text.toString()
-            bookObj?.author = registerBookAuthorInput.text.toString()
+            bookObj?.title = binding.registerBookTitleInput.text.toString()
+            bookObj?.author = binding.registerBookAuthorInput.text.toString()
+            bookObj?.actionPlan = binding.registerBookActionPlanInput.text.toString()
             bookObj?.imageUrl = imagePath
         }
-        AlertDialog.Builder(this)
+
+
+        FireStoreHelper.updateBook(
+            BookHelper(
+                docId = bookObj?.id.toString(),
+                title = binding.registerBookTitleInput.text.toString(),
+                author = binding.registerBookAuthorInput.text.toString(),
+                action = binding.registerBookActionPlanInput.text.toString(),
+                imageUrl = imagePath
+            )
+        )
+
+        AlertDialog.Builder(this@RegisterActivity)
             .setMessage(getString(R.string.dialog_update_message))
             .setPositiveButton(getString(R.string.dialog_positive)) { dialog, _ ->
                 dialog.dismiss()
                 finish()
             }
             .show()
+
     }
 
     /**
@@ -416,8 +361,50 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
      */
     private fun isAllInput() {
         saveMenu?.isEnabled =
-            !(registerBookTitleInput.text.isNullOrBlank() || registerBookActionPlanInput.text.isNullOrBlank()
-                    || registerBookAuthorInput.text.isNullOrBlank())
+            !(binding.registerBookTitleInput.text.isNullOrBlank() || binding.registerBookActionPlanInput.text.isNullOrBlank()
+                    || binding.registerBookAuthorInput.text.isNullOrBlank())
+    }
+
+    /**
+     * GoogleBookAPIから取得した情報を表示する
+     * @param url 接続先URL
+     */
+    private fun showBookInfo(url: String) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val http = HttpUtil()
+            // ネットワーク処理をし、UI実装
+            withContext(Dispatchers.IO) { http.httpGET(url) }?.let {
+                //jsonデータの全体取得
+                val rootJson = JSONObject(it)
+
+                //"items"タグのデータを取得。配列でないといけない。
+                val items = rootJson.getJSONArray(JSON_ITEMS)
+
+                //取得したitemを取得する
+                for (i in 0 until items.length()) {
+                    val item = items.getJSONObject(i)
+
+                    //volumeInfoを取得する
+                    val volumeInfo = item.getJSONObject(JSON_VOLUME_INFO)
+
+                    //タイトルを取得する
+                    val title = volumeInfo.getString(JSON_TITLE)
+
+                    //著者を取得する
+                    val authors = volumeInfo.getString(JSON_AUTHORS)
+
+                    // 画像を取得する
+                    val imageLinks = volumeInfo.getJSONObject(JSON_IMAGE_LINKS)
+                    val thumbnail = imageLinks.getString(JSON_THUMBNAIL)
+
+                    binding.registerBookTitleInput.setText(title)
+                    binding.registerBookAuthorInput.setText(authors.substring(2..authors.length - 3))
+                    Glide.with(this@RegisterActivity).load(thumbnail)
+                        .into(binding.registerBookImageInput)
+                    imagePath = thumbnail
+                }
+            }
+        }
     }
 
     companion object {

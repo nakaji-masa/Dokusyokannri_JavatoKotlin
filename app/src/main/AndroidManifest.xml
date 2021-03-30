@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".book.activities.PostForBookActivity" />
-        <activity android:name=".another.activities.AnotherUserActivity" />
+        <activity android:name=".user.content.another.activities.AnotherUserActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".user.UserActivity" />
+        <activity android:name=".user.login.LoginActivity" />
         <activity android:name=".views.PortraitActivity" />
         <activity android:name=".detail.activities.DetailActivity" />
         <activity android:name=".activities.RegisterActivity" />

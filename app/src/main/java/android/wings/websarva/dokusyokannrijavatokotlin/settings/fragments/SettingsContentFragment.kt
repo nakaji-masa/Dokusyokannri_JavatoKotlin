@@ -3,7 +3,7 @@ package android.wings.websarva.dokusyokannrijavatokotlin.settings.fragments
 import android.os.Bundle
 import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.user.fragments.UserProfileFragment
+import android.wings.websarva.dokusyokannrijavatokotlin.user.login.fragments.UserProfileFragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 

@@ -1,7 +1,9 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.firebase
 
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 object FireStorageHelper {
     private val storageRef = FirebaseStorage.getInstance().reference
@@ -11,7 +13,9 @@ object FireStorageHelper {
      * @param bytes 画像のバイトデータ
      */
     suspend fun saveImage(bytes: ByteArray) {
-        storageRef.child(getRefPath()).putBytes(bytes).await()
+        withContext(Dispatchers.IO) {
+            storageRef.child(getRefPath()).putBytes(bytes).await()
+        }
     }
 
     /**

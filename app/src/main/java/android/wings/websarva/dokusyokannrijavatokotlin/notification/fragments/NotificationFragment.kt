@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentNotificationBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.DetailSelectFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
@@ -14,14 +15,13 @@ import android.wings.websarva.dokusyokannrijavatokotlin.notification.Notificatio
 import android.wings.websarva.dokusyokannrijavatokotlin.notification.NotificationHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.notification.NotificationsAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.fragment_notification.*
 
 class NotificationFragment : Fragment() {
 
+    private var _binding: FragmentNotificationBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,19 +33,19 @@ class NotificationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false)
+    ): View {
+        _binding = FragmentNotificationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         // リサイクラービューの設定
-        notificationRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
-        notificationRecyclerView.setHasFixedSize(true)
-        notificationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.notificationRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
+        binding.notificationRecyclerView.setHasFixedSize(true)
+        binding.notificationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = NotificationsAdapter(requireContext(), NotificationHelper.getNotificationList())
-        notificationRecyclerView.adapter = adapter
+        binding.notificationRecyclerView.adapter = adapter
 
         // リスナー設定
         adapter.setOnNotificationClickListener(object :

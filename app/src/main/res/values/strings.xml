@@ -37,20 +37,20 @@
     <!--アクションプラン用の文字列-->
     <string name="action_title">タイトル</string>
     <string name="action_title_hint">タイトルを入力</string>
-    <string name="action_what">What</string>
+    <string name="action_what">行動した内容</string>
     <string name="action_what_hint">行動した内容を入力</string>
-    <string name="action_could">Could</string>
+    <string name="action_could">できたこと</string>
     <string name="action_could_hint">できたことを入力</string>
-    <string name="action_could_not">Could Not</string>
+    <string name="action_could_not">課題・改善点</string>
     <string name="action_could_not_hint">課題・改善点を入力</string>
-    <string name="action_next">Next Action Plan</string>
+    <string name="action_next">次のアクションプラン</string>
     <string name="action_next_hint">次のアクションプランを入力</string>
     <string name="action_first">最初のアクションプラン</string>
     <string name="date">日付</string>
     <string name="next_action_view">次に実行する行動</string>
 
     <!--BottomNavigationViewのタイトル-->
-    <string name="title_bookshelf">本棚</string>
+    <string name="title_my_page">マイページ</string>
     <string name="title_graph">グラフ</string>
     <string name="title_post">投稿</string>
     <string name="title_settings">設定</string>
@@ -94,6 +94,8 @@
     <string name="notification_text">通知</string>
     <!--&lt;でHTMLタグを書く-->
     <string name="notification_user_text">&lt;b>%1$s&lt;/b>さんがあなたの投稿に%2$sをしました。</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

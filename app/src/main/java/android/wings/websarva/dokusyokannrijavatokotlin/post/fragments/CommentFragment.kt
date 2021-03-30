@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentCommentBinding
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.PostCellBinding
+import android.wings.websarva.dokusyokannrijavatokotlin.user.content.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.post.CommentAdapter
@@ -23,39 +25,46 @@ import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageCl
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DateHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.utils.PostHelper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_comment.*
-import kotlinx.android.synthetic.main.post_cell.*
 
 class CommentFragment : Fragment() {
 
-    private lateinit var userJson: String
-    private lateinit var bookJson: String
+    private lateinit var user: UserInfoHelper
+    private lateinit var book: BookHelper
     private var activityName: String? = null
     private var supportActionBar: ActionBar? = null
+    private var _binding: FragmentCommentBinding? = null
+    private val binding get() = _binding!!
+    private var _postBinding: PostCellBinding? = null
+    private val postBinding get() = _postBinding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityName = activity?.localClassName
-        arguments?.let {
-            userJson = it.getString(USER_DATA_KEY, "")
-            bookJson = it.getString(BOOK_DATA_KEY, "")
-        }
+        arguments?.let { it ->
+            it.getParcelable<UserInfoHelper>(USER_DATA_KEY)?.let { data ->
+                user = data
+            }
 
+            it.getParcelable<BookHelper>(BOOK_DATA_KEY)?.let { data ->
+                book = data
+            }
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_comment, container, false)
+        _binding = FragmentCommentBinding.inflate(inflater, container, false)
+        _postBinding = binding.post
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,34 +76,32 @@ class CommentFragment : Fragment() {
             supportActionBar?.show()
         }
 
-        val userData = Gson().fromJson<UserInfoHelper>(userJson, UserInfoHelper::class.java)
-        val bookData = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
-
         // 選択した投稿のデータを表示
-        userReadDate.text = DateHelper.formatDate(bookData.createdAt)
-        userActionPlan.text = bookData.action
-        Glide.with(requireContext()).load(bookData.imageUrl).into(userBookImage)
-        userBookTitle.text = bookData.title
-        userAuthorName.text = bookData.author
-        userName.text = userData.userName
-        GlideHelper.viewUserImage(userData.userImageUrl, userImage)
+        postBinding.userReadDate.text = DateHelper.formatDate(book.createdAt)
+        postBinding.userActionPlan.text = book.action
+        Glide.with(requireContext()).load(book.imageUrl).into(postBinding.userBookImage)
+        postBinding.userBookTitle.text = book.title
+        postBinding.userAuthorName.text = book.author
+        postBinding.userName.text = user.userName
+        GlideHelper.viewUserImage(user.userImageUrl, postBinding.userImage)
+
 
         // いいねのアイコンを表示する
-        showPostLike(bookData.likedList)
+        showPostLike(book.likedList)
 
         // コメントのアイコンを表示する
-        showComment(bookData.commentedList)
+        showComment(book.commentedList)
 
         // リサイクラービューを表示する
-        showRecyclerView(bookData.commentedList)
+        showRecyclerView(book.commentedList)
 
         // テキストの監視
-        commentEdit.addTextChangedListener(object : TextWatcher {
+        binding.commentEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                postButton.isEnabled = commentEdit.text?.isNotBlank()!!
+                binding.postButton.isEnabled = binding.commentEdit.text?.isNotBlank()!!
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -103,23 +110,23 @@ class CommentFragment : Fragment() {
         })
 
         // postButtonの設定
-        postButton.setOnClickListener {
+        binding.postButton.setOnClickListener {
             // コメントのデータをセット
-            bookData.commentedList.add(CommentHelper(comment = commentEdit.text.toString()))
-            bookData.commentedCount = bookData.commentedList.size
+            book.commentedList.add(CommentHelper(comment = binding.commentEdit.text.toString()))
+            book.commentedCount = book.commentedList.size
 
             // キーボードを閉じる
-            commentEdit.text?.clear()
-            commentEdit.clearFocus()
+            binding.commentEdit.text?.clear()
+            binding.commentEdit.clearFocus()
             val inputManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
             // リサイクラービューの更新
-            showRecyclerView(bookData.commentedList)
+            showRecyclerView(book.commentedList)
 
             // コメントの数の更新
-            showComment(bookData.commentedList)
-            FireStoreHelper.savePostData(bookData)
+            showComment(book.commentedList)
+            FireStoreHelper.saveBook(book)
         }
 
     }
@@ -150,14 +157,14 @@ class CommentFragment : Fragment() {
      * @param likedList いいねの数が格納されているリスト
      */
     private fun showPostLike(likedList: List<LikeHelper>) {
-        favoriteImage.setImageDrawable(
-            if (PostHelper.hasLiked(likedList)) {
+        postBinding.favoriteImage.setImageDrawable(
+            if (likedList.any {it.likedUserUid == AuthHelper.getUid()}) {
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_like)
             } else {
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_no_like)
             }
         )
-        favoriteCount.text = likedList.size.toString()
+        postBinding.favoriteCount.text = likedList.size.toString()
     }
 
     /**
@@ -165,14 +172,14 @@ class CommentFragment : Fragment() {
      * @param commentList コメントの数を格納されているメソッド
      */
     private fun showComment(commentList: List<CommentHelper>) {
-        commentImage.setImageDrawable(
+        postBinding.commentImage.setImageDrawable(
             if (commentList.any { it.commentedUserUid == AuthHelper.getUid() }) {
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_comment)
             } else {
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_no_comment)
             }
         )
-        commentCount.text = commentList.size.toString()
+        postBinding.commentCount.text = commentList.size.toString()
     }
 
     /**
@@ -180,16 +187,22 @@ class CommentFragment : Fragment() {
      * @param commentList コメントのリスト
      */
     private fun showRecyclerView(commentList: List<CommentHelper>) {
-        commentRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
-        commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        commentRecyclerView.setHasFixedSize(true)
+        binding.commentRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
+        binding.commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.commentRecyclerView.setHasFixedSize(true)
         val adapter = CommentAdapter(commentList)
-        commentRecyclerView.adapter = adapter
+        binding.commentRecyclerView.adapter = adapter
         adapter.setUserImageClickListener(object : OnUserImageClickListener {
-            override fun onUserImageClickListener(userJson: String) {
-                AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
+            override fun onUserImageClickListener(user: UserInfoHelper) {
+                AnotherUserActivity.moveToAnotherUserActivity(requireActivity(), user)
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _postBinding = null
+        _binding = null
     }
 
     companion object {
@@ -197,11 +210,11 @@ class CommentFragment : Fragment() {
         private const val BOOK_DATA_KEY = "book_data_key"
 
         @JvmStatic
-        fun newInstance(userJson: String, bookJson: String) =
+        fun newInstance(user: UserInfoHelper, book: BookHelper) =
             CommentFragment().apply {
                 arguments = Bundle().apply {
-                    putString(USER_DATA_KEY, userJson)
-                    putString(BOOK_DATA_KEY, bookJson)
+                    putParcelable(USER_DATA_KEY, user)
+                    putParcelable(BOOK_DATA_KEY, book)
                 }
             }
     }

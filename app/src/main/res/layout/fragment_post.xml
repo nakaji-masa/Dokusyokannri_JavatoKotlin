@@ -23,7 +23,9 @@
             android:gravity="center"
             android:layout_margin="8dp">
 
-            <include layout="@layout/search_action_bar_layout" />
+            <include
+                android:id="@+id/searchBarLayout"
+                layout="@layout/search_action_bar_layout" />
 
         </LinearLayout>
 

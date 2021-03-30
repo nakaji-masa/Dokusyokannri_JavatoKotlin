@@ -19,14 +19,17 @@ object RealmManager {
         .build()
 
     // realm
-    private val bookRealm = Realm.getInstance(bookConfig)
-    private val graphRealm = Realm.getInstance(graphConfig)
-    private val userRealm = Realm.getInstance(userConfig)
+    private var bookRealm = Realm.getInstance(bookConfig)
+    private var graphRealm = Realm.getInstance(graphConfig)
+    private var userRealm = Realm.getInstance(userConfig)
 
     /**
      * bookRealmを返すメソッド
      */
-    fun getBookRealmInstance(): Realm{
+    fun getBookRealmInstance(): Realm {
+        if (bookRealm.isClosed) {
+            bookRealm = Realm.getInstance(bookConfig)
+        }
         return bookRealm
     }
 
@@ -34,10 +37,19 @@ object RealmManager {
      * graphRealmを返すメソッド
      */
     fun getGraphRealmInstance(): Realm {
+        if (graphRealm.isClosed) {
+            graphRealm = Realm.getInstance(graphConfig)
+        }
         return graphRealm
     }
 
+    /**
+     * userRealmを返すメソッド
+     */
     fun getUserRealmInstance(): Realm {
+        if (userRealm.isClosed) {
+            userRealm = Realm.getInstance(userConfig)
+        }
         return userRealm
     }
 
@@ -49,11 +61,4 @@ object RealmManager {
         graphRealm.close()
         userRealm.close()
     }
-
-    fun isClosed() :Boolean{
-        return bookRealm.isClosed
-    }
-
-
-
 }

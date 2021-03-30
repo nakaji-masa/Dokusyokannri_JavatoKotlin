@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <include
-            android:id="@+id/detail_post"
+            android:id="@+id/detailPost"
             layout="@layout/post_cell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

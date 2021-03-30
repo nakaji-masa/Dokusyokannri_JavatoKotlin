@@ -10,7 +10,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        context = applicationContext
+        application = this
 
         //Realmの初期化
         Realm.init(this)
@@ -22,14 +22,15 @@ class MyApplication : Application() {
     }
 
     companion object {
-        private lateinit var context: Context
+
+        private lateinit var application: MyApplication
 
         /**
          * contextを返すメソッド
          * @return Context
          */
         fun getAppContext() : Context {
-            return context
+            return application.applicationContext
         }
     }
 }

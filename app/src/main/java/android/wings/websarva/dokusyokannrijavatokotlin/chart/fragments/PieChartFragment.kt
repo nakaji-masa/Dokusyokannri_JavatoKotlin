@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentPieChartBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`.BookObject
 import android.wings.websarva.dokusyokannrijavatokotlin.realm.manager.RealmManager
@@ -16,7 +16,6 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import io.realm.Realm
 import io.realm.kotlin.where
-import kotlinx.android.synthetic.main.fragment_pie_chart.*
 import kotlin.collections.ArrayList
 
 
@@ -25,6 +24,8 @@ class PieChartFragment : Fragment() {
     private lateinit var realm: Realm
     private var bookRate: Float = 0F
     private var actionRate: Float = 0F
+    private var _binding: FragmentPieChartBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +37,9 @@ class PieChartFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_pie_chart, container, false)
+    ): View {
+        _binding = FragmentPieChartBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,10 +51,10 @@ class PieChartFragment : Fragment() {
      */
     private fun setupPieChart() {
         // グラフの説明
-        pieChart.description.isEnabled = false
+        binding.pieChart.description.isEnabled = false
 
         // タッチしてもグラフが動かないようにする
-        pieChart.setTouchEnabled(false)
+        binding.pieChart.setTouchEnabled(false)
 
         // グラフのデータ
         setRateAndText()
@@ -72,7 +74,7 @@ class PieChartFragment : Fragment() {
         pieData.setValueTextSize(20f)
         pieData.setValueTextColor(Color.WHITE)
 
-        pieChart.data = pieData
+        binding.pieChart.data = pieData
     }
 
     /**
@@ -96,8 +98,8 @@ class PieChartFragment : Fragment() {
         }
 
         // テキストビューに値を表示
-        inputValue.text = bookCount.toInt().toString()
-        outputValue.text = actionCount.toInt().toString()
+        binding.inputValue.text = bookCount.toInt().toString()
+        binding.outputValue.text = actionCount.toInt().toString()
 
         val total = bookCount + actionCount
 
@@ -107,11 +109,17 @@ class PieChartFragment : Fragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     class PercentFormatter: ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
             return String.format("%.1f", value) + "%"
         }
     }
+
 
     companion object {
         @JvmStatic

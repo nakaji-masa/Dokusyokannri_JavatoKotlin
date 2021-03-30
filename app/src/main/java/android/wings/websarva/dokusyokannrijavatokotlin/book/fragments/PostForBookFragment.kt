@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.R
-import android.wings.websarva.dokusyokannrijavatokotlin.another.activities.AnotherUserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.user.content.another.activities.AnotherUserActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.book.activities.PostForBookActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentPostForBookBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
+import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnBookClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnCommentClickListener
 import android.wings.websarva.dokusyokannrijavatokotlin.interfaces.OnUserImageClickListener
@@ -18,11 +20,11 @@ import android.wings.websarva.dokusyokannrijavatokotlin.post.fragments.CommentFr
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_post_for_book.*
 
 
 class PostForBookFragment : Fragment() {
+    private var _binding: FragmentPostForBookBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: PostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,25 +36,25 @@ class PostForBookFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_post_for_book, container, false)
+    ): View {
+        _binding = FragmentPostForBookBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val bookJson = activity?.intent?.getStringExtra(PostForBookActivity.BOOK_DATA_KEY)
-        val book = Gson().fromJson<BookHelper>(bookJson, BookHelper::class.java)
+        val book = requireActivity().intent.getParcelableExtra<BookHelper>(PostForBookActivity.BOOK_DATA_KEY)
         adapter = PostAdapter(FireStoreHelper.getRecyclerOptionsFromTitle(book.title))
         adapter.setUserImageClickListener(object : OnUserImageClickListener {
-            override fun onUserImageClickListener(userJson: String) {
-                AnotherUserActivity.moveToAnotherUserActivity(activity, userJson)
+            override fun onUserImageClickListener(user: UserInfoHelper) {
+                AnotherUserActivity.moveToAnotherUserActivity(activity, user)
             }
         })
         adapter.setCommentClickListener(object : OnCommentClickListener {
-            override fun onCommentClickListener(userJson: String, bookJson: String) {
+            override fun onCommentClickListener(user: UserInfoHelper, book: BookHelper) {
                 val transaction = activity?.supportFragmentManager?.beginTransaction()
                 transaction?.replace(
                     R.id.postForBookContainer,
-                    CommentFragment.newInstance(userJson, bookJson)
+                    CommentFragment.newInstance(user, book)
                 )
                 transaction?.addToBackStack(null)
                 transaction?.commit()
@@ -60,19 +62,19 @@ class PostForBookFragment : Fragment() {
         })
         adapter.setBookClickListener(object : OnBookClickListener {
             // 本の投稿画面に遷移しているため、処理は何もしない。
-            override fun onBookClickListener(bookJson: String) {
+            override fun onBookClickListener(book: BookHelper) {
             }
         })
 
         // リサイクラービューの設定
-        bookPostRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
-        bookPostRecyclerView.setHasFixedSize(true)
-        bookPostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        bookPostRecyclerView.adapter = adapter
+        binding.bookPostRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
+        binding.bookPostRecyclerView.setHasFixedSize(true)
+        binding.bookPostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.bookPostRecyclerView.adapter = adapter
 
-        GlideHelper.viewBookImage(book.imageUrl, postForBookImage)
-        postForBookTitle.text = book.title
-        postForBookAuthor.text = getString(R.string.author, book.author)
+        GlideHelper.viewBookImage(book.imageUrl, binding.postForBookImage)
+        binding.postForBookTitle.text = book.title
+        binding.postForBookAuthor.text = getString(R.string.author, book.author)
     }
 
     override fun onStart() {
@@ -83,6 +85,11 @@ class PostForBookFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         adapter.stopListening()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

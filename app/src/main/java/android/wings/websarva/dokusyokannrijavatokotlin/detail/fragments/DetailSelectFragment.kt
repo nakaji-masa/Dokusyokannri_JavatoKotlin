@@ -1,24 +1,26 @@
 package android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentDetailSelectBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailTabAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
-import kotlinx.android.synthetic.main.fragment_detail_select.*
 
 
 class DetailSelectFragment : BaseDetailFragment() {
 
+    private var _binding: FragmentDetailSelectBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_detail_select, container, false)
+    ): View {
+        _binding = FragmentDetailSelectBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,15 +28,20 @@ class DetailSelectFragment : BaseDetailFragment() {
         val adapter = DetailTabAdapter(childFragmentManager)
 
         //アダプターのセット
-        detailPager.adapter = adapter
+        binding.detailPager.adapter = adapter
 
         //タブにpagerの情報をセット
-        detailTabLayout.setupWithViewPager(detailPager)
+        binding.detailTabLayout.setupWithViewPager(binding.detailPager)
 
         // 通知から画面遷移したときの場合
         if (requireActivity().intent.getBooleanExtra(TAB_POST_START, false)) {
-            detailPager.currentItem = 2
+            binding.detailPager.currentItem = 1
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

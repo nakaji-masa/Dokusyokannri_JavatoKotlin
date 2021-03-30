@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.wings.websarva.dokusyokannrijavatokotlin.R
 import android.wings.websarva.dokusyokannrijavatokotlin.chart.ChartTabAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentChartSelectBinding
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_chart_select.*
 
 
 class ChartSelectFragment : Fragment() {
+
+    private var _binding: FragmentChartSelectBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,13 +23,19 @@ class ChartSelectFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_chart_select, container, false)
+    ): View {
+        _binding = FragmentChartSelectBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        graphViewPager.adapter = ChartTabAdapter(childFragmentManager)
-        graphTabLayout.setupWithViewPager(graphViewPager)
+        binding.graphViewPager.adapter = ChartTabAdapter(childFragmentManager)
+        binding.graphTabLayout.setupWithViewPager(binding.graphViewPager)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

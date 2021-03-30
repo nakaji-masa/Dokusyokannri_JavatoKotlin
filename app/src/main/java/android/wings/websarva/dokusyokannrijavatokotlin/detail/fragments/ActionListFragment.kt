@@ -6,25 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.ActionListAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.R
+import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentActionListBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.DividerHelper
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_action_list.*
+import io.realm.Sort
 
 
 class ActionListFragment : BaseDetailFragment() {
 
+    private var _binding: FragmentActionListBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_action_list, container, false)
+    ): View {
+        _binding = FragmentActionListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // アクションリストを取得
-        bookObj?.actionPlanDairy?.let {
+        bookObj?.actionPlanDairy?.sort("date", Sort.DESCENDING)?.let {
 
             //アダプターをセットする。
             val adapter = ActionListAdapter(it, true)
@@ -35,13 +40,13 @@ class ActionListFragment : BaseDetailFragment() {
             })
 
             //リサイクラービューの設定
-            actionDetailRecyclerView.adapter = adapter
-            actionDetailRecyclerView.setHasFixedSize(true)
-            actionDetailRecyclerView.layoutManager = LinearLayoutManager(view.context)
-            actionDetailRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
+            binding.actionDetailRecyclerView.adapter = adapter
+            binding.actionDetailRecyclerView.setHasFixedSize(true)
+            binding.actionDetailRecyclerView.layoutManager = LinearLayoutManager(view.context)
+            binding.actionDetailRecyclerView.addItemDecoration(DividerHelper.createDivider(requireContext()))
         }
 
-        addActionButton.setOnClickListener {
+        binding.addActionButton.setOnClickListener {
             moveToNextFragment(InputActionFragment.newInstance())
         }
     }
@@ -55,6 +60,11 @@ class ActionListFragment : BaseDetailFragment() {
         transaction.addToBackStack(null)
         transaction.replace(R.id.detailContainer, fragment)
         transaction.commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

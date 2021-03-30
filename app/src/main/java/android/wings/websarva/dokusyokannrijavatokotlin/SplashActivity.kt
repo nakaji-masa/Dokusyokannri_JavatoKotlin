@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.wings.websarva.dokusyokannrijavatokotlin.activities.MainActivity
-import android.wings.websarva.dokusyokannrijavatokotlin.user.UserActivity
+import android.wings.websarva.dokusyokannrijavatokotlin.user.login.LoginActivity
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import androidx.appcompat.app.AppCompatActivity
@@ -27,11 +27,11 @@ class SplashActivity : AppCompatActivity() {
                     if (FireStoreHelper.hasUserDocument()) {
                         intent = Intent(this@SplashActivity, MainActivity::class.java)
                     } else {
-                        intent = Intent(this@SplashActivity, UserActivity::class.java)
+                        intent = Intent(this@SplashActivity, LoginActivity::class.java)
                         intent.putExtra(ALREADY_REGISTERED_KEY, true)
                     }
                 } else {
-                    intent = Intent(this@SplashActivity, UserActivity::class.java)
+                    intent = Intent(this@SplashActivity, LoginActivity::class.java)
                 }
                 startActivity(intent)
                 finish()
