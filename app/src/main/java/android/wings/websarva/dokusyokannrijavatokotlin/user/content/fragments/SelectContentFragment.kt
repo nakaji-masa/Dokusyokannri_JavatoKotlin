@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentSelectContentBinding
-import android.wings.websarva.dokusyokannrijavatokotlin.user.content.UserTabAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.user.content.UserViewPagerAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class SelectContentFragment : Fragment() {
@@ -31,8 +32,14 @@ class SelectContentFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.userContentsViewPager.adapter = UserTabAdapter(childFragmentManager, anotherFlag)
-        binding.userContentsTabLayout.setupWithViewPager(binding.userContentsViewPager)
+        binding.userContentsViewPager.adapter = UserViewPagerAdapter(this, anotherFlag)
+
+        TabLayoutMediator(binding.userContentsTabLayout, binding.userContentsViewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> { "本棚" }
+                else -> { "投稿" }
+            }
+        }.attach()
     }
 
     override fun onDestroyView() {

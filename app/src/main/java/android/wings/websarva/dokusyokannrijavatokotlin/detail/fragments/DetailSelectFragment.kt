@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentDetailSelectBinding
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.activities.DetailActivity
-import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailTabAdapter
+import android.wings.websarva.dokusyokannrijavatokotlin.detail.DetailViewPagerAdapter
 import android.wings.websarva.dokusyokannrijavatokotlin.detail.fragments.base.BaseDetailFragment
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class DetailSelectFragment : BaseDetailFragment() {
@@ -25,13 +26,18 @@ class DetailSelectFragment : BaseDetailFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val adapter = DetailTabAdapter(childFragmentManager)
+        val adapter = DetailViewPagerAdapter(this)
 
         //アダプターのセット
         binding.detailPager.adapter = adapter
 
-        //タブにpagerの情報をセット
-        binding.detailTabLayout.setupWithViewPager(binding.detailPager)
+        TabLayoutMediator(binding.detailTabLayout, binding.detailPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> { "詳細" }
+                1 -> { "投稿" }
+                else -> { "行動" }
+            }
+        }.attach()
 
         // 通知から画面遷移したときの場合
         if (requireActivity().intent.getBooleanExtra(TAB_POST_START, false)) {

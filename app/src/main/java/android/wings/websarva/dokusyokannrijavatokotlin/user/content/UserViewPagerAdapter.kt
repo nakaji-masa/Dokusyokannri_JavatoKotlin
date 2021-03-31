@@ -5,32 +5,16 @@ import android.wings.websarva.dokusyokannrijavatokotlin.user.content.another.fra
 import android.wings.websarva.dokusyokannrijavatokotlin.user.content.myshelf.fragments.MyBookShelfFragment
 import android.wings.websarva.dokusyokannrijavatokotlin.user.content.myshelf.fragments.MyPostFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class UserTabAdapter(
-    fm: FragmentManager, private val anotherFlag: Boolean
-) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class UserViewPagerAdapter(
+    fragment: Fragment, private val anotherFlag: Boolean
+) : FragmentStateAdapter(fragment) {
 
-    private val titleList = listOf("本棚", "投稿")
+    override fun getItemCount() = 2
 
-    override fun getCount(): Int {
-        return titleList.size
-    }
 
-    override fun getPageTitle(position: Int): CharSequence {
-        return when (position) {
-            0 -> {
-                titleList[position]
-            }
-
-            else -> {
-                titleList[position]
-            }
-        }
-    }
-
-    override fun getItem(position: Int): Fragment {
+    override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> {
                 if (anotherFlag) AnotherBookshelfFragment.newInstance() else MyBookShelfFragment.newInstance()

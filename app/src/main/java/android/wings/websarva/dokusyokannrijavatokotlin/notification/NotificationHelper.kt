@@ -13,7 +13,7 @@ object NotificationHelper {
 
     private var notificationList: MutableList<Notification> = mutableListOf()
     const val TYPE_LIKE = "type_like"
-    const val TYPE_COMMENT = "type_comment"
+    private const val TYPE_COMMENT = "type_comment"
 
     /**
      * フィールドのnotificationListをセットするメソッド

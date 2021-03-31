@@ -14,6 +14,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.main.navigator.MainNavigator
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
+import io.realm.RealmChangeListener
 import io.realm.kotlin.where
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -76,11 +77,10 @@ class DetailFragment : BaseDetailFragment() {
             }
             requireActivity().startActivity(intent)
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
-        setView()
+        bookObj?.addChangeListener(RealmChangeListener<BookObject> {
+            setView()
+        })
     }
 
     /**
