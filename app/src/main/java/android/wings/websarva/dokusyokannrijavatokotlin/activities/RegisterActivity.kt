@@ -58,6 +58,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
         val url = "https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn"
         showBookInfo(url)
     }
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -370,7 +371,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher {
      * @param url 接続先URL
      */
     private fun showBookInfo(url: String) {
-        GlobalScope.launch(Dispatchers.Main) {
+        scope.launch {
             val http = HttpUtil()
             // ネットワーク処理をし、UI実装
             withContext(Dispatchers.IO) { http.httpGET(url) }?.let {

@@ -14,6 +14,9 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
 
+/**
+ * TODO:エラーハンドリングの追加と
+ */
 object FireStoreHelper {
     private const val COLLECTION_USER_PATH = "user"
     private const val COLLECTION_POST_PATH = "post"

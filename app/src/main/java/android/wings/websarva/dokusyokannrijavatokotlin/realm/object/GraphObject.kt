@@ -1,3 +1,4 @@
+
 package android.wings.websarva.dokusyokannrijavatokotlin.realm.`object`
 
 import io.realm.RealmList

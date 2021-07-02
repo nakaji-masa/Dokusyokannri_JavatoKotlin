@@ -5,6 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+/**
+ * TODO:エラーハンドリングの追加とスレッドの決定
+ */
 object FireStorageHelper {
     private val storageRef = FirebaseStorage.getInstance().reference
 

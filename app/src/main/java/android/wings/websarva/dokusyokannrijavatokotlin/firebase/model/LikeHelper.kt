@@ -8,5 +8,4 @@ data class LikeHelper(
     val likedUserUid: String = AuthHelper.getUid(),
     var checked: Boolean = false,
     val date: Date = Date()
-) {
-}
+)

@@ -14,6 +14,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.utils.*
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,6 +25,7 @@ class PostAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
     private lateinit var bookClickListener: OnBookClickListener
     private lateinit var commentListener: OnCommentClickListener
     private lateinit var userImageListener: OnUserImageClickListener
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     inner class ViewHolder(val itemBinding: PostCellBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
@@ -33,7 +35,7 @@ class PostAdapter(options: FirestoreRecyclerOptions<BookHelper>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: BookHelper) {
-        GlobalScope.launch(Dispatchers.Main) {
+        scope.launch {
             FireStoreHelper.getUserInfoFromUid(model.uid)?.let { user ->
 
                 // ユーザーの画像と名前を表示

@@ -16,6 +16,8 @@ import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.appcompat.app.AlertDialog
 import io.realm.RealmChangeListener
 import io.realm.kotlin.where
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -23,6 +25,7 @@ class DetailFragment : BaseDetailFragment() {
 
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +61,7 @@ class DetailFragment : BaseDetailFragment() {
                     }
 
                     // fireStoreから削除する
-                    GlobalScope.launch {
+                    scope.launch {
                         FireStoreHelper.deleteDocument(bookId!!)
                     }
 

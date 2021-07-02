@@ -3,11 +3,8 @@ package android.wings.websarva.dokusyokannrijavatokotlin.notification
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.AuthHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.FireStoreHelper
 import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.BookHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.CommentHelper
-import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.LikeHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
 
 object NotificationHelper {
 
@@ -38,7 +35,7 @@ object NotificationHelper {
         var postList = FireStoreHelper.getBookDataListOnlyLiked()
 
         // notificationListに格納
-        setNotificationFromLiked(postList)
+        addNotificationFromLiked(postList)
 
         // コメントされいる投稿を取得
         withContext(Dispatchers.IO) {
@@ -46,14 +43,14 @@ object NotificationHelper {
         }
 
         // notificationList格納
-        setNotificationFromCommented(postList)
+        addNotificationFromCommented(postList)
     }
 
     /**
      * 通知データをリストにセットする
      * @param postList fireStoreから取得した投稿データ(いいねをされたもの)
      */
-    private fun setNotificationFromLiked(postList: List<BookHelper>) {
+    private fun addNotificationFromLiked(postList: List<BookHelper>) {
         // 通知のデータを追加する
         for (post in postList) {
             for (liked in post.likedList) {
@@ -77,7 +74,7 @@ object NotificationHelper {
      * 通知データをリストにセットする
      * @param postList fireStoreから取得した投稿データ(コメントされたもの)
      */
-    private fun setNotificationFromCommented(postList: List<BookHelper>) {
+    private fun addNotificationFromCommented(postList: List<BookHelper>) {
         // 通知のデータを追加する
         for (post in postList) {
             for (commented in post.commentedList) {
@@ -102,7 +99,6 @@ object NotificationHelper {
     fun getNotCheckedNotificationCount(): Int {
         // 戻り値
         var result = 0
-
         for (notification in notificationList) {
             if (notification.type == TYPE_LIKE) {
                 if (!notification.likeHelper.checked) {

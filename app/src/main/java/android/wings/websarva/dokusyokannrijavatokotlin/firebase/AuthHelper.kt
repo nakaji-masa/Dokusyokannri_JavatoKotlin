@@ -7,6 +7,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * TODO:エラーハンドリングの追加
+ */
 object AuthHelper {
     private val mAuth = FirebaseAuth.getInstance()
 

@@ -11,6 +11,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.firebase.model.UserInfoH
 import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.flow
 
 class NotificationsAdapter(
     private val context: Context,
@@ -89,12 +90,12 @@ class NotificationsAdapter(
 
                     // 背景の設定
                     if (notification.commentHelper.checked) {
-                        holder.itemView.background = ContextCompat.getDrawable(
+                        holder.itemBinding.root.background = ContextCompat.getDrawable(
                             context,
                             R.drawable.checked_notification_cell_bg
                         )
                     } else {
-                        holder.itemView.background = ContextCompat.getDrawable(
+                        holder.itemBinding.root.background = ContextCompat.getDrawable(
                             context,
                             R.drawable.not_checked_notification_cell_bg
                         )
@@ -108,7 +109,7 @@ class NotificationsAdapter(
                 holder.itemBinding.postContent.text = notification.content
 
                 // リスナーの設定
-                holder.itemView.setOnClickListener {
+                holder.itemBinding.root.setOnClickListener {
                     if (notification.type == NotificationHelper.TYPE_LIKE) {
                         notification.likeHelper.checked = true
                     } else {

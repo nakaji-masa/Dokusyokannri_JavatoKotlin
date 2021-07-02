@@ -25,8 +25,8 @@ import android.wings.websarva.dokusyokannrijavatokotlin.utils.GlideHelper
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -38,7 +38,8 @@ class DetailPostFragment : Fragment() {
     private val binding get() = _binding!!
     private var _postBinding: PostCellBinding? = null
     private val postBinding get() = _postBinding!!
-
+    private val scope = CoroutineScope(Dispatchers.Main)
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -85,7 +86,7 @@ class DetailPostFragment : Fragment() {
             )
         )
 
-        GlobalScope.launch(Dispatchers.Main) {
+        scope.launch(Dispatchers.Main) {
             // 本の情報
             val bookData = FireStoreHelper.getBookDataFromDocId(bookId)
             if (bookData != null) {

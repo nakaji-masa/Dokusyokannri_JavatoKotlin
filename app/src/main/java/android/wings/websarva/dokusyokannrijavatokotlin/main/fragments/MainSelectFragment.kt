@@ -10,6 +10,7 @@ import android.wings.websarva.dokusyokannrijavatokotlin.databinding.FragmentMain
 import android.wings.websarva.dokusyokannrijavatokotlin.notification.NotificationHelper
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ class MainSelectFragment : Fragment() {
 
     private var _binding: FragmentMainSelectBinding? = null
     private val binding get() = _binding!!
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,7 @@ class MainSelectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GlobalScope.launch(Dispatchers.Main) {
+        scope.launch {
 
             // notificationListを作成
             NotificationHelper.createNotificationList()
